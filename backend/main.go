@@ -2,7 +2,7 @@ package main
 
 import (
 	"backend/configs"
-	"backend/docs"
+	docs "backend/docs"
 	"backend/routes"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

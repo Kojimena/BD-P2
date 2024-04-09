@@ -1,4 +1,19 @@
 info:
   contact: {}
-paths: {}
+paths:
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Prueba
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Service is up and running!
+          schema:
+            type: string
+      summary: Prueba
+      tags:
+      - Users
 swagger: "2.0"

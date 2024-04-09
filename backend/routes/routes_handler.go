@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"backend/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,4 +11,6 @@ func Routes(router *gin.Engine) {
 			"message": "Service is up and running!",
 		})
 	})
+
+	router.GET("/users", controllers.Users)
 }

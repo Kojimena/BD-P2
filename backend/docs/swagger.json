@@ -3,5 +3,29 @@
     "info": {
         "contact": {}
     },
-    "paths": {}
+    "paths": {
+        "/users": {
+            "get": {
+                "description": "Prueba",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Prueba",
+                "responses": {
+                    "200": {
+                        "description": "Service is up and running!",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
