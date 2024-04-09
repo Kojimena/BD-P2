@@ -2,8 +2,11 @@ package main
 
 import (
 	"backend/configs"
+	"backend/docs"
 	"backend/routes"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func CORS() gin.HandlerFunc {
@@ -30,7 +33,16 @@ func main() {
 	// Neo4j
 	configs.ConnectDB()
 
+	// Swagger
+	docs.SwaggerInfo.Title = "Bases de Datos 2 Proyecto 2: Backend"
+	docs.SwaggerInfo.Description = "API para el backend del proyecto 2 de Bases de Datos 2"
+	docs.SwaggerInfo.Version = "0.1.0"
+	docs.SwaggerInfo.Host = "localhost:8080"
+	docs.SwaggerInfo.BasePath = "/"
+
 	routes.Routes(router)
+
+	router.GET("/documentation/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Run("localhost:8080")
 }
