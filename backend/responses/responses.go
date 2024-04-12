@@ -33,3 +33,9 @@ type ZodiacalSignResponse struct {
 	Message string         `json:"message"`      // Mensaje de la respuesta
 	Signs   []models.Signo `json:"zodiacalSign"` // Datos adicionales de la respuesta
 }
+
+type TeamsResponse struct {
+	Status  int             `json:"status"`  // Código de estado de la respuesta
+	Message string          `json:"message"` // Mensaje de la respuesta
+	Teams   []models.Equipo `json:"teams"`   // Datos adicionales de la respuesta
+}

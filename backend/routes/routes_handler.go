@@ -20,4 +20,9 @@ func Routes(router *gin.Engine) {
 		users.GET("/signs", controllers.GetZodiacalSigns)
 	}
 
+	teams := router.Group("/teams")
+	{
+		teams.GET("/", controllers.GetTeams)
+	}
+
 }
