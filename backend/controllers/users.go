@@ -136,6 +136,15 @@ func NewTeacher(c *gin.Context) {
 	})
 }
 
+// GetCareers Obtiene todas las carreras
+// @Summary Obtiene todas las carreras
+// @Description Obtiene todas las carreras de la base de datos
+// @Tags Carreras
+// @Accept json
+// @Produce json
+// @Success 200 {object} responses.CareerResponse "Carreras obtenidas exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /careers [get]
 func GetCareers(c *gin.Context) {
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
@@ -159,11 +168,48 @@ func GetCareers(c *gin.Context) {
 		fmt.Println(r.Record())
 	}
 
-	c.JSON(http.StatusOK, responses.StandardResponse{
+	c.JSON(http.StatusOK, responses.CareerResponse{
 		Status:  http.StatusOK,
 		Message: "Estudiante creado exitosamente",
-		Data: map[string]interface{}{
-			"careers": careers,
-		},
+		Careers: careers,
+	})
+}
+
+// GetZodiacalSigns Obtiene todos los signos zodiacales
+// @Summary Obtiene todos los signos zodiacales
+// @Description Obtiene todos los signos zodiacales de la base de datos
+// @Tags Signos Zodiacales
+// @Accept json
+// @Produce json
+// @Success 200 {object} responses.ZodiacalSignResponse "Signos zodiacales obtenidos exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /zodiacal-signs [get]
+func GetZodiacalSigns(c *gin.Context) {
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer session.Close(c)
+
+	// get all zodiacal signs
+	r, err := session.Run(c, "MATCH (z:Signo) RETURN z", nil)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al obtener los signos zodiacales",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	var zodiacalSigns []models.Signo
+	for r.Next(c) {
+		fmt.Println(r.Record())
+	}
+
+	c.JSON(http.StatusOK, responses.ZodiacalSignResponse{
+		Status:  http.StatusOK,
+		Message: "Estudiante creado exitosamente",
+		Signs:   zodiacalSigns,
 	})
 }

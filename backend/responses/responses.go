@@ -21,3 +21,15 @@ type LoginResponse struct {
 	Message string         `json:"message"` // Mensaje de la respuesta
 	User    models.Persona `json:"user"`    // Datos adicionales de la respuesta
 }
+
+type CareerResponse struct {
+	Status  int              `json:"status"`  // Código de estado de la respuesta
+	Message string           `json:"message"` // Mensaje de la respuesta
+	Careers []models.Carrera `json:"careers"` // Datos adicionales de la respuesta
+}
+
+type ZodiacalSignResponse struct {
+	Status  int            `json:"status"`       // Código de estado de la respuesta
+	Message string         `json:"message"`      // Mensaje de la respuesta
+	Signs   []models.Signo `json:"zodiacalSign"` // Datos adicionales de la respuesta
+}
