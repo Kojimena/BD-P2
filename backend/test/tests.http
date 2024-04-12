@@ -36,8 +36,11 @@ Content-Type: application/json
   "jornada": "Matutina"
 }
 
-
-
 ### Obtener carreras
 GET http://localhost:8080/users/careers
 Accept: application/json
+
+### Obtener signos
+GET http://localhost:8080/users/signs
+Accept: application/json
+

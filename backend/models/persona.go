@@ -1,12 +1,14 @@
 package models
 
 type Persona struct {
-	Nombre          string `json:"nombre"`
-	Apellido        string `json:"apellido"`
-	FechaNacimiento string `json:"fecha_nacimiento"`
-	Genero          string `json:"genero"`
-	Usuario         string `json:"usuario"`
-	Password        string `json:"password"`
+	Nombre          string   `json:"nombre"`
+	Apellido        string   `json:"apellido"`
+	FechaNacimiento string   `json:"fecha_nacimiento"`
+	Genero          string   `json:"genero"`
+	Usuario         string   `json:"usuario"`
+	Password        string   `json:"password"`
+	Publicaciones   []string `json:"publicaciones"`
+	Conexiones      []string `json:"conexiones"` // Conexiones usuarios
 }
 
 type Estudiante struct {

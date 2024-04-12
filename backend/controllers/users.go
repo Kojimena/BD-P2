@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype"
 	"net/http"
 )
 
@@ -165,7 +166,19 @@ func GetCareers(c *gin.Context) {
 
 	var careers []models.Carrera
 	for r.Next(c) {
-		fmt.Println(r.Record())
+		vals := r.Record().Values[0].(dbtype.Node).Props
+		fmt.Println(vals)
+
+		career := models.Carrera{
+			Facultad:               vals["Facultad"].(string),
+			Nombre:                 vals["Nombre"].(string),
+			Director:               vals["Director"].(string),
+			Duracion:               vals["Duracion"].(int64),
+			EstudiantesRegistrados: vals["EstudiantesRegistrados"].(int64),
+		}
+
+		careers = append(careers, career)
+
 	}
 
 	c.JSON(http.StatusOK, responses.CareerResponse{
@@ -191,7 +204,7 @@ func GetZodiacalSigns(c *gin.Context) {
 	defer session.Close(c)
 
 	// get all zodiacal signs
-	r, err := session.Run(c, "MATCH (z:Signo) RETURN z", nil)
+	r, err := session.Run(c, "MATCH (z:SignoZodiacal) RETURN z", nil)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
@@ -204,12 +217,24 @@ func GetZodiacalSigns(c *gin.Context) {
 
 	var zodiacalSigns []models.Signo
 	for r.Next(c) {
-		fmt.Println(r.Record())
+		vals := r.Record().Values[0].(dbtype.Node).Props
+		fmt.Println(vals)
+
+		zodiacalSign := models.Signo{
+			Nombre:    vals["Nombre"].(string),
+			Elemento:  vals["Elemento"].(string),
+			Planeta:   vals["Planeta"].(string),
+			Piedra:    vals["Piedra"].(string),
+			Metal:     vals["Metal"].(string),
+			DiaSemana: vals["DiaDeLaSemana"].(string),
+		}
+
+		zodiacalSigns = append(zodiacalSigns, zodiacalSign)
 	}
 
 	c.JSON(http.StatusOK, responses.ZodiacalSignResponse{
 		Status:  http.StatusOK,
-		Message: "Estudiante creado exitosamente",
+		Message: "Signos zodiacales obtenidos exitosamente",
 		Signs:   zodiacalSigns,
 	})
 }
