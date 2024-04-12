@@ -12,6 +12,8 @@ const FormSignUp = () => {
   const [passwordInput, setPasswordInput] = useState('')
   const [error, setError] = useState('')
   const [showPopUp, setShowPopUp] = useState(false)
+  const [gender, setGender] = useState('Género')
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleNameChange = (e) => {
     setNameInput(e.target.value)
@@ -122,12 +124,14 @@ const FormSignUp = () => {
 
               <div className="sm:col-span-3">
                 <div className="dropdown dropdown-bottom py-2 w-full">
-                  <div tabIndex={0} role="button" className="btn m-1 bg-kaqui hover:bg-brown text-white w-full">Género</div>
-                  <ul tabIndex={0} className="dropdown-content bg-kaqui z-[1] menu p-2 shadow-md text-white rounded-box w-52">
-                    <li><a>Femenino</a></li>
-                    <li><a>Masculino</a></li>
-                    <li><a>Otro</a></li>
-                  </ul>
+                  <div tabIndex={0} role="button" className="btn m-1 bg-kaqui hover:bg-brown text-white w-full" onClick={() => setIsOpen(!isOpen)}>{gender}</div>
+                  {isOpen && (
+                    <ul tabIndex={0} className="dropdown-content bg-kaqui z-[1] menu p-2 shadow-md text-white rounded-box w-52">
+                      <li><a onClick={() => {setGender('Femenino'); setIsOpen(false);}}>Femenino</a></li>
+                      <li><a onClick={() => {setGender('Masculino'); setIsOpen(false);}}>Masculino</a></li>
+                      <li><a onClick={() => {setGender('Otro'); setIsOpen(false);}}>Otro</a></li>
+                    </ul>
+                  )}
                 </div>
               </div>
 

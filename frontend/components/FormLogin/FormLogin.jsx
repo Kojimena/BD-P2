@@ -18,6 +18,10 @@ const FormLogin = () => {
     setPasswordInput(e.target.value)
   }
 
+  const handleSignUp = () => {
+    router.push('/')
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
     const data = {
@@ -46,7 +50,7 @@ const FormLogin = () => {
 
       if (response.ok) {
         const data = await response.json()
-        router.push('/store')
+        router.push('/people')
         localStorage.setItem('userId', data._id)
       }else {
         setShowPopUp(true)
@@ -55,14 +59,14 @@ const FormLogin = () => {
   }
     
   return (
-    <form className='p-20'>
+    <form className='m-20 flex justify-center items-center flex-col'>
       {showPopUp ? <PopUp error={error} /> :
-        <><div className="w-full">
-            <h2 className="text-4xl">Login</h2>
+        <><div className="w-1/3">
+            <h2 className="font-montserrat text-bold text-4xl text-kaqui">Iniciar sesión</h2>
           <div className="flex flex-col">
             <div className="flex flex-col">
-              <div className="sm:col-span-4">
-                <label  className="font-montserrat block text-sm font-medium leading-6 text-gray-900">
+            <div className="sm:col-span-3">
+            <label className="label">
                   Correo electrónico
                 </label>
                 <div className="mt-2">
@@ -74,8 +78,8 @@ const FormLogin = () => {
                   />
                 </div>
               </div>
-              <div className="col-span-full">
-                <label htmlFor="password" className="font-montserrat block text-sm font-medium leading-6 text-gray-900">
+              <div className="sm:col-span-3">
+                <label className="label">
                   Contraseña
                 </label>
                 <div className="mt-2">
@@ -91,17 +95,19 @@ const FormLogin = () => {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-between gap-x-6">
+        <div className="mt-6 flex items-center justify-between gap-x-6 lg:flex-row flex-col">
               <button 
-                  type="button" className="text-sm font-semibold leading-6 text-black" onClick={() => router.push('/')}>
-              Sign up
+                  type="button" 
+                  onClick={handleSignUp}
+                  className="font-montserrat flex items-center gap-x-2 text-sm font-semibold leading-6 hover:text-kaqui text-white p-2">
+              Crear una cuenta
               </button>
               <button
               type="submit"
-              className="font-montserrat rounded-md bg-kaqui px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-grayish focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-none"
+              className="font-montserrat rounded-md bg-white px-3 py-2 text-sm font-semibold text-kaqui shadow-sm hover:bg-kaqui hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-none"
               onClick={handleLogin}
               >
-              Login
+              Ingresar
               </button>
         </div> </>
       }
