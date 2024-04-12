@@ -33,4 +33,9 @@ func Routes(router *gin.Engine) {
 
 	}
 
+	songs := router.Group("/songs")
+	{
+		songs.GET("/", controllers.GetSongs)
+	}
+
 }

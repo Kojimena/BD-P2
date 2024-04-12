@@ -47,3 +47,6 @@ Accept: application/json
 ### Obtener equipos
 GET http://localhost:8080/teams
 
+### Obtener canciones
+GET http://localhost:8080/songs
+

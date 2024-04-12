@@ -45,3 +45,9 @@ type PlacesResponse struct {
 	Message string         `json:"message"` // Mensaje de la respuesta
 	Places  []models.Lugar `json:"places"`  // Datos adicionales de la respuesta
 }
+
+type SongsResponse struct {
+	Status  int              `json:"status"`  // Código de estado de la respuesta
+	Message string           `json:"message"` // Mensaje de la respuesta
+	Songs   []models.Cancion `json:"songs"`   // Datos adicionales de la respuesta
+}
