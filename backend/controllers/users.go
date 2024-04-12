@@ -64,6 +64,59 @@ func NewStudent(c *gin.Context) {
 	})
 }
 
+func NewTeacher(c *gin.Context) {
+	var teacher models.Profesor
+
+	if err := c.ShouldBindJSON(&teacher); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	fmt.Println(teacher)
+	// crear nodo Profesor (con label Profesor y Persona)
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close(c)
+
+	r, err := session.Run(
+		c,
+		"CREATE (p:Persona:Profesor {nombre: $nombre, apellido: $apellido, fecha_nacimiento: $fecha_nacimiento, genero: $genero, usuario: $usuario, password: $password, code: $code, correo: $correo, departamento: $departamento, maestria: $maestria, jornada: $jornada})",
+		map[string]interface{}{
+			"nombre":           teacher.Nombre,
+			"apellido":         teacher.Apellido,
+			"fecha_nacimiento": teacher.FechaNacimiento,
+			"genero":           teacher.Genero,
+			"usuario":          teacher.Usuario,
+			"password":         teacher.Password,
+			"code":             teacher.Code,
+			"correo":           teacher.Correo,
+			"departamento":     teacher.Departamento,
+			"maestria":         teacher.Maestria,
+			"jornada":          teacher.Jornada,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear el profesor",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	fmt.Println(r.Single(c))
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Profesor creado exitosamente",
+		Data:    nil,
+	})
+}
+
 func GetCareers(c *gin.Context) {
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})

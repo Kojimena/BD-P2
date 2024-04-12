@@ -17,6 +17,27 @@ Content-Type: application/json
   "colegio": "Colegio de San Francisco"
 }
 
+### Crear profesor
+POST http://localhost:8080/users/teacher
+Accept: application/json
+Content-Type: application/json
+
+{
+  "nombre": "John",
+  "apellido": "Doe",
+  "fecha_nacimiento": "1990-01-01",
+  "genero": "M",
+  "usuario": "JDOE",
+  "password": "123456",
+  "code": "19999",
+  "correo": "jdoe@uvg.edu.gt",
+  "departamento": "Departamento de Matematicas",
+  "maestria": "Matematicas",
+  "jornada": "Matutina"
+}
+
+
+
 ### Obtener carreras
 GET http://localhost:8080/users/careers
 Accept: application/json
