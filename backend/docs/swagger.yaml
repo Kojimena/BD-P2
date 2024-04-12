@@ -1,4 +1,30 @@
 definitions:
+  models.Carrera:
+    properties:
+      director:
+        type: string
+      duracion:
+        type: integer
+      estudiantes_registrados:
+        type: integer
+      facultad:
+        type: string
+      nombre_carrera:
+        type: string
+    type: object
+  models.Equipo:
+    properties:
+      deporte:
+        type: string
+      division:
+        type: string
+      fecha_establecimiento:
+        type: string
+      nombre:
+        type: string
+      pais:
+        type: string
+    type: object
   models.Estudiante:
     properties:
       apellido:
@@ -7,6 +33,11 @@ definitions:
         type: string
       colegio:
         type: string
+      conexiones:
+        description: Conexiones usuarios
+        items:
+          type: string
+        type: array
       correo:
         type: string
       fecha_nacimiento:
@@ -21,6 +52,10 @@ definitions:
         type: boolean
       password:
         type: string
+      publicaciones:
+        items:
+          type: string
+        type: array
       usuario:
         type: string
     type: object
@@ -30,6 +65,11 @@ definitions:
         type: string
       code:
         type: string
+      conexiones:
+        description: Conexiones usuarios
+        items:
+          type: string
+        type: array
       correo:
         type: string
       departamento:
@@ -46,8 +86,41 @@ definitions:
         type: string
       password:
         type: string
+      publicaciones:
+        items:
+          type: string
+        type: array
       usuario:
         type: string
+    type: object
+  models.Signo:
+    properties:
+      dia_semana:
+        type: string
+      elemento:
+        type: string
+      metal:
+        type: string
+      nombre:
+        type: string
+      piedra:
+        type: string
+      planeta:
+        type: string
+    type: object
+  responses.CareerResponse:
+    properties:
+      careers:
+        description: Datos adicionales de la respuesta
+        items:
+          $ref: '#/definitions/models.Carrera'
+        type: array
+      message:
+        description: Mensaje de la respuesta
+        type: string
+      status:
+        description: Código de estado de la respuesta
+        type: integer
     type: object
   responses.ErrorResponse:
     properties:
@@ -74,9 +147,75 @@ definitions:
         description: Código de estado de la respuesta
         type: integer
     type: object
+  responses.TeamsResponse:
+    properties:
+      message:
+        description: Mensaje de la respuesta
+        type: string
+      status:
+        description: Código de estado de la respuesta
+        type: integer
+      teams:
+        description: Datos adicionales de la respuesta
+        items:
+          $ref: '#/definitions/models.Equipo'
+        type: array
+    type: object
+  responses.ZodiacalSignResponse:
+    properties:
+      message:
+        description: Mensaje de la respuesta
+        type: string
+      status:
+        description: Código de estado de la respuesta
+        type: integer
+      zodiacalSign:
+        description: Datos adicionales de la respuesta
+        items:
+          $ref: '#/definitions/models.Signo'
+        type: array
+    type: object
 info:
   contact: {}
 paths:
+  /careers:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene todas las carreras de la base de datos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Carreras obtenidas exitosamente
+          schema:
+            $ref: '#/definitions/responses.CareerResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene todas las carreras
+      tags:
+      - Carreras
+  /teams/:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene todos los equipos registrados en la base de datos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Equipos obtenidos exitosamente
+          schema:
+            $ref: '#/definitions/responses.TeamsResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene todos los equipos
+      tags:
+      - Equipos
   /users/student:
     post:
       consumes:
@@ -129,4 +268,23 @@ paths:
       summary: Registra un nuevo profesor
       tags:
       - Profesores
+  /zodiacal-signs:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene todos los signos zodiacales de la base de datos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Signos zodiacales obtenidos exitosamente
+          schema:
+            $ref: '#/definitions/responses.ZodiacalSignResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene todos los signos zodiacales
+      tags:
+      - Signos Zodiacales
 swagger: "2.0"

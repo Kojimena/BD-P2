@@ -15,6 +15,64 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/careers": {
+            "get": {
+                "description": "Obtiene todas las carreras de la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Carreras"
+                ],
+                "summary": "Obtiene todas las carreras",
+                "responses": {
+                    "200": {
+                        "description": "Carreras obtenidas exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.CareerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/": {
+            "get": {
+                "description": "Obtiene todos los equipos registrados en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Obtiene todos los equipos",
+                "responses": {
+                    "200": {
+                        "description": "Equipos obtenidos exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TeamsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/student": {
             "post": {
                 "description": "Registra un nuevo estudiante en la base de datos",
@@ -94,9 +152,78 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/zodiacal-signs": {
+            "get": {
+                "description": "Obtiene todos los signos zodiacales de la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Signos Zodiacales"
+                ],
+                "summary": "Obtiene todos los signos zodiacales",
+                "responses": {
+                    "200": {
+                        "description": "Signos zodiacales obtenidos exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ZodiacalSignResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "models.Carrera": {
+            "type": "object",
+            "properties": {
+                "director": {
+                    "type": "string"
+                },
+                "duracion": {
+                    "type": "integer"
+                },
+                "estudiantes_registrados": {
+                    "type": "integer"
+                },
+                "facultad": {
+                    "type": "string"
+                },
+                "nombre_carrera": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Equipo": {
+            "type": "object",
+            "properties": {
+                "deporte": {
+                    "type": "string"
+                },
+                "division": {
+                    "type": "string"
+                },
+                "fecha_establecimiento": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "pais": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Estudiante": {
             "type": "object",
             "properties": {
@@ -108,6 +235,13 @@ const docTemplate = `{
                 },
                 "colegio": {
                     "type": "string"
+                },
+                "conexiones": {
+                    "description": "Conexiones usuarios",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "correo": {
                     "type": "string"
@@ -130,6 +264,12 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
+                "publicaciones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "usuario": {
                     "type": "string"
                 }
@@ -143,6 +283,13 @@ const docTemplate = `{
                 },
                 "code": {
                     "type": "string"
+                },
+                "conexiones": {
+                    "description": "Conexiones usuarios",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "correo": {
                     "type": "string"
@@ -168,8 +315,57 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
+                "publicaciones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "usuario": {
                     "type": "string"
+                }
+            }
+        },
+        "models.Signo": {
+            "type": "object",
+            "properties": {
+                "dia_semana": {
+                    "type": "string"
+                },
+                "elemento": {
+                    "type": "string"
+                },
+                "metal": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "piedra": {
+                    "type": "string"
+                },
+                "planeta": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.CareerResponse": {
+            "type": "object",
+            "properties": {
+                "careers": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Carrera"
+                    }
+                },
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
                 }
             }
         },
@@ -205,6 +401,46 @@ const docTemplate = `{
                 "status": {
                     "description": "Código de estado de la respuesta",
                     "type": "integer"
+                }
+            }
+        },
+        "responses.TeamsResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
+                },
+                "teams": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Equipo"
+                    }
+                }
+            }
+        },
+        "responses.ZodiacalSignResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
+                },
+                "zodiacalSign": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Signo"
+                    }
                 }
             }
         }
