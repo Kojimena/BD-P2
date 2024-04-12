@@ -20,7 +20,7 @@ import (
 // @Produce json
 // @Success 200 {object} responses.ZodiacalSignResponse "Signos zodiacales obtenidos exitosamente"
 // @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
-// @Router /zodiacal-signs [get]
+// @Router /signs [get]
 func GetZodiacalSigns(c *gin.Context) {
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
@@ -69,5 +69,67 @@ func GetZodiacalSigns(c *gin.Context) {
 		Status:  http.StatusOK,
 		Message: "Signos zodiacales obtenidos exitosamente",
 		Signs:   zodiacalSigns,
+	})
+}
+
+// CreateRelationIsSign Crea una relación entre un usuario y un signo zodiacal
+// @Summary Crea una relación entre un usuario y un signo zodiacal
+// @Description Crea una relación entre un usuario y un signo zodiacal. La relación define de qué signo es el usuario, la compatibilidad, la influencia y si al usuario le gusta compartir su signo zodiacal
+// @Tags Signos Zodiacales
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationEsSigno true "Relación a crear"
+// @Success 200 {object} responses.StandardResponse "Relación ES_SIGNO creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /signs/relation [post]
+func CreateRelationIsSign(c *gin.Context) {
+	var relation models.RelationEsSigno
+
+	if err := c.ShouldBindJSON(&relation); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El cuerpo de la solicitud no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	_, err := session.Run(
+		c,
+		"MATCH (u:Persona {usuario: $usuario}), (s:SignoZodiacal {Nombre: $signo}) CREATE (u)-[r:ES_SIGNO {compatibilidad: $compatibilidad, influencia: $influencia, compartir: $compartir}]->(s) RETURN r",
+		map[string]interface{}{
+			"usuario":        relation.Usuario,
+			"signo":          relation.Signo,
+			"compatibilidad": relation.Compatibilidad,
+			"influencia":     relation.Influencia,
+			"compartir":      relation.Compartir,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la relación ES_SIGNO",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relación ES_SIGNO creada exitosamente",
+		Data:    nil,
 	})
 }

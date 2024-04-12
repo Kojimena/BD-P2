@@ -37,11 +37,11 @@ Content-Type: application/json
 }
 
 ### Obtener carreras
-GET http://localhost:8080/users/careers
+GET http://localhost:8080/careers
 Accept: application/json
 
 ### Obtener signos
-GET http://localhost:8080/users/signs
+GET http://localhost:8080/signs
 Accept: application/json
 
 ### Obtener equipos
@@ -49,4 +49,17 @@ GET http://localhost:8080/teams
 
 ### Obtener canciones
 GET http://localhost:8080/songs
+
+### Crear relación Persona - ES_Signo -> Signo
+POST http://localhost:8080/signs/is
+Accept: application/json
+Content-Type: application/json
+
+{
+  "signo": "Aries",
+  "usuario": "juanperez",
+  "compatibilidad": 5,
+  "influencia": true,
+  "compartir": true
+}
 
