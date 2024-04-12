@@ -61,3 +61,47 @@ func GetTeams(c *gin.Context) {
 		Teams:   teams,
 	})
 }
+
+func NewTeam(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer session.Close(c)
+
+	var team models.Equipo
+	if err := c.ShouldBindJSON(&team); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El cuerpo de la solicitud no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	// Consulta para crear un nuevo equipo
+	_, err := session.Run(
+		c,
+		"CREATE (t:Equipo {Nombre: $nombre, Deporte: $deporte, País: $pais, División: $division, FechaDeEstablecimiento: date($fechaEstablecimiento)})",
+		map[string]interface{}{
+			"nombre":               team.Nombre,
+			"deporte":              team.Deporte,
+			"pais":                 team.Pais,
+			"division":             team.Division,
+			"fechaEstablecimiento": team.FechaEstablecimiento.Format("2006-01-02"), // Convertir a string
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, responses.StandardResponse{
+		Status:  http.StatusCreated,
+		Message: "Equipo creado exitosamente",
+		Data:    nil,
+	})
+}

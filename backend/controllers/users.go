@@ -27,7 +27,7 @@ func NewStudent(c *gin.Context) {
 	if err := c.ShouldBindJSON(&student); err != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
 			Status:  http.StatusBadRequest,
-			Message: "Error al procesar la solicitud",
+			Message: "El cuerpo de la solicitud no es válido",
 			Error:   err.Error(),
 		})
 		return
@@ -90,7 +90,7 @@ func NewTeacher(c *gin.Context) {
 	if err := c.ShouldBindJSON(&teacher); err != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
 			Status:  http.StatusBadRequest,
-			Message: "Error al procesar la solicitud",
+			Message: "El cuerpo de la solicitud no es válido",
 			Error:   err.Error(),
 		})
 		return

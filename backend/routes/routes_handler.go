@@ -23,11 +23,14 @@ func Routes(router *gin.Engine) {
 	teams := router.Group("/teams")
 	{
 		teams.GET("/", controllers.GetTeams)
+		teams.POST("/", controllers.NewTeam)
 	}
 
 	places := router.Group("/places")
 	{
 		places.GET("/", controllers.GetPlaces)
+		places.POST("/", controllers.NewPlace)
+
 	}
 
 }
