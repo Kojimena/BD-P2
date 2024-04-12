@@ -14,7 +14,6 @@ func Routes(router *gin.Engine) {
 
 	users := router.Group("/users")
 	{
-		users.GET("/", controllers.Users)
 		users.POST("/student", controllers.NewStudent)
 		users.GET("/careers", controllers.GetCareers)
 	}
