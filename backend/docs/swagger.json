@@ -206,6 +206,50 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Crea un nuevo equipo en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Crea un nuevo equipo",
+                "parameters": [
+                    {
+                        "description": "Datos del equipo",
+                        "name": "team",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Equipo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Equipo creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/users/student": {

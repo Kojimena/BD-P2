@@ -82,6 +82,7 @@ func GetTeams(c *gin.Context) {
 // @Success 201 {object} responses.StandardResponse "Equipo creado exitosamente"
 // @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
 // @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /teams/ [post]
 func NewTeam(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 

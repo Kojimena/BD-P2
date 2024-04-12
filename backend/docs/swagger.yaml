@@ -366,6 +366,35 @@ paths:
       summary: Obtiene todos los equipos
       tags:
       - Equipos
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo equipo en la base de datos
+      parameters:
+      - description: Datos del equipo
+        in: body
+        name: team
+        required: true
+        schema:
+          $ref: '#/definitions/models.Equipo'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Equipo creado exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea un nuevo equipo
+      tags:
+      - Equipos
   /users/student:
     post:
       consumes:
