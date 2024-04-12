@@ -33,6 +33,152 @@
                 }
             }
         },
+        "/places/": {
+            "get": {
+                "description": "Obtiene todos los lugares registrados en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lugares"
+                ],
+                "summary": "Obtiene todos los lugares",
+                "responses": {
+                    "200": {
+                        "description": "Lugares obtenidos exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.PlacesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Crea un nuevo lugar en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lugares"
+                ],
+                "summary": "Crea un nuevo lugar",
+                "parameters": [
+                    {
+                        "description": "Datos del lugar a crear",
+                        "name": "place",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Lugar"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Lugar creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/": {
+            "get": {
+                "description": "Obtiene todas las canciones registradas en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Obtiene todas las canciones",
+                "responses": {
+                    "200": {
+                        "description": "Canciones obtenidas exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SongsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Crea una nueva canción en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Crea una nueva canción",
+                "parameters": [
+                    {
+                        "description": "Datos de la canción a crear",
+                        "name": "song",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Cancion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Canción creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/teams/": {
             "get": {
                 "description": "Obtiene todos los equipos registrados en la base de datos",
@@ -173,6 +319,26 @@
         }
     },
     "definitions": {
+        "models.Cancion": {
+            "type": "object",
+            "properties": {
+                "disco": {
+                    "type": "string"
+                },
+                "duracion": {
+                    "type": "number"
+                },
+                "fecha_lanzamiento": {
+                    "type": "string"
+                },
+                "genero": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Carrera": {
             "type": "object",
             "properties": {
@@ -260,6 +426,26 @@
                     }
                 },
                 "usuario": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Lugar": {
+            "type": "object",
+            "properties": {
+                "departamento": {
+                    "type": "string"
+                },
+                "direccion": {
+                    "type": "string"
+                },
+                "foto": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "tipo": {
                     "type": "string"
                 }
             }
@@ -371,6 +557,46 @@
                 },
                 "status": {
                     "description": "Código de error de la respuesta",
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.PlacesResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
+                },
+                "places": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Lugar"
+                    }
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.SongsResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
+                },
+                "songs": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Cancion"
+                    }
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
                     "type": "integer"
                 }
             }

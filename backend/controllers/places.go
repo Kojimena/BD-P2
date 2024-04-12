@@ -4,15 +4,34 @@ import (
 	"backend/configs"
 	"backend/models"
 	"backend/responses"
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"net/http"
 )
 
+// GetPlaces Obtiene todos los lugares
+// @Summary Obtiene todos los lugares
+// @Description Obtiene todos los lugares registrados en la base de datos
+// @Tags Lugares
+// @Accept json
+// @Produce json
+// @Success 200 {object} responses.PlacesResponse "Lugares obtenidos exitosamente"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /places/ [get]
 func GetPlaces(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	// Consulta para obtener todos los lugares
 	r, err := session.Run(
@@ -52,10 +71,30 @@ func GetPlaces(c *gin.Context) {
 	})
 }
 
+// NewPlace Crea un nuevo lugar
+// @Summary Crea un nuevo lugar
+// @Description Crea un nuevo lugar en la base de datos
+// @Tags Lugares
+// @Accept json
+// @Produce json
+// @Param place body models.Lugar true "Datos del lugar a crear"
+// @Success 201 {object} responses.StandardResponse "Lugar creado exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /places/ [post]
 func NewPlace(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	// Bind de la estructura de lugar
 	var place models.Lugar

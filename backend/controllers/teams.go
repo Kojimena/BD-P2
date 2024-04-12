@@ -4,6 +4,7 @@ import (
 	"backend/configs"
 	"backend/models"
 	"backend/responses"
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype"
@@ -22,7 +23,16 @@ import (
 func GetTeams(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	// Consulta para obtener todos los equipos
 	r, err := session.Run(
@@ -62,10 +72,29 @@ func GetTeams(c *gin.Context) {
 	})
 }
 
+// NewTeam Crea un nuevo equipo
+// @Summary Crea un nuevo equipo
+// @Description Crea un nuevo equipo en la base de datos
+// @Tags Equipos
+// @Accept json
+// @Produce json
+// @Param team body models.Equipo true "Datos del equipo"
+// @Success 201 {object} responses.StandardResponse "Equipo creado exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
 func NewTeam(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	var team models.Equipo
 	if err := c.ShouldBindJSON(&team); err != nil {

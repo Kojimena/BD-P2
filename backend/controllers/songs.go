@@ -11,6 +11,15 @@ import (
 	"net/http"
 )
 
+// GetSongs Obtiene todas las canciones
+// @Summary Obtiene todas las canciones
+// @Description Obtiene todas las canciones registradas en la base de datos
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Success 200 {object} responses.SongsResponse "Canciones obtenidas exitosamente"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/ [get]
 func GetSongs(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
@@ -63,6 +72,17 @@ func GetSongs(c *gin.Context) {
 	})
 }
 
+// NewSong Crea una nueva canción
+// @Summary Crea una nueva canción
+// @Description Crea una nueva canción en la base de datos
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param song body models.Cancion true "Datos de la canción a crear"
+// @Success 201 {object} responses.StandardResponse "Canción creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/ [post]
 func NewSong(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 

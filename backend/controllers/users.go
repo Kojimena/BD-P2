@@ -4,6 +4,7 @@ import (
 	"backend/configs"
 	"backend/models"
 	"backend/responses"
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -37,7 +38,16 @@ func NewStudent(c *gin.Context) {
 	// crear nodo Estudiante (con label Estudiante y Persona)
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	r, err := session.Run(
 		c,
@@ -150,7 +160,16 @@ func GetCareers(c *gin.Context) {
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	// get all careers
 	r, err := session.Run(c, "MATCH (c:Carrera) RETURN c", nil)
@@ -201,7 +220,16 @@ func GetZodiacalSigns(c *gin.Context) {
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	// get all zodiacal signs
 	r, err := session.Run(c, "MATCH (z:SignoZodiacal) RETURN z", nil)
