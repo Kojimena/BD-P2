@@ -11,6 +11,15 @@ import (
 )
 
 // NewStudent Registra un nuevo estudiante
+// @Summary Registra un nuevo estudiante
+// @Description Registra un nuevo estudiante en la base de datos
+// @Tags Estudiantes
+// @Accept json
+// @Produce json
+// @Param student body models.Estudiante true "Estudiante a registrar"
+// @Success 200 {object} responses.StandardResponse "Estudiante creado exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /users/student [post]
 func NewStudent(c *gin.Context) {
 	var student models.Estudiante
 
@@ -64,6 +73,16 @@ func NewStudent(c *gin.Context) {
 	})
 }
 
+// NewTeacher Registra un nuevo profesor
+// @Summary Registra un nuevo profesor
+// @Description Registra un nuevo profesor en la base de datos
+// @Tags Profesores
+// @Accept json
+// @Produce json
+// @Param teacher body models.Profesor true "Profesor a registrar"
+// @Success 200 {object} responses.StandardResponse "Profesor creado exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /users/teacher [post]
 func NewTeacher(c *gin.Context) {
 	var teacher models.Profesor
 

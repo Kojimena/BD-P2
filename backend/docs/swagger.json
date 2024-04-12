@@ -4,9 +4,9 @@
         "contact": {}
     },
     "paths": {
-        "/users": {
-            "get": {
-                "description": "Prueba",
+        "/users/student": {
+            "post": {
+                "description": "Registra un nuevo estudiante en la base de datos",
                 "consumes": [
                     "application/json"
                 ],
@@ -14,16 +14,186 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Estudiantes"
                 ],
-                "summary": "Prueba",
-                "responses": {
-                    "200": {
-                        "description": "Service is up and running!",
+                "summary": "Registra un nuevo estudiante",
+                "parameters": [
+                    {
+                        "description": "Estudiante a registrar",
+                        "name": "student",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.Estudiante"
                         }
                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estudiante creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/teacher": {
+            "post": {
+                "description": "Registra un nuevo profesor en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profesores"
+                ],
+                "summary": "Registra un nuevo profesor",
+                "parameters": [
+                    {
+                        "description": "Profesor a registrar",
+                        "name": "teacher",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Profesor"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profesor creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Estudiante": {
+            "type": "object",
+            "properties": {
+                "apellido": {
+                    "type": "string"
+                },
+                "carnet": {
+                    "type": "string"
+                },
+                "colegio": {
+                    "type": "string"
+                },
+                "correo": {
+                    "type": "string"
+                },
+                "fecha_nacimiento": {
+                    "type": "string"
+                },
+                "foraneo": {
+                    "type": "boolean"
+                },
+                "genero": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "parqueo": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Profesor": {
+            "type": "object",
+            "properties": {
+                "apellido": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "correo": {
+                    "type": "string"
+                },
+                "departamento": {
+                    "type": "string"
+                },
+                "fecha_nacimiento": {
+                    "type": "string"
+                },
+                "genero": {
+                    "type": "string"
+                },
+                "jornada": {
+                    "type": "string"
+                },
+                "maestria": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Detalles específicos del error",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "Mensaje de error de la respuesta",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Código de error de la respuesta",
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.StandardResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
                 }
             }
         }

@@ -1,19 +1,132 @@
+definitions:
+  models.Estudiante:
+    properties:
+      apellido:
+        type: string
+      carnet:
+        type: string
+      colegio:
+        type: string
+      correo:
+        type: string
+      fecha_nacimiento:
+        type: string
+      foraneo:
+        type: boolean
+      genero:
+        type: string
+      nombre:
+        type: string
+      parqueo:
+        type: boolean
+      password:
+        type: string
+      usuario:
+        type: string
+    type: object
+  models.Profesor:
+    properties:
+      apellido:
+        type: string
+      code:
+        type: string
+      correo:
+        type: string
+      departamento:
+        type: string
+      fecha_nacimiento:
+        type: string
+      genero:
+        type: string
+      jornada:
+        type: string
+      maestria:
+        type: string
+      nombre:
+        type: string
+      password:
+        type: string
+      usuario:
+        type: string
+    type: object
+  responses.ErrorResponse:
+    properties:
+      error:
+        description: Detalles específicos del error
+        type: string
+      message:
+        description: Mensaje de error de la respuesta
+        type: string
+      status:
+        description: Código de error de la respuesta
+        type: integer
+    type: object
+  responses.StandardResponse:
+    properties:
+      data:
+        additionalProperties: true
+        description: Datos adicionales de la respuesta
+        type: object
+      message:
+        description: Mensaje de la respuesta
+        type: string
+      status:
+        description: Código de estado de la respuesta
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
-  /users:
-    get:
+  /users/student:
+    post:
       consumes:
       - application/json
-      description: Prueba
+      description: Registra un nuevo estudiante en la base de datos
+      parameters:
+      - description: Estudiante a registrar
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.Estudiante'
       produces:
       - application/json
       responses:
         "200":
-          description: Service is up and running!
+          description: Estudiante creado exitosamente
           schema:
-            type: string
-      summary: Prueba
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Registra un nuevo estudiante
       tags:
-      - Users
+      - Estudiantes
+  /users/teacher:
+    post:
+      consumes:
+      - application/json
+      description: Registra un nuevo profesor en la base de datos
+      parameters:
+      - description: Profesor a registrar
+        in: body
+        name: teacher
+        required: true
+        schema:
+          $ref: '#/definitions/models.Profesor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profesor creado exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Registra un nuevo profesor
+      tags:
+      - Profesores
 swagger: "2.0"
