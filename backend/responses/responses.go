@@ -39,3 +39,9 @@ type TeamsResponse struct {
 	Message string          `json:"message"` // Mensaje de la respuesta
 	Teams   []models.Equipo `json:"teams"`   // Datos adicionales de la respuesta
 }
+
+type PlacesResponse struct {
+	Status  int            `json:"status"`  // Código de estado de la respuesta
+	Message string         `json:"message"` // Mensaje de la respuesta
+	Places  []models.Lugar `json:"places"`  // Datos adicionales de la respuesta
+}

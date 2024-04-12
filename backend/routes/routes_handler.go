@@ -25,4 +25,9 @@ func Routes(router *gin.Engine) {
 		teams.GET("/", controllers.GetTeams)
 	}
 
+	places := router.Group("/places")
+	{
+		places.GET("/", controllers.GetPlaces)
+	}
+
 }
