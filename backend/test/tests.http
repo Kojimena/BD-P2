@@ -1,7 +1,4 @@
-GET http://localhost:8080/users/careers
-Accept: application/json
-
-###
+### Crear estudiante
 POST http://localhost:8080/users/student
 Accept: application/json
 Content-Type: application/json
@@ -20,5 +17,6 @@ Content-Type: application/json
   "colegio": "Colegio de San Francisco"
 }
 
-###
-
+### Obtener carreras
+GET http://localhost:8080/users/careers
+Accept: application/json
