@@ -237,6 +237,11 @@ Content-Type: application/json
   "contenido": "Hola, soy Juan Perez 2"
 }
 
+### Clear posts
+DELETE http://localhost:8080/users/clear/juanperez
+Accept: application/json
+
+
 ### Admin tag users
 POST http://localhost:8080/admin/tag
 Accept: application/json
