@@ -44,5 +44,8 @@ func main() {
 
 	router.GET("/documentation/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	router.Run("localhost:8000")
+	err := router.Run()
+	if err != nil {
+		panic(err)
+	}
 }
