@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/admin/tag": {
             "post": {
-                "description": "Etiquetar usuarios con una propiedad",
+                "description": "Etiquetar multiples usuarios con una propiedad",
                 "consumes": [
                     "application/json"
                 ],
@@ -1077,15 +1077,18 @@ const docTemplate = `{
             ],
             "properties": {
                 "tag": {
+                    "description": "Propiedad a crear",
                     "type": "string"
                 },
                 "users": {
+                    "description": "Usuarios a etiquetar",
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
                 "value": {
+                    "description": "Valor de la propiedad",
                     "type": "boolean"
                 }
             }

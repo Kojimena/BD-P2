@@ -243,6 +243,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "users": ["juanperez"],
-  "tag": "Amigo"
+  "users": ["koji", "juanperez"],
+  "tag": "Premium",
+  "value": true
 }

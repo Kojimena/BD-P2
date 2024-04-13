@@ -22,12 +22,15 @@ definitions:
   controllers.TagUsersInput:
     properties:
       tag:
+        description: Propiedad a crear
         type: string
       users:
+        description: Usuarios a etiquetar
         items:
           type: string
         type: array
       value:
+        description: Valor de la propiedad
         type: boolean
     required:
     - tag
@@ -623,7 +626,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Etiquetar usuarios con una propiedad
+      description: Etiquetar multiples usuarios con una propiedad
       parameters:
       - description: Usuarios y etiqueta
         in: body
