@@ -1,4 +1,14 @@
 definitions:
+  controllers.DeleteUsersInput:
+    properties:
+      users:
+        description: Usuarios a eliminar
+        items:
+          type: string
+        type: array
+    required:
+    - users
+    type: object
   controllers.NewPublicationInput:
     properties:
       contenido:
@@ -745,6 +755,36 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Obtiene todos los usuarios
+      tags:
+      - Admin
+  /admin/users/delete:
+    post:
+      consumes:
+      - application/json
+      description: Elimina multiples usuarios de la base de datos
+      parameters:
+      - description: Usuarios a eliminar
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.DeleteUsersInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuarios eliminados correctamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "404":
+          description: Usuario no encontrado
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Elimina usuarios
       tags:
       - Admin
   /careers:

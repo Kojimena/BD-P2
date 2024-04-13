@@ -100,6 +100,95 @@ func GetAllUsers(c *gin.Context) {
 	})
 }
 
+type DeleteUsersInput struct {
+	Users []string `json:"users" binding:"required"` // Usuarios a eliminar
+}
+
+// DeleteUsers elimina usuarios de la base de datos
+// @Summary Elimina usuarios
+// @Description Elimina multiples usuarios de la base de datos
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param input body DeleteUsersInput true "Usuarios a eliminar"
+// @Success 200 {object} responses.StandardResponse "Usuarios eliminados correctamente"
+// @Failure 404 {object} responses.ErrorResponse "Usuario no encontrado"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /admin/users/delete [post]
+func DeleteUsers(c *gin.Context) {
+	var input DeleteUsersInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	for _, user := range input.Users {
+		r, err := session.Run(
+			c,
+			"MATCH (p: Persona {Usuario: $user}) RETURN p",
+			map[string]interface{}{
+				"user": user,
+			},
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Message: "Error al buscar el usuario",
+				Error:   err.Error(),
+			})
+		}
+
+		for r.Next(c) {
+			var persona models.Persona
+			vals := r.Record().Values[0].(neo4j.Node).Props
+			persona = models.Persona{
+				Usuario: vals["Usuario"].(string),
+			}
+
+			if persona.Usuario == "" {
+				c.JSON(http.StatusNotFound, responses.ErrorResponse{
+					Status:  http.StatusNotFound,
+					Message: "Usuario no encontrado",
+					Error:   fmt.Sprintf("Usuario %s no encontrado", user),
+				})
+				return
+			}
+
+			_, err = session.Run(
+				c,
+				"MATCH (p: Persona {Usuario: $user}) DETACH DELETE p",
+				map[string]interface{}{
+					"user": user,
+				})
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+					Status:  http.StatusInternalServerError,
+					Message: "Error al eliminar el usuario",
+					Error:   err.Error(),
+				})
+				return
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Usuarios eliminados correctamente",
+		Data:    nil,
+	})
+}
+
 type TagUsersInput struct {
 	Users []string `json:"users" binding:"required"` // Usuarios a etiquetar
 	Tag   string   `json:"tag" binding:"required"`   // Propiedad a crear

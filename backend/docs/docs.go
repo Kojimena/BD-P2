@@ -120,6 +120,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/users/delete": {
+            "post": {
+                "description": "Elimina multiples usuarios de la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Elimina usuarios",
+                "parameters": [
+                    {
+                        "description": "Usuarios a eliminar",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.DeleteUsersInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuarios eliminados correctamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/careers": {
             "get": {
                 "description": "Obtiene todas las carreras de la base de datos",
@@ -1109,6 +1155,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.DeleteUsersInput": {
+            "type": "object",
+            "required": [
+                "users"
+            ],
+            "properties": {
+                "users": {
+                    "description": "Usuarios a eliminar",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "controllers.NewPublicationInput": {
             "type": "object",
             "required": [

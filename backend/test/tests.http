@@ -261,3 +261,12 @@ Content-Type: application/json
 ### Admin Get all users
 GET http://localhost:8080/admin/users?filter=Premium
 Accept: application/json
+
+### Admin Delete multiple users
+POST http://localhost:8080/admin/users/delete
+Accept: application/json
+Content-Type: application/json
+
+{
+    "users": ["davidperez"]
+}
