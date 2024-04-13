@@ -323,3 +323,68 @@ func CreateRelationDislikesSong(c *gin.Context) {
 		Data:    nil,
 	})
 }
+
+type SetSongRemembersInput struct {
+	Usuario    string `json:"usuario" binding:"required"`
+	Cancion    string `json:"cancion" binding:"required"`
+	MeRecuerda string `json:"me_recuerda_a" binding:"required"`
+}
+
+// SetSongNewProperty Establece una nueva propiedad a una relación de una persona con una canción
+// @Summary Establece una nueva propiedad a una relación de una persona con una canción
+// @Description Establece o actualiza una nueva propiedad a una relación de (Persona)-[ES_FAVORITA]->(Cancion). La propiedad es "MeRecuerda"
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param input body SetSongRemembersInput true "Datos de la relación a modificar"
+// @Success 200 {object} responses.StandardResponse "Propiedad modificada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/remembers [put]
+func SetSongNewProperty(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var input SetSongRemembersInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	_, err := session.Run(c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r:ES_FAVORITA]->(s:Cancion {Nombre: $cancion}) SET r.MeRecuerda = $me_recuerda_a RETURN r",
+		map[string]interface{}{
+			"cancion":       input.Cancion,
+			"usuario":       input.Usuario,
+			"me_recuerda_a": input.MeRecuerda,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Propiedad modificada exitosamente",
+		Data:    nil,
+	})
+}

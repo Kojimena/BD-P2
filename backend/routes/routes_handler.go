@@ -68,6 +68,7 @@ func Routes(router *gin.Engine) {
 		songs.POST("/likes", controllers.CreateRelationLikesSong)
 		songs.POST("/dislikes", controllers.CreateRelationDislikesSong)
 		songs.POST("/favorite", controllers.CreateRelationFavoriteSong)
+		songs.PUT("/remembers", controllers.SetSongNewProperty)
 	}
 
 }

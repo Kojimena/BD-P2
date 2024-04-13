@@ -709,6 +709,52 @@
                 }
             }
         },
+        "/songs/remembers": {
+            "put": {
+                "description": "Establece o actualiza una nueva propiedad a una relación de (Persona)-[ES_FAVORITA]-\u003e(Cancion). La propiedad es \"MeRecuerda\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Establece una nueva propiedad a una relación de una persona con una canción",
+                "parameters": [
+                    {
+                        "description": "Datos de la relación a modificar",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SetSongRemembersInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Propiedad modificada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/teams/": {
             "get": {
                 "description": "Obtiene todos los equipos registrados en la base de datos",
@@ -1229,6 +1275,25 @@
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "controllers.SetSongRemembersInput": {
+            "type": "object",
+            "required": [
+                "cancion",
+                "me_recuerda_a",
+                "usuario"
+            ],
+            "properties": {
+                "cancion": {
+                    "type": "string"
+                },
+                "me_recuerda_a": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
                 }
             }
         },

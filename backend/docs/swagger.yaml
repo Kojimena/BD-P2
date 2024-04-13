@@ -33,6 +33,19 @@ definitions:
     - tag
     - users
     type: object
+  controllers.SetSongRemembersInput:
+    properties:
+      cancion:
+        type: string
+      me_recuerda_a:
+        type: string
+      usuario:
+        type: string
+    required:
+    - cancion
+    - me_recuerda_a
+    - usuario
+    type: object
   controllers.SignInDetails:
     properties:
       password:
@@ -1149,6 +1162,38 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Crea una relación de una persona con una canción que le gusta
+      tags:
+      - Canciones
+  /songs/remembers:
+    put:
+      consumes:
+      - application/json
+      description: Establece o actualiza una nueva propiedad a una relación de (Persona)-[ES_FAVORITA]->(Cancion).
+        La propiedad es "MeRecuerda"
+      parameters:
+      - description: Datos de la relación a modificar
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.SetSongRemembersInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Propiedad modificada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Establece una nueva propiedad a una relación de una persona con una
+        canción
       tags:
       - Canciones
   /teams/:

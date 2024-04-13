@@ -241,6 +241,17 @@ Content-Type: application/json
 DELETE http://localhost:8080/users/clear/juanperez
 Accept: application/json
 
+### Añadir 'me recuerda a' a canción favorita
+PUT http://localhost:8080/songs/remembers
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "cancion": "Bohemian Rhapsody",
+  "me_recuerda_a": "Mi infancia"
+}
+
 
 ### Admin tag users
 POST http://localhost:8080/admin/tag
@@ -275,3 +286,4 @@ Content-Type: application/json
 {
     "users": ["davidperez"]
 }
+
