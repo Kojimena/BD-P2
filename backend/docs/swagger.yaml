@@ -121,6 +121,20 @@ definitions:
       usuario:
         type: string
     type: object
+  models.RelationApoyaEquipo:
+    properties:
+      equipo:
+        type: string
+      fecha:
+        description: 'Formato: "YYYY-MM-DD"'
+        type: string
+      mira_partidos:
+        type: boolean
+      por_que:
+        type: string
+      usuario:
+        type: string
+    type: object
   models.RelationEsSigno:
     properties:
       compartir:
@@ -247,6 +261,20 @@ definitions:
         type: string
       usuario:
         description: Usuario Nombre de usuario
+        type: string
+    type: object
+  models.RelationRechazaEquipo:
+    properties:
+      equipo:
+        type: string
+      fecha:
+        description: 'Formato: "YYYY-MM-DD"'
+        type: string
+      mira_partidos:
+        type: boolean
+      por_que:
+        type: string
+      usuario:
         type: string
     type: object
   models.RelationVisitaLugar:
@@ -790,6 +818,68 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Crea un nuevo equipo
+      tags:
+      - Equipos
+  /teams/dislikes:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de de (Persona)-[:RECHAZA]->(Equipo) en la base
+        de datos
+      parameters:
+      - description: Datos de la relación
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationRechazaEquipo'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Relación de rechazo creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de rechazo entre una persona y un equipo
+      tags:
+      - Equipos
+  /teams/supports:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de de (Persona)-[:APOYA]->(Equipo) en la base
+        de datos
+      parameters:
+      - description: Datos de la relación
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationApoyaEquipo'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Relación de apoyo creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de apoyo entre una persona y un equipo
       tags:
       - Equipos
   /users/student:

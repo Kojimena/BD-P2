@@ -35,6 +35,8 @@ func Routes(router *gin.Engine) {
 	{
 		teams.GET("/", controllers.GetTeams)
 		teams.POST("/", controllers.NewTeam)
+		teams.POST("/likes", controllers.CreateRelationSupportsTeam)
+		teams.POST("/dislikes", controllers.CreateRelationDislikesTeam)
 	}
 
 	places := router.Group("/places")

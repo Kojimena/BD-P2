@@ -642,6 +642,98 @@ const docTemplate = `{
                 }
             }
         },
+        "/teams/dislikes": {
+            "post": {
+                "description": "Crea una relación de de (Persona)-[:RECHAZA]-\u003e(Equipo) en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Crea una relación de rechazo entre una persona y un equipo",
+                "parameters": [
+                    {
+                        "description": "Datos de la relación",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationRechazaEquipo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Relación de rechazo creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/supports": {
+            "post": {
+                "description": "Crea una relación de de (Persona)-[:APOYA]-\u003e(Equipo) en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Equipos"
+                ],
+                "summary": "Crea una relación de apoyo entre una persona y un equipo",
+                "parameters": [
+                    {
+                        "description": "Datos de la relación",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationApoyaEquipo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Relación de apoyo creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/student": {
             "post": {
                 "description": "Registra un nuevo estudiante en la base de datos",
@@ -908,6 +1000,27 @@ const docTemplate = `{
                 }
             }
         },
+        "models.RelationApoyaEquipo": {
+            "type": "object",
+            "properties": {
+                "equipo": {
+                    "type": "string"
+                },
+                "fecha": {
+                    "description": "Formato: \"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "mira_partidos": {
+                    "type": "boolean"
+                },
+                "por_que": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
         "models.RelationEsSigno": {
             "type": "object",
             "properties": {
@@ -1082,6 +1195,27 @@ const docTemplate = `{
                 },
                 "usuario": {
                     "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                }
+            }
+        },
+        "models.RelationRechazaEquipo": {
+            "type": "object",
+            "properties": {
+                "equipo": {
+                    "type": "string"
+                },
+                "fecha": {
+                    "description": "Formato: \"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "mira_partidos": {
+                    "type": "boolean"
+                },
+                "por_que": {
+                    "type": "string"
+                },
+                "usuario": {
                     "type": "string"
                 }
             }

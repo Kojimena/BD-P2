@@ -9,6 +9,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype"
 	"net/http"
+	"time"
 )
 
 // GetTeams Obtiene todos los equipos
@@ -132,6 +133,156 @@ func NewTeam(c *gin.Context) {
 	c.JSON(http.StatusCreated, responses.StandardResponse{
 		Status:  http.StatusCreated,
 		Message: "Equipo creado exitosamente",
+		Data:    nil,
+	})
+}
+
+// CreateRelationSupportsTeam Crea una relación de apoyo entre una persona y un equipo
+// @Summary Crea una relación de apoyo entre una persona y un equipo
+// @Description Crea una relación de de (Persona)-[:APOYA]->(Equipo) en la base de datos
+// @Tags Equipos
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationApoyaEquipo true "Datos de la relación"
+// @Success 201 {object} responses.StandardResponse "Relación de apoyo creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /teams/supports [post]
+func CreateRelationSupportsTeam(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var relation models.RelationApoyaEquipo
+	if err := c.ShouldBindJSON(&relation); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El cuerpo de la solicitud no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	f, err := time.Parse(time.DateOnly, relation.Fecha)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El formato de la fecha no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	// Consulta para crear una relación de apoyo entre una persona y un equipo
+	_, err = session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}), (t:Equipo {Nombre: $equipo}) CREATE (p)-[:APOYA {DesdeCuando: date($fecha), PorQue: $porQue, MiraPartidos: $miraPartidos}]->(t)",
+		map[string]interface{}{
+			"usuario":      relation.Usuario,
+			"equipo":       relation.Equipo,
+			"fecha":        f,
+			"porQue":       relation.PorQue,
+			"miraPartidos": relation.MiraPartidos,
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, responses.StandardResponse{
+		Status:  http.StatusCreated,
+		Message: "Relación de apoyo creada exitosamente",
+		Data:    nil,
+	})
+}
+
+// CreateRelationDislikesTeam Crea una relación de rechazo entre una persona y un equipo
+// @Summary Crea una relación de rechazo entre una persona y un equipo
+// @Description Crea una relación de de (Persona)-[:RECHAZA]->(Equipo) en la base de datos
+// @Tags Equipos
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationRechazaEquipo true "Datos de la relación"
+// @Success 201 {object} responses.StandardResponse "Relación de rechazo creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /teams/dislikes [post]
+func CreateRelationDislikesTeam(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var relation models.RelationRechazaEquipo
+	if err := c.ShouldBindJSON(&relation); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El cuerpo de la solicitud no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	f, err := time.Parse(time.DateOnly, relation.Fecha)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El formato de la fecha no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	// Consulta para crear una relación de rechazo entre una persona y un equipo
+	_, err = session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}), (t:Equipo {Nombre: $equipo}) CREATE (p)-[:RECHAZA {DesdeCuando: date($fecha), PorQue: $porQue, MiraPartidos: $miraPartidos}]->(t)",
+		map[string]interface{}{
+			"usuario":      relation.Usuario,
+			"equipo":       relation.Equipo,
+			"fecha":        f,
+			"porQue":       relation.PorQue,
+			"miraPartidos": relation.MiraPartidos,
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, responses.StandardResponse{
+		Status:  http.StatusCreated,
+		Message: "Relación de rechazo creada exitosamente",
 		Data:    nil,
 	})
 }

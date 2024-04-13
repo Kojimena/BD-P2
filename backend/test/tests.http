@@ -142,3 +142,29 @@ Content-Type: application/json
   "cambiar": false,
   "intensidad": 4
 }
+
+### Crear relación Persona - APOYA - Equipo
+POST http://localhost:8080/teams/likes
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "equipo": "Los Angeles Lakers",
+  "fecha": "2021-03-03",
+  "por_que": "Porque es el mejor equipo del mundo",
+  "mira_partidos": true
+}
+
+### Crear relación Persona - NO_APOYA - Equipo
+POST http://localhost:8080/teams/dislikes
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "equipo": "Real Madrid",
+  "fecha": "2021-03-03",
+  "por_que": "Porque es el peor equipo del mundo",
+  "mira_partidos": false
+}
