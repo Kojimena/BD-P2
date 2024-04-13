@@ -207,6 +207,15 @@ func GetUserDetails(c *gin.Context) {
 		vals = r.Record().Values[0].(neo4j.Node).Props
 	}
 
+	if vals == nil {
+		c.JSON(http.StatusNotFound, responses.ErrorResponse{
+			Status:  http.StatusNotFound,
+			Message: "El usuario no existe",
+			Error:   "El usuario no existe",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, responses.StandardResponse{
 		Status:  http.StatusOK,
 		Message: "Datos del usuario obtenidos exitosamente",
