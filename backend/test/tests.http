@@ -252,6 +252,15 @@ Content-Type: application/json
   "me_recuerda_a": "Mi infancia"
 }
 
+### eliminar 'me recuerda a' a canción favorita
+POST http://localhost:8080/songs/remembers/remove
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "cancion": "Bohemian Rhapsody"
+}
 
 ### Admin tag users
 POST http://localhost:8080/admin/tag

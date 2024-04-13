@@ -388,3 +388,66 @@ func SetSongNewProperty(c *gin.Context) {
 		Data:    nil,
 	})
 }
+
+type DeleteSongRememberPropertyInput struct {
+	Usuario string `json:"usuario" binding:"required"`
+	Cancion string `json:"cancion" binding:"required"`
+}
+
+// DeleteSongRememberProperty Elimina una propiedad de una relación de una persona con una canción
+// @Summary Elimina una propiedad de una relación de una persona con una canción
+// @Description Elimina una propiedad de una relación de (Persona)-[ES_FAVORITA]->(Cancion). La propiedad es "MeRecuerda"
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param input body DeleteSongRememberPropertyInput true "Datos de la relación a modificar"
+// @Success 200 {object} responses.StandardResponse "Propiedad eliminada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/remembers/remove [post]
+func DeleteSongRememberProperty(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var input DeleteSongRememberPropertyInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	_, err := session.Run(c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r:ES_FAVORITA]->(s:Cancion {Nombre: $cancion}) REMOVE r.MeRecuerda RETURN r",
+		map[string]interface{}{
+			"cancion": input.Cancion,
+			"usuario": input.Usuario,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Propiedad eliminada exitosamente",
+		Data:    nil,
+	})
+}
