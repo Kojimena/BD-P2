@@ -54,6 +54,7 @@ definitions:
       correo:
         type: string
       fecha_nacimiento:
+        description: 'Formato: YYYY-MM-DD'
         type: string
       foraneo:
         type: boolean
@@ -101,6 +102,7 @@ definitions:
       departamento:
         type: string
       fecha_nacimiento:
+        description: 'Formato: YYYY-MM-DD'
         type: string
       genero:
         type: string
@@ -171,6 +173,24 @@ definitions:
       recomendado:
         description: Recomendado si al usuario le recomendaron la carrera
         type: boolean
+      usuario:
+        description: Usuario Nombre de usuario
+        type: string
+    type: object
+  models.RelationVisitaLugar:
+    properties:
+      categoria:
+        description: Categoria Categoria del lugar
+        type: string
+      cuando:
+        description: Cuando Fecha en la que el usuario visitó el lugar
+        type: string
+      lugar:
+        description: Lugar Nombre del lugar
+        type: string
+      rating:
+        description: Rating Calificación del lugar por el usuario
+        type: integer
       usuario:
         description: Usuario Nombre de usuario
         type: string
@@ -405,6 +425,36 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Crea un nuevo lugar
+      tags:
+      - Lugares
+  /places/visited:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de (Persona)-[VISITA]->(Lugar)
+      parameters:
+      - description: Relación de visita de un lugar
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationVisitaLugar'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de visita de un usuario a un lugar
       tags:
       - Lugares
   /signs:

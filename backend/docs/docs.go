@@ -197,6 +197,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/places/visited": {
+            "post": {
+                "description": "Crea una relación de (Persona)-[VISITA]-\u003e(Lugar)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lugares"
+                ],
+                "summary": "Crea una relación de visita de un usuario a un lugar",
+                "parameters": [
+                    {
+                        "description": "Relación de visita de un lugar",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationVisitaLugar"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/signs": {
             "get": {
                 "description": "Obtiene todos los signos zodiacales de la base de datos",
@@ -577,6 +623,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "fecha_nacimiento": {
+                    "description": "Formato: YYYY-MM-DD",
                     "type": "string"
                 },
                 "foraneo": {
@@ -648,6 +695,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "fecha_nacimiento": {
+                    "description": "Formato: YYYY-MM-DD",
                     "type": "string"
                 },
                 "genero": {
@@ -747,6 +795,31 @@ const docTemplate = `{
                 "recomendado": {
                     "description": "Recomendado si al usuario le recomendaron la carrera",
                     "type": "boolean"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                }
+            }
+        },
+        "models.RelationVisitaLugar": {
+            "type": "object",
+            "properties": {
+                "categoria": {
+                    "description": "Categoria Categoria del lugar",
+                    "type": "string"
+                },
+                "cuando": {
+                    "description": "Cuando Fecha en la que el usuario visitó el lugar",
+                    "type": "string"
+                },
+                "lugar": {
+                    "description": "Lugar Nombre del lugar",
+                    "type": "string"
+                },
+                "rating": {
+                    "description": "Rating Calificación del lugar por el usuario",
+                    "type": "integer"
                 },
                 "usuario": {
                     "description": "Usuario Nombre de usuario",

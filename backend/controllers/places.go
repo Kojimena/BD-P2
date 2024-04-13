@@ -137,6 +137,17 @@ func NewPlace(c *gin.Context) {
 	})
 }
 
+// CreateRelationVisited Crea una relación de visita de un usuario a un lugar
+// @Summary Crea una relación de visita de un usuario a un lugar
+// @Description Crea una relación de (Persona)-[VISITA]->(Lugar)
+// @Tags Lugares
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationVisitaLugar true "Relación de visita de un lugar"
+// @Success 200 {object} responses.StandardResponse "Relación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /places/visited [post]
 func CreateRelationVisited(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
