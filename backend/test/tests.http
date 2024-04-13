@@ -75,3 +75,18 @@ Content-Type: application/json
   "activo": true,
   "year": 1
 }
+
+### Crear relación Persona - INTERESA - Carrera
+POST http://localhost:8000/careers/interests
+Accept: application/json
+Content-Type: application/json
+
+{
+  "carrera": "Ciencias de la computación y tecnologías de la información",
+  "usuario": "juanperez",
+  "interes": [
+    "Desarrollo de software"
+  ],
+  "recomendado": true,
+  "estudiara": true
+}

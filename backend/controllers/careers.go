@@ -121,3 +121,53 @@ func CreateRelationStudiesCareer(c *gin.Context) {
 		Data:    nil,
 	})
 }
+
+func CreateRelationInterestsCareer(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var relation models.RelationLeInteresaCarrera
+	err := c.BindJSON(&relation)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	// create relation
+	_, err = session.Run(c, "MATCH (p:Persona {Usuario: $usuario}), (c:Carrera {Nombre: $carrera}) CREATE (p)-[r:LE_INTERESA {Intereses: $intereses, Recomendado: $recomendado, Estudiara: $estudiara}]->(c) RETURN r", map[string]interface{}{
+		"usuario":     relation.Usuario,
+		"carrera":     relation.Carrera,
+		"intereses":   relation.Intereses,
+		"recomendado": relation.Recomendado,
+		"estudiara":   relation.Estudiara,
+	})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la relación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relación creada exitosamente",
+		Data:    nil,
+	})
+}

@@ -22,6 +22,7 @@ func Routes(router *gin.Engine) {
 	{
 		careers.GET("/", controllers.GetCareers)
 		careers.POST("/studies", controllers.CreateRelationStudiesCareer)
+		careers.POST("/interests", controllers.CreateRelationInterestsCareer)
 	}
 
 	signs := router.Group("/signs")
