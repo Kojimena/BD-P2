@@ -12,9 +12,29 @@ Content-Type: application/json
   "password": "123456",
   "carnet": "21654",
   "correo": "jperz@gmail.com",
-  "parqueo": false,
-  "foranteo": false,
-  "colegio": "Colegio de San Francisco"
+  "colegio": "Colegio de San Francisco",
+  "foraneo": false,
+  "parqueo": false
+}
+
+
+### Crear estudiante
+POST http://localhost:8080/users/student
+Accept: application/json
+Content-Type: application/json
+
+{
+"nombre": "Jimena",
+"apellido": "Henández",
+"fecha_nacimiento": "2004-01-10",
+"genero": "Femenino",
+"usuario": "koji",
+"password": "nutella21",
+"carnet": "21199",
+"correo": "her21199@uvg.edu.gt",
+"parqueo": true,
+"foraneo": true,
+"colegio": "Boston"
 }
 
 ### Crear profesor
@@ -42,19 +62,19 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "nombre": "David",
+  "nombre": "Javier",
   "apellido": "Perez",
   "fecha_nacimiento": "1990-01-01",
   "genero": "M",
-  "usuario": "davidperez",
+  "usuario": "javierperez",
   "password": "123456",
   "carnet": "21654",
-  "correo": "dperz@gmail.com",
+  "correo": "jperz@gmail.com",
   "parqueo": false,
-  "foranteo": false,
+  "foraneo": true,
   "colegio": "Colegio de San Francisco",
   "code": "19562",
-  "correo_profesor": "dper@uvg.edu.gt",
+  "correo_profesor": "jper@uvg.edu.gt",
   "departamento": "Departamento de Matematicas",
   "maestria": "Matematicas",
   "jornada": "Matutina"
@@ -205,4 +225,53 @@ Content-Type: application/json
 {
   "usuario": "juanperez",
   "password": "123456"
+}
+
+### Añadir publicación
+POST http://localhost:8080/users/post
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "contenido": "Hola, soy Juan Perez 2"
+}
+
+### Clear posts
+DELETE http://localhost:8080/users/clear/juanperez
+Accept: application/json
+
+
+### Admin tag users
+POST http://localhost:8080/admin/tag
+Accept: application/json
+Content-Type: application/json
+
+{
+  "users": ["koji", "juanperez"],
+  "tag": "Premium",
+  "value": true
+}
+
+### Admin remove tag from user
+POST http://localhost:8080/admin/tag/remove
+Accept: application/json
+Content-Type: application/json
+
+{
+    "users": ["koji"],
+    "tag": "Premium"
+}
+
+### Admin Get all users
+GET http://localhost:8080/admin/users?filter=Premium
+Accept: application/json
+
+### Admin Delete multiple users
+POST http://localhost:8080/admin/users/delete
+Accept: application/json
+Content-Type: application/json
+
+{
+    "users": ["davidperez"]
 }

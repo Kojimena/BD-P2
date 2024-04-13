@@ -272,12 +272,12 @@ func GetUserDetails(c *gin.Context) {
 		return
 	}
 
-	var vals map[string]interface{}
+	var properties map[string]interface{}
 	for r.Next(c) {
-		vals = r.Record().Values[0].(neo4j.Node).Props
+		properties = r.Record().Values[0].(neo4j.Node).Props
 	}
 
-	if vals == nil {
+	if properties == nil {
 		c.JSON(http.StatusNotFound, responses.ErrorResponse{
 			Status:  http.StatusNotFound,
 			Message: "El usuario no existe",
@@ -286,10 +286,40 @@ func GetUserDetails(c *gin.Context) {
 		return
 	}
 
+	r, err = session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r:ES_FAVORITA]-(m) return m,r",
+		map[string]interface{}{
+			"usuario": user,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al obtener los datos del usuario",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	var relations []map[string]interface{}
+	for r.Next(c) {
+		nodeTo := r.Record().Values[0].(neo4j.Node)
+		rel := r.Record().Values[1].(neo4j.Relationship)
+
+		relations = append(relations, map[string]interface{}{
+			nodeTo.Labels[0]: nodeTo.Props,
+			rel.Type:         rel.Props,
+		})
+	}
+
 	c.JSON(http.StatusOK, responses.StandardResponse{
 		Status:  http.StatusOK,
 		Message: "Datos del usuario obtenidos exitosamente",
-		Data:    vals,
+		Data: map[string]interface{}{
+			"properties": properties,
+			"relations":  relations,
+		},
 	})
 }
 
@@ -365,5 +395,151 @@ func Login(c *gin.Context) {
 		Data: map[string]interface{}{
 			"labels": labels,
 		},
+	})
+}
+
+type NewPublicationInput struct {
+	Usuario   string `json:"usuario" binding:"required"`
+	Contenido string `json:"contenido" binding:"required"`
+}
+
+// NewPublication Crea una nueva publicación
+// @Summary Crea una nueva publicación
+// @Description Crea una nueva publicación para un usuario. Si el usuario no tiene publicaciones, se crea la propiedad Publicaciones, de lo contrario, se actualiza la propiedad Publicaciones
+// @Tags Publicaciones
+// @Accept json
+// @Produce json
+// @Param publication body NewPublicationInput true "Publicación a crear"
+// @Success 200 {object} responses.StandardResponse "Publicación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 404 {object} responses.ErrorResponse "El usuario no existe"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /users/post [post]
+func NewPublication(c *gin.Context) {
+	var np NewPublicationInput
+
+	if err := c.ShouldBindJSON(&np); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El cuerpo de la solicitud no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer session.Close(c)
+
+	var usuario models.Persona
+	var hasPublications = false
+
+	r, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}) RETURN p",
+		map[string]interface{}{
+			"usuario": np.Usuario,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al obtener los datos del usuario",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	for r.Next(c) {
+		vals := r.Record().Values[0].(neo4j.Node).Props
+
+		usuario = models.Persona{
+			Usuario: vals["Usuario"].(string),
+		}
+
+		if vals["Publicaciones"] != nil {
+			hasPublications = true
+		}
+	}
+
+	if usuario.Usuario == "" {
+		c.JSON(http.StatusNotFound, responses.ErrorResponse{
+			Status:  http.StatusNotFound,
+			Message: "El usuario no existe",
+			Error:   "El usuario no existe",
+		})
+		return
+	}
+
+	if !hasPublications {
+		_, err = session.Run(
+			c,
+			"MATCH (p:Persona {Usuario: $usuario}) SET p.Publicaciones = [$contenido]",
+			map[string]interface{}{
+				"usuario":   np.Usuario,
+				"contenido": np.Contenido,
+			})
+	} else {
+		_, err = session.Run(
+			c,
+			"MATCH (p:Persona {Usuario: $usuario}) SET p.Publicaciones = p.Publicaciones + $contenido",
+			map[string]interface{}{
+				"usuario":   np.Usuario,
+				"contenido": np.Contenido,
+			})
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la publicación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Publicación creada exitosamente",
+		Data:    nil,
+	})
+}
+
+// ClearPublications Limpia las publicaciones de un usuario
+// @Summary Limpia las publicaciones de un usuario en la base de datos
+// @Description Limpia las publicaciones de un usuario en la base de datos
+// @Tags Publicaciones
+// @Accept json
+// @Produce json
+// @Param username path string true "Nombre de usuario"
+// @Success 200 {object} responses.StandardResponse "Publicaciones limpiadas exitosamente"
+// @Failure 500 {object} responses.ErrorResponse "Error al limpiar las publicaciones"
+// @Router /users/clear/{username} [delete]
+func ClearPublications(c *gin.Context) {
+	user := c.Param("username")
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer session.Close(c)
+
+	_, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}) REMOVE p.Publicaciones",
+		map[string]interface{}{
+			"usuario": user,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al limpiar las publicaciones",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Publicaciones limpiadas exitosamente",
+		Data:    nil,
 	})
 }

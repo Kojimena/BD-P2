@@ -1,4 +1,38 @@
 definitions:
+  controllers.DeleteUsersInput:
+    properties:
+      users:
+        description: Usuarios a eliminar
+        items:
+          type: string
+        type: array
+    required:
+    - users
+    type: object
+  controllers.NewPublicationInput:
+    properties:
+      contenido:
+        type: string
+      usuario:
+        type: string
+    required:
+    - contenido
+    - usuario
+    type: object
+  controllers.RemoveTagInput:
+    properties:
+      tag:
+        description: Propiedad a eliminar
+        type: string
+      users:
+        description: Usuarios a etiquetar
+        items:
+          type: string
+        type: array
+    required:
+    - tag
+    - users
+    type: object
   controllers.SignInDetails:
     properties:
       password:
@@ -8,6 +42,24 @@ definitions:
     required:
     - password
     - usuario
+    type: object
+  controllers.TagUsersInput:
+    properties:
+      tag:
+        description: Propiedad a crear
+        type: string
+      users:
+        description: Usuarios a etiquetar
+        items:
+          type: string
+        type: array
+      value:
+        description: Valor de la propiedad
+        type: boolean
+    required:
+    - tag
+    - users
+    - value
     type: object
   models.Cancion:
     properties:
@@ -131,6 +183,38 @@ definitions:
     - foto
     - nombre
     - tipo
+    type: object
+  models.Persona:
+    properties:
+      apellido:
+        type: string
+      conexiones:
+        description: Conexiones usuarios
+        items:
+          type: string
+        type: array
+      fecha_nacimiento:
+        description: 'Formato: YYYY-MM-DD'
+        type: string
+      genero:
+        type: string
+      nombre:
+        type: string
+      password:
+        type: string
+      publicaciones:
+        items:
+          type: string
+        type: array
+      usuario:
+        type: string
+    required:
+    - apellido
+    - fecha_nacimiento
+    - genero
+    - nombre
+    - password
+    - usuario
     type: object
   models.Profesor:
     properties:
@@ -577,6 +661,17 @@ definitions:
           $ref: '#/definitions/models.Equipo'
         type: array
     type: object
+  responses.UsersResponse:
+    properties:
+      status:
+        description: Código de estado de la respuesta
+        type: integer
+      users:
+        description: Datos adicionales de la respuesta
+        items:
+          $ref: '#/definitions/models.Persona'
+        type: array
+    type: object
   responses.ZodiacalSignResponse:
     properties:
       message:
@@ -594,6 +689,104 @@ definitions:
 info:
   contact: {}
 paths:
+  /admin/tag:
+    post:
+      consumes:
+      - application/json
+      description: Etiquetar multiples usuarios con una propiedad
+      parameters:
+      - description: Usuarios y etiqueta
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.TagUsersInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+      summary: Etiquetar usuarios
+      tags:
+      - Admin
+  /admin/tag/remove:
+    post:
+      consumes:
+      - application/json
+      description: Eliminar una propiedad de multiples usuarios
+      parameters:
+      - description: Usuarios y etiqueta
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RemoveTagInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+      summary: Eliminar propiedad de usuarios
+      tags:
+      - Admin
+  /admin/users:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene todos los usuarios registrados en la base de datos
+      parameters:
+      - description: Filtro de búsqueda opcional en base a una propiedad
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuarios obtenidos exitosamente
+          schema:
+            $ref: '#/definitions/responses.UsersResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene todos los usuarios
+      tags:
+      - Admin
+  /admin/users/delete:
+    post:
+      consumes:
+      - application/json
+      description: Elimina multiples usuarios de la base de datos
+      parameters:
+      - description: Usuarios a eliminar
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.DeleteUsersInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuarios eliminados correctamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "404":
+          description: Usuario no encontrado
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Elimina usuarios
+      tags:
+      - Admin
   /careers:
     get:
       consumes:
@@ -792,7 +985,7 @@ paths:
       summary: Obtiene todos los signos zodiacales
       tags:
       - Signos Zodiacales
-  /signs/relation:
+  /signs/is:
     post:
       consumes:
       - application/json
@@ -1037,7 +1230,7 @@ paths:
       summary: Crea una relación de rechazo entre una persona y un equipo
       tags:
       - Equipos
-  /teams/supports:
+  /teams/likes:
     post:
       consumes:
       - application/json
@@ -1068,6 +1261,31 @@ paths:
       summary: Crea una relación de apoyo entre una persona y un equipo
       tags:
       - Equipos
+  /users/clear/{username}:
+    delete:
+      consumes:
+      - application/json
+      description: Limpia las publicaciones de un usuario en la base de datos
+      parameters:
+      - description: Nombre de usuario
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Publicaciones limpiadas exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "500":
+          description: Error al limpiar las publicaciones
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Limpia las publicaciones de un usuario en la base de datos
+      tags:
+      - Publicaciones
   /users/details/{username}:
     get:
       consumes:
@@ -1131,6 +1349,42 @@ paths:
       summary: Autentica un usuario
       tags:
       - Usuarios
+  /users/post:
+    post:
+      consumes:
+      - application/json
+      description: Crea una nueva publicación para un usuario. Si el usuario no tiene
+        publicaciones, se crea la propiedad Publicaciones, de lo contrario, se actualiza
+        la propiedad Publicaciones
+      parameters:
+      - description: Publicación a crear
+        in: body
+        name: publication
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.NewPublicationInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Publicación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: El usuario no existe
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una nueva publicación
+      tags:
+      - Publicaciones
   /users/profesor-student:
     post:
       consumes:

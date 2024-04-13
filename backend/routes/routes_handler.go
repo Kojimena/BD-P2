@@ -12,6 +12,14 @@ func Routes(router *gin.Engine) {
 		})
 	})
 
+	admin := router.Group("/admin")
+	{
+		admin.GET("/users", controllers.GetAllUsers)
+		admin.POST("/tag", controllers.TagUsers)
+		admin.POST("/tag/remove", controllers.RemoveTag)
+		admin.POST("/users/delete", controllers.DeleteUsers)
+	}
+
 	users := router.Group("/users")
 	{
 		users.POST("/student", controllers.NewStudent)
@@ -20,6 +28,8 @@ func Routes(router *gin.Engine) {
 		users.GET("/details/:username", controllers.GetUserDetails)
 
 		users.POST("/login", controllers.Login)
+		users.POST("/post", controllers.NewPublication)
+		users.DELETE("/clear/:username", controllers.ClearPublications)
 	}
 
 	careers := router.Group("/careers")

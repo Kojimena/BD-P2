@@ -15,6 +15,157 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/tag": {
+            "post": {
+                "description": "Etiquetar multiples usuarios con una propiedad",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Etiquetar usuarios",
+                "parameters": [
+                    {
+                        "description": "Usuarios y etiqueta",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.TagUsersInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/tag/remove": {
+            "post": {
+                "description": "Eliminar una propiedad de multiples usuarios",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Eliminar propiedad de usuarios",
+                "parameters": [
+                    {
+                        "description": "Usuarios y etiqueta",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RemoveTagInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users": {
+            "get": {
+                "description": "Obtiene todos los usuarios registrados en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Obtiene todos los usuarios",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filtro de búsqueda opcional en base a una propiedad",
+                        "name": "filter",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuarios obtenidos exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UsersResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users/delete": {
+            "post": {
+                "description": "Elimina multiples usuarios de la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Elimina usuarios",
+                "parameters": [
+                    {
+                        "description": "Usuarios a eliminar",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.DeleteUsersInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuarios eliminados correctamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/careers": {
             "get": {
                 "description": "Obtiene todas las carreras de la base de datos",
@@ -318,7 +469,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/signs/relation": {
+        "/signs/is": {
             "post": {
                 "description": "Crea una relación entre un usuario y un signo zodiacal. La relación define de qué signo es el usuario, la compatibilidad, la influencia y si al usuario le gusta compartir su signo zodiacal",
                 "consumes": [
@@ -688,7 +839,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/teams/supports": {
+        "/teams/likes": {
             "post": {
                 "description": "Crea una relación de de (Persona)-[:APOYA]-\u003e(Equipo) en la base de datos",
                 "consumes": [
@@ -727,6 +878,44 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/clear/{username}": {
+            "delete": {
+                "description": "Limpia las publicaciones de un usuario en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Publicaciones"
+                ],
+                "summary": "Limpia las publicaciones de un usuario en la base de datos",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Publicaciones limpiadas exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al limpiar las publicaciones",
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorResponse"
                         }
@@ -805,6 +994,58 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "Usuario autenticado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "El usuario no existe",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/post": {
+            "post": {
+                "description": "Crea una nueva publicación para un usuario. Si el usuario no tiene publicaciones, se crea la propiedad Publicaciones, de lo contrario, se actualiza la propiedad Publicaciones",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Publicaciones"
+                ],
+                "summary": "Crea una nueva publicación",
+                "parameters": [
+                    {
+                        "description": "Publicación a crear",
+                        "name": "publication",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.NewPublicationInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Publicación creada exitosamente",
                         "schema": {
                             "$ref": "#/definitions/responses.StandardResponse"
                         }
@@ -952,6 +1193,56 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.DeleteUsersInput": {
+            "type": "object",
+            "required": [
+                "users"
+            ],
+            "properties": {
+                "users": {
+                    "description": "Usuarios a eliminar",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "controllers.NewPublicationInput": {
+            "type": "object",
+            "required": [
+                "contenido",
+                "usuario"
+            ],
+            "properties": {
+                "contenido": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.RemoveTagInput": {
+            "type": "object",
+            "required": [
+                "tag",
+                "users"
+            ],
+            "properties": {
+                "tag": {
+                    "description": "Propiedad a eliminar",
+                    "type": "string"
+                },
+                "users": {
+                    "description": "Usuarios a etiquetar",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "controllers.SignInDetails": {
             "type": "object",
             "required": [
@@ -964,6 +1255,31 @@ const docTemplate = `{
                 },
                 "usuario": {
                     "type": "string"
+                }
+            }
+        },
+        "controllers.TagUsersInput": {
+            "type": "object",
+            "required": [
+                "tag",
+                "users",
+                "value"
+            ],
+            "properties": {
+                "tag": {
+                    "description": "Propiedad a crear",
+                    "type": "string"
+                },
+                "users": {
+                    "description": "Usuarios a etiquetar",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "value": {
+                    "description": "Valor de la propiedad",
+                    "type": "boolean"
                 }
             }
         },
@@ -1136,6 +1452,51 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "tipo": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Persona": {
+            "type": "object",
+            "required": [
+                "apellido",
+                "fecha_nacimiento",
+                "genero",
+                "nombre",
+                "password",
+                "usuario"
+            ],
+            "properties": {
+                "apellido": {
+                    "type": "string"
+                },
+                "conexiones": {
+                    "description": "Conexiones usuarios",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "fecha_nacimiento": {
+                    "description": "Formato: YYYY-MM-DD",
+                    "type": "string"
+                },
+                "genero": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "publicaciones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "usuario": {
                     "type": "string"
                 }
             }
@@ -1746,6 +2107,22 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.Equipo"
+                    }
+                }
+            }
+        },
+        "responses.UsersResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
+                },
+                "users": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Persona"
                     }
                 }
             }

@@ -15,8 +15,8 @@ type Estudiante struct {
 	Persona
 	Carnet  string `json:"carnet" binding:"required"`
 	Correo  string `json:"correo" binding:"required"`
-	Parqueo bool   `json:"parqueo" binding:"required"`
-	Foraneo bool   `json:"foraneo" binding:"required"`
+	Parqueo *bool  `json:"parqueo" binding:"required"`
+	Foraneo *bool  `json:"foraneo" binding:"required"`
 	Colegio string `json:"colegio" binding:"required"`
 }
 
@@ -33,8 +33,8 @@ type ProfesorEstudiante struct {
 	Persona
 	Carnet         string `json:"carnet" binding:"required"`
 	Correo         string `json:"correo" binding:"required"`
-	Parqueo        bool   `json:"parqueo" binding:"required"`
-	Foraneo        bool   `json:"foraneo" binding:"required"`
+	Parqueo        *bool  `json:"parqueo" binding:"required"`
+	Foraneo        *bool  `json:"foraneo" binding:"required"`
 	Colegio        string `json:"colegio" binding:"required"`
 	Code           string `json:"code" binding:"required"`
 	CorreoProfesor string `json:"correo_profesor" binding:"required"`
@@ -43,7 +43,7 @@ type ProfesorEstudiante struct {
 	Jornada        string `json:"jornada"`
 }
 
-// Ejemplo
+/* Ejemplo
 var student = Estudiante{
 	Persona: Persona{
 		Nombre:          "Juan",
@@ -59,3 +59,4 @@ var student = Estudiante{
 	Foraneo: false,
 	Colegio: "Colegio San Juan",
 }
+*/
