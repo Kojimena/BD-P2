@@ -109,7 +109,7 @@ func CreateRelationIsSign(c *gin.Context) {
 
 	_, err := session.Run(
 		c,
-		"MATCH (u:Persona {Usuario: $usuario}), (s:SignoZodiacal {Nombre: $signo}) CREATE (u)-[r:ES_SIGNO {Compatibilidad: $compatibilidad, Influencia: $influencia, Compartir: $compartir}]->(s) RETURN r",
+		"MATCH (p:Persona {Usuario: $usuario}), (s:SignoZodiacal {Nombre: $signo}) CREATE (p)-[r:ES_SIGNO {Compatibilidad: $compatibilidad, Influencia: $influencia, Compartir: $compartir}]->(s) RETURN r",
 		map[string]interface{}{
 			"usuario":        relation.Usuario,
 			"signo":          relation.Signo,

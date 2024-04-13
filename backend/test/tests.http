@@ -1,5 +1,5 @@
 ### Crear estudiante
-POST http://localhost:8080/users/student
+POST http://localhost:8000/users/student
 Accept: application/json
 Content-Type: application/json
 
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### Crear profesor
-POST http://localhost:8080/users/teacher
+POST http://localhost:8000/users/teacher
 Accept: application/json
 Content-Type: application/json
 
@@ -37,21 +37,21 @@ Content-Type: application/json
 }
 
 ### Obtener carreras
-GET http://localhost:8080/careers
+GET http://localhost:8000/careers
 Accept: application/json
 
 ### Obtener signos
-GET http://localhost:8080/signs
+GET http://localhost:8000/signs
 Accept: application/json
 
 ### Obtener equipos
-GET http://localhost:8080/teams
+GET http://localhost:8000/teams
 
 ### Obtener canciones
-GET http://localhost:8080/songs
+GET http://localhost:8000/songs
 
 ### Crear relación Persona - ES_Signo -> Signo
-POST http://localhost:8080/signs/is
+POST http://localhost:8000/signs/is
 Accept: application/json
 Content-Type: application/json
 
@@ -63,3 +63,15 @@ Content-Type: application/json
   "compartir": true
 }
 
+### Crear relación Persona - ESTUDIA - Carrera
+POST http://localhost:8000/careers/studies
+Accept: application/json
+Content-Type: application/json
+
+{
+  "carrera": "Ciencias de la computación y tecnologías de la información",
+  "usuario": "juanperez",
+  "apasiona": true,
+  "activo": true,
+  "year": 1
+}
