@@ -5,7 +5,6 @@ import (
 	"backend/models"
 	"backend/responses"
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype"
@@ -51,7 +50,6 @@ func GetCareers(c *gin.Context) {
 	var careers []models.Carrera
 	for r.Next(c) {
 		vals := r.Record().Values[0].(dbtype.Node).Props
-		fmt.Println(vals)
 
 		career := models.Carrera{
 			Facultad:               vals["Facultad"].(string),
