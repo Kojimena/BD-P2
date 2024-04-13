@@ -92,6 +92,7 @@ const Student = () => {
     }
 
     useEffect(() => {
+        setUser(localStorage.getItem('user'))
         fetchDataCareers(),
         fetchDataPlaces()
     }, [])
@@ -124,12 +125,11 @@ const Student = () => {
 
     const handleSubmitStudies = async (e) => {
         e.preventDefault()
-        setIsButtonDisabled(true)
         const data = {
             "carrera": carrera,
             "activo": toggles.toggle4,
             "apasiona": toggles.toggle3,
-            "usuario": usuario,
+            "usuario": user,
             "year": parseInt(year)
         }
         console.log(data)
@@ -145,18 +145,16 @@ const Student = () => {
         } else {
             console.error('Error al guardar estudios')
         }
-        setIsButtonDisabled(false)
     }
 
     const handleSubmitInterest = async (e) => {
         e.preventDefault()
-        setIsButtonDisabled(true)
         const data = {
             "carrera": carrera2,
             "estudiara": toggles.toggle1,
             "intereses": selectedOptions,
             "recomendado": toggles.toggle2,
-            "usuario": usuario
+            "usuario": user
         }
         console.log(data)
         const response = await fetch(`https://super-trixi-kojimena.koyeb.app/careers/interests`, {
@@ -171,12 +169,10 @@ const Student = () => {
         } else {
             console.error('Error al guardar intereses')
         }
-        setIsButtonDisabled(false)
     }
 
     const handleSubmitPlace = async (e) => {
         e.preventDefault()
-        setIsButtonDisabled(true)
         const data = {
             "departamento": departamento,
             "direccion": direccion,
@@ -197,7 +193,6 @@ const Student = () => {
         } else {
             console.error('Error al guardar lugar')
         }
-        setIsButtonDisabled(false)
     }
 
     const handleSubmitTeam = async (e) => {
@@ -353,7 +348,7 @@ const Student = () => {
             
             {/*Signo Zodiacal*/}
             <form className='m-20 justify-start items-center gap-10'>
-                <FormSign type={'sign'} />
+                <FormSign type={'sign'} usuario={user}/>
             </form>
 
             {/*Canciones*/}
@@ -406,11 +401,14 @@ const Student = () => {
                                 </label>
                                 <input type="text" className="input input-bordered" placeholder=""  onChange={handleChangepais}/>
                             </div>
-                            <button className="btn btn-primary bg-kaqui border-non" onClick={handleSubmitTeam}>Guardar</button>
+                            <button className="btn btn-white bg-kaqui border-non" onClick={handleSubmitTeam}>Guardar</button>
                         </div>
                     </div>
                 </div>
             </form>
+            <div className='flex justify-center items-center w-full'>
+            <button className="btn btn-white hover:bg-kaqui border-non w-1/2" onClick={() => router.push('/people')}>Continuar</button>
+            </div>
         </div>
     )
 }

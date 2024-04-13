@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 
 
-const FormEquipo = ({type}) => {
+const FormEquipo = ({type, usuario}) => {
 
     const [teams, setTeams] = useState([])
     const [isOpen, setIsOpen] = useState(false)

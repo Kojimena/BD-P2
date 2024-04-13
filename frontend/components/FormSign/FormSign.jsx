@@ -2,7 +2,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 
-const FormSign = () => {
+const FormSign = ({usuario}) => {
     const [isOpen, setIsOpen] = useState(false)
     const [signo, setSigno] = useState('Seleccionar signo')
     const [signos, setSignos] = useState([])

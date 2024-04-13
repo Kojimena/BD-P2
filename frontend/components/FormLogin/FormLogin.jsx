@@ -19,7 +19,7 @@ const FormLogin = () => {
   }
 
   const handleSignUp = () => {
-    router.push('/people')
+    router.push('/')
   }
 
   const handleLogin = async (e) => {
