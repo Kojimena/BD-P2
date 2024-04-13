@@ -159,6 +159,17 @@ func NewTeacher(c *gin.Context) {
 	})
 }
 
+// GetUserDetails Obtiene los detalles de un usuario
+// @Summary Obtiene los detalles de un usuario
+// @Description Obtiene los detalles de un usuario dado su nombre de usuario
+// @Tags Usuarios
+// @Accept json
+// @Produce json
+// @Param username path string true "Nombre de usuario"
+// @Success 200 {object} responses.StandardResponse "Datos del usuario obtenidos exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /users/{username} [get]
 func GetUserDetails(c *gin.Context) {
 	user := c.Param("username")
 
