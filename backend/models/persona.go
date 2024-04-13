@@ -15,8 +15,8 @@ type Estudiante struct {
 	Persona
 	Carnet  string `json:"carnet" binding:"required"`
 	Correo  string `json:"correo" binding:"required"`
-	Parqueo bool   `json:"parqueo" binding:"required"`
-	Foraneo bool   `json:"foraneo" binding:"required"`
+	Parqueo bool   `json:"parqueo"`
+	Foraneo bool   `json:"foraneo"`
 	Colegio string `json:"colegio" binding:"required"`
 }
 
