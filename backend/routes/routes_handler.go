@@ -48,6 +48,10 @@ func Routes(router *gin.Engine) {
 	songs := router.Group("/songs")
 	{
 		songs.GET("/", controllers.GetSongs)
+		songs.POST("/", controllers.NewSong)
+		songs.POST("/likes", controllers.CreateRelationLikesSong)
+		songs.POST("/dislikes", controllers.CreateRelationDislikesSong)
+		songs.POST("/favorite", controllers.CreateRelationFavoriteSong)
 	}
 
 }

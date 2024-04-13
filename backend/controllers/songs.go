@@ -9,6 +9,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype"
 	"net/http"
+	"time"
 )
 
 // GetSongs Obtiene todas las canciones
@@ -133,5 +134,159 @@ func NewSong(c *gin.Context) {
 		Status:  http.StatusCreated,
 		Message: "Canción creada exitosamente",
 		Data:    map[string]interface{}{"song": song},
+	})
+}
+
+func CreateRelationFavoriteSong(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var relation models.RelationPersonaFavoritaCancion
+	err := c.BindJSON(&relation)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	f, err := time.Parse(time.DateOnly, relation.Cuando)
+
+	// create relation
+	_, err = session.Run(c, "MATCH (p:Persona {Usuario: $usuario}), (s:Cancion {Nombre: $cancion}) CREATE (p)-[r:ES_FAVORITA {Cuando: $cuando, Como: $como, Frecuencia: $frecuencia}]->(s) RETURN r",
+		map[string]interface{}{
+			"usuario":    relation.Usuario,
+			"cancion":    relation.Cancion,
+			"cuando":     f,
+			"como":       relation.Como,
+			"frecuencia": relation.Frecuencia,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la relación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relación creada exitosamente",
+		Data:    nil,
+	})
+}
+
+func CreateRelationLikesSong(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var relation models.RelationPersonaLeGustaCancion
+	err := c.BindJSON(&relation)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	// create relation
+	_, err = session.Run(c, "MATCH (p:Persona {Usuario: $usuario}), (s:Cancion {Nombre: $cancion}) CREATE (p)-[r:LE_GUSTA {Como: $como, Escucha: $escucha, MasArtista: $masArtista}]->(s) RETURN r",
+		map[string]interface{}{
+			"usuario":    relation.Usuario,
+			"cancion":    relation.Cancion,
+			"como":       relation.Como,
+			"escucha":    relation.Escucha,
+			"masArtista": relation.MasArtista,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la relación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relación creada exitosamente",
+		Data:    nil,
+	})
+}
+
+func CreateRelationDislikesSong(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var relation models.RelationPersonaNoLeGustaCancion
+	err := c.BindJSON(&relation)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+	// create relation
+	_, err = session.Run(c, "MATCH (p:Persona {Usuario: $usuario}), (s:Cancion {Nombre: $cancion}) CREATE (p)-[r:NO_LE_GUSTA {Motivo: $motivo, Cambiar: $cambiar, Intensidad: $intensidad}]->(s) RETURN r",
+		map[string]interface{}{
+			"usuario":    relation.Usuario,
+			"cancion":    relation.Cancion,
+			"motivo":     relation.Motivo,
+			"cambiar":    relation.Cambiar,
+			"intensidad": relation.Intensidad,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la relación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relación creada exitosamente",
+		Data:    nil,
 	})
 }

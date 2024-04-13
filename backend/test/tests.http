@@ -103,3 +103,42 @@ Content-Type: application/json
   "rating": 5,
   "categoria": "Naturaleza"
 }
+
+### Crear relación Persona - FAVORITA - Canción
+POST http://localhost:8080/songs/favorite
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "cancion": "Bohemian Rhapsody",
+  "cuando": "2021-02-02",
+  "como": "En una película",
+  "frecuencia": "Diaria"
+}
+
+### Crear relación Persona - GUSTA - Canción
+POST http://localhost:8080/songs/likes
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "cancion": "Shape of You",
+  "como": "En una película",
+  "escucha": true,
+  "mas_artista": true
+}
+
+### Crear relación Persona - NO_GUSTA - Canción
+POST http://localhost:8080/songs/dislikes
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "cancion": "Hotel California",
+  "motivo": "No me gusta la letra",
+  "cambiar": false,
+  "intensidad": 4
+}
