@@ -882,6 +882,35 @@ paths:
       summary: Crea una relación de apoyo entre una persona y un equipo
       tags:
       - Equipos
+  /users/{username}:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene los detalles de un usuario dado su nombre de usuario
+      parameters:
+      - description: Nombre de usuario
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Datos del usuario obtenidos exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene los detalles de un usuario
+      tags:
+      - Usuarios
   /users/student:
     post:
       consumes:
