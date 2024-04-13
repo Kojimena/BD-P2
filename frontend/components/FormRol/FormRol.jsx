@@ -104,6 +104,7 @@ const FormRol = ({lastdata , role}) => {
         })
         if (response.ok) {
             if (role === 'student') {
+                localStorage.setItem('user', lastdata.usuario )
                 router.push('/student')
             } else if (role === 'teacher') {
                 router.push('/teacher')

@@ -19,13 +19,13 @@ const FormLogin = () => {
   }
 
   const handleSignUp = () => {
-    router.push('/')
+    router.push('/people')
   }
 
   const handleLogin = async (e) => {
     e.preventDefault()
     const data = {
-      "email": emailInput,
+      "usuario": emailInput,
       "password": passwordInput
     }
     
@@ -40,7 +40,7 @@ const FormLogin = () => {
       return
     }
 
-      const response = await fetch('https://bd2-markalbrand56.koyeb.app/user/login/', {
+      const response = await fetch('https://super-trixi-kojimena.koyeb.app/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ const FormLogin = () => {
       if (response.ok) {
         const data = await response.json()
         router.push('/people')
-        localStorage.setItem('userId', data._id)
+        localStorage.setItem('user', emailInput)
       }else {
         setShowPopUp(true)
         setError("No se pudo iniciar sesión. Intente nuevamente.")
@@ -67,7 +67,7 @@ const FormLogin = () => {
             <div className="flex flex-col">
             <div className="sm:col-span-3">
             <label className="label">
-                  Correo electrónico
+                  Usuario
                 </label>
                 <div className="mt-2">
                   <input
