@@ -72,6 +72,16 @@ func GetCareers(c *gin.Context) {
 	})
 }
 
+// CreateRelationStudiesCareer Crea una relación de un estudiante con una carrera
+// @Summary Crea una relación de un estudiante con una carrera
+// @Description Crea una relación de (Estudiante)-[ESTUDIA]->(Carrera)
+// @Tags Carreras
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationEstudiaCarrera true "Relación de estudia carrera"
+// @Success 200 {object} responses.StandardResponse "Relación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /careers/studies [post]
 func CreateRelationStudiesCareer(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
@@ -122,6 +132,16 @@ func CreateRelationStudiesCareer(c *gin.Context) {
 	})
 }
 
+// CreateRelationInterestsCareer Crea una relación de interés de un estudiante con una carrera
+// @Summary Crea una relación de interés de un estudiante con una carrera
+// @Description Crea una relación de (Estudiante)-[LE_INTERESA]->(Carrera)
+// @Tags Carreras
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationLeInteresaCarrera true "Relación de interés de estudiante con carrera"
+// @Success 200 {object} responses.StandardResponse "Relación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /careers/interests [post]
 func CreateRelationInterestsCareer(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 

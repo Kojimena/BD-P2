@@ -33,6 +33,86 @@
                 }
             }
         },
+        "/careers/interests": {
+            "post": {
+                "description": "Crea una relación de (Estudiante)-[LE_INTERESA]-\u003e(Carrera)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Carreras"
+                ],
+                "summary": "Crea una relación de interés de un estudiante con una carrera",
+                "parameters": [
+                    {
+                        "description": "Relación de interés de estudiante con carrera",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationLeInteresaCarrera"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/careers/studies": {
+            "post": {
+                "description": "Crea una relación de (Estudiante)-[ESTUDIA]-\u003e(Carrera)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Carreras"
+                ],
+                "summary": "Crea una relación de un estudiante con una carrera",
+                "parameters": [
+                    {
+                        "description": "Relación de estudia carrera",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationEstudiaCarrera"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/places/": {
             "get": {
                 "description": "Obtiene todos los lugares registrados en la base de datos",
@@ -98,6 +178,75 @@
                         }
                     },
                     "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/signs": {
+            "get": {
+                "description": "Obtiene todos los signos zodiacales de la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Signos Zodiacales"
+                ],
+                "summary": "Obtiene todos los signos zodiacales",
+                "responses": {
+                    "200": {
+                        "description": "Signos zodiacales obtenidos exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ZodiacalSignResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/signs/relation": {
+            "post": {
+                "description": "Crea una relación entre un usuario y un signo zodiacal. La relación define de qué signo es el usuario, la compatibilidad, la influencia y si al usuario le gusta compartir su signo zodiacal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Signos Zodiacales"
+                ],
+                "summary": "Crea una relación entre un usuario y un signo zodiacal",
+                "parameters": [
+                    {
+                        "description": "Relación a crear",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationEsSigno"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación ES_SIGNO creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
                         "description": "Error al procesar la solicitud",
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorResponse"
@@ -331,35 +480,6 @@
                     }
                 }
             }
-        },
-        "/zodiacal-signs": {
-            "get": {
-                "description": "Obtiene todos los signos zodiacales de la base de datos",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Signos Zodiacales"
-                ],
-                "summary": "Obtiene todos los signos zodiacales",
-                "responses": {
-                    "200": {
-                        "description": "Signos zodiacales obtenidos exitosamente",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ZodiacalSignResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error al procesar la solicitud",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -541,6 +661,84 @@
                     }
                 },
                 "usuario": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RelationEsSigno": {
+            "type": "object",
+            "properties": {
+                "compartir": {
+                    "description": "Compartir si el usuario comparte signo con el signo",
+                    "type": "boolean"
+                },
+                "compatibilidad": {
+                    "description": "Compatibilidad Nivel de compatibilidad del signo",
+                    "type": "integer"
+                },
+                "influencia": {
+                    "description": "Influencia del signo en la vida del usuario",
+                    "type": "boolean"
+                },
+                "signo": {
+                    "description": "Signo Nombre del signo zodiacal del usuario",
+                    "type": "string"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                }
+            }
+        },
+        "models.RelationEstudiaCarrera": {
+            "type": "object",
+            "properties": {
+                "activo": {
+                    "description": "Activo si el usuario está activo en la carrera",
+                    "type": "boolean"
+                },
+                "apasiona": {
+                    "description": "Apasiona si al usuario le apasiona la carrera",
+                    "type": "boolean"
+                },
+                "carrera": {
+                    "description": "Carrera Nombre de la carrera",
+                    "type": "string"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                },
+                "year": {
+                    "description": "Year Año en el que el usuario ingresó a la carrera",
+                    "type": "integer"
+                }
+            }
+        },
+        "models.RelationLeInteresaCarrera": {
+            "type": "object",
+            "properties": {
+                "carrera": {
+                    "description": "Carrera Nombre de la carrera",
+                    "type": "string"
+                },
+                "estudiara": {
+                    "description": "Estudiara si el usuario estudiará la carrera",
+                    "type": "boolean"
+                },
+                "intereses": {
+                    "description": "Intereses Intereses del usuario en la carrera",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "recomendado": {
+                    "description": "Recomendado si al usuario le recomendaron la carrera",
+                    "type": "boolean"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
                     "type": "string"
                 }
             }

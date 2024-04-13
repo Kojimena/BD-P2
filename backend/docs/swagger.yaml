@@ -119,6 +119,62 @@ definitions:
       usuario:
         type: string
     type: object
+  models.RelationEsSigno:
+    properties:
+      compartir:
+        description: Compartir si el usuario comparte signo con el signo
+        type: boolean
+      compatibilidad:
+        description: Compatibilidad Nivel de compatibilidad del signo
+        type: integer
+      influencia:
+        description: Influencia del signo en la vida del usuario
+        type: boolean
+      signo:
+        description: Signo Nombre del signo zodiacal del usuario
+        type: string
+      usuario:
+        description: Usuario Nombre de usuario
+        type: string
+    type: object
+  models.RelationEstudiaCarrera:
+    properties:
+      activo:
+        description: Activo si el usuario está activo en la carrera
+        type: boolean
+      apasiona:
+        description: Apasiona si al usuario le apasiona la carrera
+        type: boolean
+      carrera:
+        description: Carrera Nombre de la carrera
+        type: string
+      usuario:
+        description: Usuario Nombre de usuario
+        type: string
+      year:
+        description: Year Año en el que el usuario ingresó a la carrera
+        type: integer
+    type: object
+  models.RelationLeInteresaCarrera:
+    properties:
+      carrera:
+        description: Carrera Nombre de la carrera
+        type: string
+      estudiara:
+        description: Estudiara si el usuario estudiará la carrera
+        type: boolean
+      intereses:
+        description: Intereses Intereses del usuario en la carrera
+        items:
+          type: string
+        type: array
+      recomendado:
+        description: Recomendado si al usuario le recomendaron la carrera
+        type: boolean
+      usuario:
+        description: Usuario Nombre de usuario
+        type: string
+    type: object
   models.Signo:
     properties:
       dia_semana:
@@ -251,6 +307,58 @@ paths:
       summary: Obtiene todas las carreras
       tags:
       - Carreras
+  /careers/interests:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de (Estudiante)-[LE_INTERESA]->(Carrera)
+      parameters:
+      - description: Relación de interés de estudiante con carrera
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationLeInteresaCarrera'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de interés de un estudiante con una carrera
+      tags:
+      - Carreras
+  /careers/studies:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de (Estudiante)-[ESTUDIA]->(Carrera)
+      parameters:
+      - description: Relación de estudia carrera
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationEstudiaCarrera'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de un estudiante con una carrera
+      tags:
+      - Carreras
   /places/:
     get:
       consumes:
@@ -299,6 +407,53 @@ paths:
       summary: Crea un nuevo lugar
       tags:
       - Lugares
+  /signs:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene todos los signos zodiacales de la base de datos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Signos zodiacales obtenidos exitosamente
+          schema:
+            $ref: '#/definitions/responses.ZodiacalSignResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene todos los signos zodiacales
+      tags:
+      - Signos Zodiacales
+  /signs/relation:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación entre un usuario y un signo zodiacal. La relación
+        define de qué signo es el usuario, la compatibilidad, la influencia y si al
+        usuario le gusta compartir su signo zodiacal
+      parameters:
+      - description: Relación a crear
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationEsSigno'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación ES_SIGNO creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación entre un usuario y un signo zodiacal
+      tags:
+      - Signos Zodiacales
   /songs/:
     get:
       consumes:
@@ -447,23 +602,4 @@ paths:
       summary: Registra un nuevo profesor
       tags:
       - Profesores
-  /zodiacal-signs:
-    get:
-      consumes:
-      - application/json
-      description: Obtiene todos los signos zodiacales de la base de datos
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Signos zodiacales obtenidos exitosamente
-          schema:
-            $ref: '#/definitions/responses.ZodiacalSignResponse'
-        "400":
-          description: Error al procesar la solicitud
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Obtiene todos los signos zodiacales
-      tags:
-      - Signos Zodiacales
 swagger: "2.0"
