@@ -49,6 +49,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/users": {
+            "get": {
+                "description": "Obtiene todos los usuarios registrados en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Obtiene todos los usuarios",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filtro de búsqueda opcional en base a una propiedad",
+                        "name": "filter",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuarios obtenidos exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UsersResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/careers": {
             "get": {
                 "description": "Obtiene todas las carreras de la base de datos",
@@ -1266,6 +1303,51 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Persona": {
+            "type": "object",
+            "required": [
+                "apellido",
+                "fecha_nacimiento",
+                "genero",
+                "nombre",
+                "password",
+                "usuario"
+            ],
+            "properties": {
+                "apellido": {
+                    "type": "string"
+                },
+                "conexiones": {
+                    "description": "Conexiones usuarios",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "fecha_nacimiento": {
+                    "description": "Formato: YYYY-MM-DD",
+                    "type": "string"
+                },
+                "genero": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "publicaciones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Profesor": {
             "type": "object",
             "required": [
@@ -1872,6 +1954,22 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.Equipo"
+                    }
+                }
+            }
+        },
+        "responses.UsersResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
+                },
+                "users": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Persona"
                     }
                 }
             }

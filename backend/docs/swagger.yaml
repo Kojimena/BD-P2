@@ -160,6 +160,38 @@ definitions:
     - nombre
     - tipo
     type: object
+  models.Persona:
+    properties:
+      apellido:
+        type: string
+      conexiones:
+        description: Conexiones usuarios
+        items:
+          type: string
+        type: array
+      fecha_nacimiento:
+        description: 'Formato: YYYY-MM-DD'
+        type: string
+      genero:
+        type: string
+      nombre:
+        type: string
+      password:
+        type: string
+      publicaciones:
+        items:
+          type: string
+        type: array
+      usuario:
+        type: string
+    required:
+    - apellido
+    - fecha_nacimiento
+    - genero
+    - nombre
+    - password
+    - usuario
+    type: object
   models.Profesor:
     properties:
       apellido:
@@ -605,6 +637,17 @@ definitions:
           $ref: '#/definitions/models.Equipo'
         type: array
     type: object
+  responses.UsersResponse:
+    properties:
+      status:
+        description: Código de estado de la respuesta
+        type: integer
+      users:
+        description: Datos adicionales de la respuesta
+        items:
+          $ref: '#/definitions/models.Persona'
+        type: array
+    type: object
   responses.ZodiacalSignResponse:
     properties:
       message:
@@ -642,6 +685,30 @@ paths:
           schema:
             $ref: '#/definitions/responses.StandardResponse'
       summary: Etiquetar usuarios
+      tags:
+      - Admin
+  /admin/users:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene todos los usuarios registrados en la base de datos
+      parameters:
+      - description: Filtro de búsqueda opcional en base a una propiedad
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuarios obtenidos exitosamente
+          schema:
+            $ref: '#/definitions/responses.UsersResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene todos los usuarios
       tags:
       - Admin
   /careers:

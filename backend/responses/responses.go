@@ -51,3 +51,8 @@ type SongsResponse struct {
 	Message string           `json:"message"` // Mensaje de la respuesta
 	Songs   []models.Cancion `json:"songs"`   // Datos adicionales de la respuesta
 }
+
+type UsersResponse struct {
+	Status int              `json:"status"` // Código de estado de la respuesta
+	Users  []models.Persona `json:"users"`  // Datos adicionales de la respuesta
+}
