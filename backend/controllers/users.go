@@ -158,3 +158,47 @@ func NewTeacher(c *gin.Context) {
 		Data:    nil,
 	})
 }
+
+func GetUserDetails(c *gin.Context) {
+	user := c.Param("username")
+
+	if user == "" {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El usuario no puede estar vacío",
+			Error:   "El usuario no puede estar vacío",
+		})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
+
+	defer session.Close(c)
+
+	r, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}) RETURN p",
+		map[string]interface{}{
+			"usuario": user,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al obtener los datos del usuario",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	var vals map[string]interface{}
+	for r.Next(c) {
+		vals = r.Record().Values[0].(neo4j.Node).Props
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Datos del usuario obtenidos exitosamente",
+		Data:    vals,
+	})
+}

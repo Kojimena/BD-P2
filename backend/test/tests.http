@@ -168,3 +168,7 @@ Content-Type: application/json
   "por_que": "Porque es el peor equipo del mundo",
   "mira_partidos": false
 }
+
+### Obtener detalles de cuenta
+GET http://localhost:8080/users/details/juanperez
+Accept: application/json
