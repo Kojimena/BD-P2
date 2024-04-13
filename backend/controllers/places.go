@@ -211,3 +211,78 @@ func CreateRelationVisited(c *gin.Context) {
 		Data:    nil,
 	})
 }
+
+// CreateRelationDislikesPlace Crea una relación de no le gusta de un usuario a un lugar
+// @Summary Crea una relación de no le gusta de un usuario a un lugar
+// @Description Crea una relación de (Persona)-[NO_LE_GUSTA]->(Lugar)
+// @Tags Lugares
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationNoLeGustaLugar true "Relación de no le gusta de un lugar"
+// @Success 200 {object} responses.StandardResponse "Relación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /places/dislikes [post]
+func CreateRelationDislikesPlace(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var relation models.RelationNoLeGustaLugar
+	err := c.BindJSON(&relation)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	f, err := time.Parse(time.DateOnly, relation.Cuando)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la fecha",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	_, err = session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}), (l:Lugar {Nombre: $lugar}) CREATE (p)-[r:NO_LE_GUSTA {Cuando: $cuando, Rating: $rating, Categoria: $categoria}]->(l) RETURN r",
+		map[string]interface{}{
+			"usuario":   relation.Usuario,
+			"lugar":     relation.Lugar,
+			"cuando":    f,
+			"rating":    relation.Rating,
+			"categoria": relation.Categoria,
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la relación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relación creada exitosamente",
+		Data:    nil,
+	})
+}

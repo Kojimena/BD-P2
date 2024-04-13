@@ -186,6 +186,52 @@
                 }
             }
         },
+        "/places/dislikes": {
+            "post": {
+                "description": "Crea una relación de (Persona)-[NO_LE_GUSTA]-\u003e(Lugar)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lugares"
+                ],
+                "summary": "Crea una relación de no le gusta de un usuario a un lugar",
+                "parameters": [
+                    {
+                        "description": "Relación de no le gusta de un lugar",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationNoLeGustaLugar"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/places/visited": {
             "post": {
                 "description": "Crea una relación de (Persona)-[VISITA]-\u003e(Lugar)",
@@ -784,6 +830,31 @@
                 "recomendado": {
                     "description": "Recomendado si al usuario le recomendaron la carrera",
                     "type": "boolean"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                }
+            }
+        },
+        "models.RelationNoLeGustaLugar": {
+            "type": "object",
+            "properties": {
+                "categoria": {
+                    "description": "Categoria Categoria del lugar",
+                    "type": "string"
+                },
+                "cuando": {
+                    "description": "Cuando Fecha en la que el usuario visitó el lugar",
+                    "type": "string"
+                },
+                "lugar": {
+                    "description": "Lugar Nombre del lugar",
+                    "type": "string"
+                },
+                "rating": {
+                    "description": "Rating Calificación del lugar por el usuario",
+                    "type": "integer"
                 },
                 "usuario": {
                     "description": "Usuario Nombre de usuario",

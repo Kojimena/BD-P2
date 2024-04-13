@@ -177,6 +177,24 @@ definitions:
         description: Usuario Nombre de usuario
         type: string
     type: object
+  models.RelationNoLeGustaLugar:
+    properties:
+      categoria:
+        description: Categoria Categoria del lugar
+        type: string
+      cuando:
+        description: Cuando Fecha en la que el usuario visitó el lugar
+        type: string
+      lugar:
+        description: Lugar Nombre del lugar
+        type: string
+      rating:
+        description: Rating Calificación del lugar por el usuario
+        type: integer
+      usuario:
+        description: Usuario Nombre de usuario
+        type: string
+    type: object
   models.RelationVisitaLugar:
     properties:
       categoria:
@@ -425,6 +443,36 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Crea un nuevo lugar
+      tags:
+      - Lugares
+  /places/dislikes:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de (Persona)-[NO_LE_GUSTA]->(Lugar)
+      parameters:
+      - description: Relación de no le gusta de un lugar
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationNoLeGustaLugar'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de no le gusta de un usuario a un lugar
       tags:
       - Lugares
   /places/visited:
