@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"net/http"
+	"time"
 )
 
 // GetPlaces Obtiene todos los lugares
@@ -133,5 +134,69 @@ func NewPlace(c *gin.Context) {
 		Status:  http.StatusCreated,
 		Message: "Lugar creado exitosamente",
 		Data:    map[string]interface{}{"place": place},
+	})
+}
+
+func CreateRelationVisited(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var relation models.RelationVisitaLugar
+	err := c.BindJSON(&relation)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	f, err := time.Parse(time.DateOnly, relation.Cuando)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la fecha",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	_, err = session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}), (l:Lugar {Nombre: $lugar}) CREATE (p)-[r:VISITA {Cuando: $cuando, Rating: $rating, Categoria: $categoria}]->(l) RETURN r",
+		map[string]interface{}{
+			"usuario":   relation.Usuario,
+			"lugar":     relation.Lugar,
+			"cuando":    f,
+			"rating":    relation.Rating,
+			"categoria": relation.Categoria,
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la relación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relación creada exitosamente",
+		Data:    nil,
 	})
 }

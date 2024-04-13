@@ -1,5 +1,5 @@
 ### Crear estudiante
-POST http://localhost:8000/users/student
+POST http://localhost:8080/users/student
 Accept: application/json
 Content-Type: application/json
 
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### Crear profesor
-POST http://localhost:8000/users/teacher
+POST http://localhost:8080/users/teacher
 Accept: application/json
 Content-Type: application/json
 
@@ -37,21 +37,21 @@ Content-Type: application/json
 }
 
 ### Obtener carreras
-GET http://localhost:8000/careers
+GET http://localhost:8080/careers
 Accept: application/json
 
 ### Obtener signos
-GET http://localhost:8000/signs
+GET http://localhost:8080/signs
 Accept: application/json
 
 ### Obtener equipos
-GET http://localhost:8000/teams
+GET http://localhost:8080/teams
 
 ### Obtener canciones
-GET http://localhost:8000/songs
+GET http://localhost:8080/songs
 
 ### Crear relación Persona - ES_Signo -> Signo
-POST http://localhost:8000/signs/is
+POST http://localhost:8080/signs/is
 Accept: application/json
 Content-Type: application/json
 
@@ -64,7 +64,7 @@ Content-Type: application/json
 }
 
 ### Crear relación Persona - ESTUDIA - Carrera
-POST http://localhost:8000/careers/studies
+POST http://localhost:8080/careers/studies
 Accept: application/json
 Content-Type: application/json
 
@@ -77,7 +77,7 @@ Content-Type: application/json
 }
 
 ### Crear relación Persona - INTERESA - Carrera
-POST http://localhost:8000/careers/interests
+POST http://localhost:8080/careers/interests
 Accept: application/json
 Content-Type: application/json
 
@@ -89,4 +89,17 @@ Content-Type: application/json
   ],
   "recomendado": true,
   "estudiara": true
+}
+
+### Crear relación Persona - VISITÓ - Lugar
+POST http://localhost:8080/places/visited
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "lugar": "Lago de Atitlán",
+  "cuando": "2021-01-01",
+  "rating": 5,
+  "categoria": "Naturaleza"
 }

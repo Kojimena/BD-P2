@@ -41,7 +41,7 @@ func Routes(router *gin.Engine) {
 	{
 		places.GET("/", controllers.GetPlaces)
 		places.POST("/", controllers.NewPlace)
-
+		places.POST("/visited", controllers.CreateRelationVisited)
 	}
 
 	songs := router.Group("/songs")

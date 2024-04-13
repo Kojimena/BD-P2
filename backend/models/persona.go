@@ -3,7 +3,7 @@ package models
 type Persona struct {
 	Nombre          string   `json:"nombre"`
 	Apellido        string   `json:"apellido"`
-	FechaNacimiento string   `json:"fecha_nacimiento"`
+	FechaNacimiento string   `json:"fecha_nacimiento"` // Formato: YYYY-MM-DD
 	Genero          string   `json:"genero"`
 	Usuario         string   `json:"usuario"`
 	Password        string   `json:"password"`

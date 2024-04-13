@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"net/http"
+	"time"
 )
 
 // NewStudent Registra un nuevo estudiante
@@ -48,13 +49,23 @@ func NewStudent(c *gin.Context) {
 		}
 	}(session, c)
 
+	f, err := time.Parse(time.DateOnly, student.FechaNacimiento)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la fecha de nacimiento",
+			Error:   err.Error(),
+		})
+		return
+	}
+
 	r, err := session.Run(
 		c,
 		"CREATE (p:Persona:Estudiante {Nombre: $nombre, Apellido: $apellido, FechaNacimiento: $fecha_nacimiento, Genero: $genero, Usuario: $usuario, Password: $password, Carnet: $carnet, Correo: $correo, Parqueo: $parqueo, Foraneo: $foraneo, Colegio: $colegio})",
 		map[string]interface{}{
 			"nombre":           student.Nombre,
 			"apellido":         student.Apellido,
-			"fecha_nacimiento": student.FechaNacimiento,
+			"fecha_nacimiento": f,
 			"genero":           student.Genero,
 			"usuario":          student.Usuario,
 			"password":         student.Password,
@@ -111,13 +122,15 @@ func NewTeacher(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close(c)
 
+	f, _ := time.Parse(time.DateOnly, teacher.FechaNacimiento)
+
 	r, err := session.Run(
 		c,
 		"CREATE (p:Persona:Profesor {Nombre: $nombre, Apellido: $apellido, FechaNacimiento: $fecha_nacimiento, Genero: $genero, Usuario: $usuario, Password: $password, Code: $code, Correo: $correo, Departamento: $departamento, Maestria: $maestria, Jornada: $jornada})",
 		map[string]interface{}{
 			"nombre":           teacher.Nombre,
 			"apellido":         teacher.Apellido,
-			"fecha_nacimiento": teacher.FechaNacimiento,
+			"fecha_nacimiento": f,
 			"genero":           teacher.Genero,
 			"usuario":          teacher.Usuario,
 			"password":         teacher.Password,
