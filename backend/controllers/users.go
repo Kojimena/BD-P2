@@ -162,7 +162,7 @@ func NewTeacher(c *gin.Context) {
 // NewProfesorStudent Registra un nuevo profesor y estudiante
 // @Summary Registra un nuevo profesor y estudiante
 // @Description Registra un nuevo profesor y estudiante en la base de datos
-// @Tags Users
+// @Tags Usuarios
 // @Accept json
 // @Produce json
 // @Param profesor_student body models.ProfesorEstudiante true "Profesor y estudiante a registrar"
