@@ -137,6 +137,17 @@ func NewSong(c *gin.Context) {
 	})
 }
 
+// CreateRelationFavoriteSong Crea una relación de una persona con una canción favorita
+// @Summary Crea una relación de una persona con una canción favorita
+// @Description Crea una relación de (Persona)-[ES_FAVORITA]->(Cancion)
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationPersonaFavoritaCancion true "Relación de persona favorita canción"
+// @Success 200 {object} responses.StandardResponse "Relación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/favorite [post]
 func CreateRelationFavoriteSong(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
@@ -190,6 +201,17 @@ func CreateRelationFavoriteSong(c *gin.Context) {
 	})
 }
 
+// CreateRelationLikesSong Crea una relación de una persona con una canción que le gusta
+// @Summary Crea una relación de una persona con una canción que le gusta
+// @Description Crea una relación de (Persona)-[LE_GUSTA]->(Cancion)
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationPersonaLeGustaCancion true "Relación de persona le gusta canción"
+// @Success 200 {object} responses.StandardResponse "Relación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/likes [post]
 func CreateRelationLikesSong(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
@@ -241,6 +263,17 @@ func CreateRelationLikesSong(c *gin.Context) {
 	})
 }
 
+// CreateRelationDislikesSong Crea una relación de una persona con una canción que no le gusta
+// @Summary Crea una relación de una persona con una canción que no le gusta
+// @Description Crea una relación de (Persona)-[NO_LE_GUSTA]->(Cancion)
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param relation body models.RelationPersonaNoLeGustaCancion true "Relación de persona no le gusta canción"
+// @Success 200 {object} responses.StandardResponse "Relación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/dislikes [post]
 func CreateRelationDislikesSong(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 

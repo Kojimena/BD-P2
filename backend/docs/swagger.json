@@ -420,6 +420,144 @@
                 }
             }
         },
+        "/songs/dislikes": {
+            "post": {
+                "description": "Crea una relación de (Persona)-[NO_LE_GUSTA]-\u003e(Cancion)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Crea una relación de una persona con una canción que no le gusta",
+                "parameters": [
+                    {
+                        "description": "Relación de persona no le gusta canción",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationPersonaNoLeGustaCancion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/favorite": {
+            "post": {
+                "description": "Crea una relación de (Persona)-[ES_FAVORITA]-\u003e(Cancion)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Crea una relación de una persona con una canción favorita",
+                "parameters": [
+                    {
+                        "description": "Relación de persona favorita canción",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationPersonaFavoritaCancion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/likes": {
+            "post": {
+                "description": "Crea una relación de (Persona)-[LE_GUSTA]-\u003e(Cancion)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Crea una relación de una persona con una canción que le gusta",
+                "parameters": [
+                    {
+                        "description": "Relación de persona le gusta canción",
+                        "name": "relation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RelationPersonaLeGustaCancion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/teams/": {
             "get": {
                 "description": "Obtiene todos los equipos registrados en la base de datos",
@@ -855,6 +993,81 @@
                 "rating": {
                     "description": "Rating Calificación del lugar por el usuario",
                     "type": "integer"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                }
+            }
+        },
+        "models.RelationPersonaFavoritaCancion": {
+            "type": "object",
+            "properties": {
+                "cancion": {
+                    "description": "Cancion Nombre de la cancion",
+                    "type": "string"
+                },
+                "como": {
+                    "description": "Como Cómo la conoció",
+                    "type": "string"
+                },
+                "cuando": {
+                    "description": "Cuando Fecha en la que el usuario conoció la canción",
+                    "type": "string"
+                },
+                "frecuencia": {
+                    "description": "Frecuencia Frecuencia con la que se escucha",
+                    "type": "string"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                }
+            }
+        },
+        "models.RelationPersonaLeGustaCancion": {
+            "type": "object",
+            "properties": {
+                "cancion": {
+                    "description": "Cancion Nombre de la cancion",
+                    "type": "string"
+                },
+                "como": {
+                    "description": "Como Cómo la conoció",
+                    "type": "string"
+                },
+                "escucha": {
+                    "description": "Escucha seguido",
+                    "type": "boolean"
+                },
+                "mas_artista": {
+                    "description": "Escucha más canciones del artista",
+                    "type": "boolean"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                }
+            }
+        },
+        "models.RelationPersonaNoLeGustaCancion": {
+            "type": "object",
+            "properties": {
+                "cambiar": {
+                    "description": "Cambiar de Opinión",
+                    "type": "boolean"
+                },
+                "cancion": {
+                    "description": "Cancion Nombre de la cancion",
+                    "type": "string"
+                },
+                "intensidad": {
+                    "description": "Intensidad de disgusto",
+                    "type": "integer"
+                },
+                "motivo": {
+                    "description": "Motivo Motivo por el que no le gusta",
+                    "type": "string"
                 },
                 "usuario": {
                     "description": "Usuario Nombre de usuario",

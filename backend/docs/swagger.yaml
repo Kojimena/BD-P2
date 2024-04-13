@@ -195,6 +195,60 @@ definitions:
         description: Usuario Nombre de usuario
         type: string
     type: object
+  models.RelationPersonaFavoritaCancion:
+    properties:
+      cancion:
+        description: Cancion Nombre de la cancion
+        type: string
+      como:
+        description: Como Cómo la conoció
+        type: string
+      cuando:
+        description: Cuando Fecha en la que el usuario conoció la canción
+        type: string
+      frecuencia:
+        description: Frecuencia Frecuencia con la que se escucha
+        type: string
+      usuario:
+        description: Usuario Nombre de usuario
+        type: string
+    type: object
+  models.RelationPersonaLeGustaCancion:
+    properties:
+      cancion:
+        description: Cancion Nombre de la cancion
+        type: string
+      como:
+        description: Como Cómo la conoció
+        type: string
+      escucha:
+        description: Escucha seguido
+        type: boolean
+      mas_artista:
+        description: Escucha más canciones del artista
+        type: boolean
+      usuario:
+        description: Usuario Nombre de usuario
+        type: string
+    type: object
+  models.RelationPersonaNoLeGustaCancion:
+    properties:
+      cambiar:
+        description: Cambiar de Opinión
+        type: boolean
+      cancion:
+        description: Cancion Nombre de la cancion
+        type: string
+      intensidad:
+        description: Intensidad de disgusto
+        type: integer
+      motivo:
+        description: Motivo Motivo por el que no le gusta
+        type: string
+      usuario:
+        description: Usuario Nombre de usuario
+        type: string
+    type: object
   models.RelationVisitaLugar:
     properties:
       categoria:
@@ -598,6 +652,96 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Crea una nueva canción
+      tags:
+      - Canciones
+  /songs/dislikes:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de (Persona)-[NO_LE_GUSTA]->(Cancion)
+      parameters:
+      - description: Relación de persona no le gusta canción
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationPersonaNoLeGustaCancion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de una persona con una canción que no le gusta
+      tags:
+      - Canciones
+  /songs/favorite:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de (Persona)-[ES_FAVORITA]->(Cancion)
+      parameters:
+      - description: Relación de persona favorita canción
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationPersonaFavoritaCancion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de una persona con una canción favorita
+      tags:
+      - Canciones
+  /songs/likes:
+    post:
+      consumes:
+      - application/json
+      description: Crea una relación de (Persona)-[LE_GUSTA]->(Cancion)
+      parameters:
+      - description: Relación de persona le gusta canción
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.RelationPersonaLeGustaCancion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una relación de una persona con una canción que le gusta
       tags:
       - Canciones
   /teams/:
