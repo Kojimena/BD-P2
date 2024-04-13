@@ -60,7 +60,7 @@ func GetTeams(c *gin.Context) {
 			Deporte:              vals["Deporte"].(string),
 			Pais:                 vals["País"].(string),
 			Division:             vals["División"].(string),
-			FechaEstablecimiento: vals["FechaDeEstablecimiento"].(dbtype.Date).Time(), // Convertir a tipo time.Time
+			FechaEstablecimiento: vals["FechaDeEstablecimiento"].(dbtype.Date).Time().String(), // Convertir a tipo time.Time
 		}
 
 		teams = append(teams, team)
@@ -108,8 +108,9 @@ func NewTeam(c *gin.Context) {
 		return
 	}
 
+	f, err := time.Parse(time.DateOnly, team.FechaEstablecimiento)
 	// Consulta para crear un nuevo equipo
-	_, err := session.Run(
+	_, err = session.Run(
 		c,
 		"CREATE (t:Equipo {Nombre: $nombre, Deporte: $deporte, País: $pais, División: $division, FechaDeEstablecimiento: date($fechaEstablecimiento)})",
 		map[string]interface{}{
@@ -117,7 +118,7 @@ func NewTeam(c *gin.Context) {
 			"deporte":              team.Deporte,
 			"pais":                 team.Pais,
 			"division":             team.Division,
-			"fechaEstablecimiento": team.FechaEstablecimiento.Format("2006-01-02"), // Convertir a string
+			"fechaEstablecimiento": f, // Convertir a string
 		},
 	)
 
