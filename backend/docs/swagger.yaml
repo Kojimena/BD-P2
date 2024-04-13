@@ -882,7 +882,7 @@ paths:
       summary: Crea una relación de apoyo entre una persona y un equipo
       tags:
       - Equipos
-  /users/{username}:
+  /users/details/{username}:
     get:
       consumes:
       - application/json

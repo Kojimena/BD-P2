@@ -734,6 +734,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/details/{username}": {
+            "get": {
+                "description": "Obtiene los detalles de un usuario dado su nombre de usuario",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Obtiene los detalles de un usuario",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos del usuario obtenidos exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/student": {
             "post": {
                 "description": "Registra un nuevo estudiante en la base de datos",
@@ -806,50 +850,6 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Error al procesar la solicitud",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/{username}": {
-            "get": {
-                "description": "Obtiene los detalles de un usuario dado su nombre de usuario",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Obtiene los detalles de un usuario",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Nombre de usuario",
-                        "name": "username",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Datos del usuario obtenidos exitosamente",
-                        "schema": {
-                            "$ref": "#/definitions/responses.StandardResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error al procesar la solicitud",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    },
-                    "500": {
                         "description": "Error al procesar la solicitud",
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorResponse"
