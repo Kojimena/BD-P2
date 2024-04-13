@@ -196,3 +196,13 @@ Content-Type: application/json
 ### Obtener detalles de cuenta
 GET http://localhost:8080/users/details/juanperez
 Accept: application/json
+
+### Iniciar sesión
+POST http://localhost:8080/users/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "password": "123456"
+}

@@ -1,4 +1,14 @@
 definitions:
+  controllers.SignInDetails:
+    properties:
+      password:
+        type: string
+      usuario:
+        type: string
+    required:
+    - password
+    - usuario
+    type: object
   models.Cancion:
     properties:
       disco:
@@ -1085,6 +1095,40 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Obtiene los detalles de un usuario
+      tags:
+      - Usuarios
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Autentica un usuario dado su nombre de usuario y contraseña
+      parameters:
+      - description: Detalles de inicio de sesión
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.SignInDetails'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuario autenticado exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: El usuario no existe
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Autentica un usuario
       tags:
       - Usuarios
   /users/profesor-student:

@@ -778,6 +778,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/login": {
+            "post": {
+                "description": "Autentica un usuario dado su nombre de usuario y contraseña",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Autentica un usuario",
+                "parameters": [
+                    {
+                        "description": "Detalles de inicio de sesión",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SignInDetails"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario autenticado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "El usuario no existe",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/profesor-student": {
             "post": {
                 "description": "Registra un nuevo profesor y estudiante en la base de datos",
@@ -900,6 +952,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.SignInDetails": {
+            "type": "object",
+            "required": [
+                "password",
+                "usuario"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Cancion": {
             "type": "object",
             "required": [

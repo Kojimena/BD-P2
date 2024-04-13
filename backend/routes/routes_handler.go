@@ -18,6 +18,8 @@ func Routes(router *gin.Engine) {
 		users.POST("/teacher", controllers.NewTeacher)
 		users.POST("/teacher-student", controllers.NewProfesorStudent)
 		users.GET("/details/:username", controllers.GetUserDetails)
+
+		users.POST("/login", controllers.Login)
 	}
 
 	careers := router.Group("/careers")
