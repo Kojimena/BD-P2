@@ -22,14 +22,14 @@ type RelationPersonaLeGustaCancion struct {
 	Usuario    string `json:"usuario" binding:"required"`     // Usuario Nombre de usuario
 	Cancion    string `json:"cancion" binding:"required"`     // Cancion Nombre de la cancion
 	Como       string `json:"como" binding:"required"`        // Como Cómo la conoció
-	Escucha    bool   `json:"escucha" binding:"required"`     // Escucha seguido
-	MasArtista bool   `json:"mas_artista" binding:"required"` // Escucha más canciones del artista
+	Escucha    *bool  `json:"escucha" binding:"required"`     // Escucha seguido
+	MasArtista *bool  `json:"mas_artista" binding:"required"` // Escucha más canciones del artista
 }
 
 type RelationPersonaNoLeGustaCancion struct {
 	Usuario    string `json:"usuario" binding:"required"`    // Usuario Nombre de usuario
 	Cancion    string `json:"cancion" binding:"required"`    // Cancion Nombre de la cancion
 	Motivo     string `json:"motivo" binding:"required"`     // Motivo Motivo por el que no le gusta
-	Cambiar    bool   `json:"cambiar" binding:"required"`    // Cambiar de Opinión
+	Cambiar    *bool  `json:"cambiar" binding:"required"`    // Cambiar de Opinión
 	Intensidad int    `json:"intensidad" binding:"required"` // Intensidad de disgusto
 }

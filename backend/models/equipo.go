@@ -17,7 +17,7 @@ type RelationApoyaEquipo struct {
 	Equipo       string `json:"equipo" binding:"required"`
 	Fecha        string `json:"fecha" binding:"required"` // Formato: "YYYY-MM-DD"
 	PorQue       string `json:"por_que" binding:"required"`
-	MiraPartidos bool   `json:"mira_partidos" binding:"required"`
+	MiraPartidos *bool  `json:"mira_partidos" binding:"required"`
 }
 
 type RelationRechazaEquipo struct {
@@ -25,5 +25,5 @@ type RelationRechazaEquipo struct {
 	Equipo       string `json:"equipo" binding:"required"`
 	Fecha        string `json:"fecha" binding:"required"` // Formato: "YYYY-MM-DD"
 	PorQue       string `json:"por_que" binding:"required"`
-	MiraPartidos bool   `json:"mira_partidos" binding:"required"`
+	MiraPartidos *bool  `json:"mira_partidos" binding:"required"`
 }
