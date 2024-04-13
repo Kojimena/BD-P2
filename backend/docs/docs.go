@@ -788,7 +788,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Usuarios"
                 ],
                 "summary": "Registra un nuevo profesor y estudiante",
                 "parameters": [

@@ -981,7 +981,7 @@ paths:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Registra un nuevo profesor y estudiante
       tags:
-      - Users
+      - Usuarios
   /users/student:
     post:
       consumes:
