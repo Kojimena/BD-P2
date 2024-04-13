@@ -84,7 +84,7 @@ Content-Type: application/json
 {
   "carrera": "Ciencias de la computación y tecnologías de la información",
   "usuario": "juanperez",
-  "interes": [
+  "intereses": [
     "Desarrollo de software"
   ],
   "recomendado": true,
