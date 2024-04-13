@@ -138,7 +138,7 @@ const FormSignUp = () => {
                     <ul tabIndex={0} className="dropdown-content bg-kaqui z-[1] menu p-2 shadow-md text-white rounded-box w-52">
                       <li><a onClick={() => {setRole('student'); setIsOpen2(false);}}>Estudiante</a></li>
                       <li><a onClick={() => {setRole('teacher'); setIsOpen2(false);}}>Maestro</a></li>
-                      <li><a onClick={() => {setRole('both'); setIsOpen2(false);}}>Ambas</a></li>
+                      <li><a onClick={() => {setRole('teacher-student'); setIsOpen2(false);}}>Ambas</a></li>
                     </ul>
                   )}
                 </div>

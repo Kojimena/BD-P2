@@ -109,3 +109,12 @@
 .inputStyle{
   @apply font-montserrat block w-full rounded-md border-0 p-2 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brown sm:text-sm sm:leading-6 focus-visible:outline-none;
 }
+
+.title{
+  @apply text-center text-4xl font-montserrat font-bold text-white
+}
+
+.glassmorph{
+  @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5;
+
+}
