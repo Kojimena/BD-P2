@@ -1,4 +1,14 @@
 definitions:
+  controllers.SignInDetails:
+    properties:
+      password:
+        type: string
+      usuario:
+        type: string
+    required:
+    - password
+    - usuario
+    type: object
   models.Cancion:
     properties:
       disco:
@@ -11,6 +21,12 @@ definitions:
         type: string
       nombre:
         type: string
+    required:
+    - disco
+    - duracion
+    - fecha_lanzamiento
+    - genero
+    - nombre
     type: object
   models.Carrera:
     properties:
@@ -24,6 +40,12 @@ definitions:
         type: string
       nombre_carrera:
         type: string
+    required:
+    - director
+    - duracion
+    - estudiantes_registrados
+    - facultad
+    - nombre_carrera
     type: object
   models.Equipo:
     properties:
@@ -37,6 +59,12 @@ definitions:
         type: string
       pais:
         type: string
+    required:
+    - deporte
+    - division
+    - fecha_establecimiento
+    - nombre
+    - pais
     type: object
   models.Estudiante:
     properties:
@@ -72,6 +100,18 @@ definitions:
         type: array
       usuario:
         type: string
+    required:
+    - apellido
+    - carnet
+    - colegio
+    - correo
+    - fecha_nacimiento
+    - foraneo
+    - genero
+    - nombre
+    - parqueo
+    - password
+    - usuario
     type: object
   models.Lugar:
     properties:
@@ -85,6 +125,12 @@ definitions:
         type: string
       tipo:
         type: string
+    required:
+    - departamento
+    - direccion
+    - foto
+    - nombre
+    - tipo
     type: object
   models.Profesor:
     properties:
@@ -97,7 +143,7 @@ definitions:
         items:
           type: string
         type: array
-      correo:
+      correo_profesor:
         type: string
       departamento:
         type: string
@@ -120,6 +166,79 @@ definitions:
         type: array
       usuario:
         type: string
+    required:
+    - apellido
+    - code
+    - correo_profesor
+    - departamento
+    - fecha_nacimiento
+    - genero
+    - jornada
+    - maestria
+    - nombre
+    - password
+    - usuario
+    type: object
+  models.ProfesorEstudiante:
+    properties:
+      apellido:
+        type: string
+      carnet:
+        type: string
+      code:
+        type: string
+      colegio:
+        type: string
+      conexiones:
+        description: Conexiones usuarios
+        items:
+          type: string
+        type: array
+      correo:
+        type: string
+      correo_profesor:
+        type: string
+      departamento:
+        type: string
+      fecha_nacimiento:
+        description: 'Formato: YYYY-MM-DD'
+        type: string
+      foraneo:
+        type: boolean
+      genero:
+        type: string
+      jornada:
+        type: string
+      maestria:
+        type: string
+      nombre:
+        type: string
+      parqueo:
+        type: boolean
+      password:
+        type: string
+      publicaciones:
+        items:
+          type: string
+        type: array
+      usuario:
+        type: string
+    required:
+    - apellido
+    - carnet
+    - code
+    - colegio
+    - correo
+    - correo_profesor
+    - departamento
+    - fecha_nacimiento
+    - foraneo
+    - genero
+    - maestria
+    - nombre
+    - parqueo
+    - password
+    - usuario
     type: object
   models.RelationApoyaEquipo:
     properties:
@@ -134,6 +253,12 @@ definitions:
         type: string
       usuario:
         type: string
+    required:
+    - equipo
+    - fecha
+    - mira_partidos
+    - por_que
+    - usuario
     type: object
   models.RelationEsSigno:
     properties:
@@ -152,6 +277,12 @@ definitions:
       usuario:
         description: Usuario Nombre de usuario
         type: string
+    required:
+    - compartir
+    - compatibilidad
+    - influencia
+    - signo
+    - usuario
     type: object
   models.RelationEstudiaCarrera:
     properties:
@@ -170,6 +301,12 @@ definitions:
       year:
         description: Year Año en el que el usuario ingresó a la carrera
         type: integer
+    required:
+    - activo
+    - apasiona
+    - carrera
+    - usuario
+    - year
     type: object
   models.RelationLeInteresaCarrera:
     properties:
@@ -190,6 +327,12 @@ definitions:
       usuario:
         description: Usuario Nombre de usuario
         type: string
+    required:
+    - carrera
+    - estudiara
+    - intereses
+    - recomendado
+    - usuario
     type: object
   models.RelationNoLeGustaLugar:
     properties:
@@ -208,6 +351,12 @@ definitions:
       usuario:
         description: Usuario Nombre de usuario
         type: string
+    required:
+    - categoria
+    - cuando
+    - lugar
+    - rating
+    - usuario
     type: object
   models.RelationPersonaFavoritaCancion:
     properties:
@@ -226,6 +375,12 @@ definitions:
       usuario:
         description: Usuario Nombre de usuario
         type: string
+    required:
+    - cancion
+    - como
+    - cuando
+    - frecuencia
+    - usuario
     type: object
   models.RelationPersonaLeGustaCancion:
     properties:
@@ -244,6 +399,12 @@ definitions:
       usuario:
         description: Usuario Nombre de usuario
         type: string
+    required:
+    - cancion
+    - como
+    - escucha
+    - mas_artista
+    - usuario
     type: object
   models.RelationPersonaNoLeGustaCancion:
     properties:
@@ -262,6 +423,12 @@ definitions:
       usuario:
         description: Usuario Nombre de usuario
         type: string
+    required:
+    - cambiar
+    - cancion
+    - intensidad
+    - motivo
+    - usuario
     type: object
   models.RelationRechazaEquipo:
     properties:
@@ -276,6 +443,12 @@ definitions:
         type: string
       usuario:
         type: string
+    required:
+    - equipo
+    - fecha
+    - mira_partidos
+    - por_que
+    - usuario
     type: object
   models.RelationVisitaLugar:
     properties:
@@ -294,6 +467,12 @@ definitions:
       usuario:
         description: Usuario Nombre de usuario
         type: string
+    required:
+    - categoria
+    - cuando
+    - lugar
+    - rating
+    - usuario
     type: object
   models.Signo:
     properties:
@@ -309,6 +488,13 @@ definitions:
         type: string
       planeta:
         type: string
+    required:
+    - dia_semana
+    - elemento
+    - metal
+    - nombre
+    - piedra
+    - planeta
     type: object
   responses.CareerResponse:
     properties:
@@ -909,6 +1095,66 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Obtiene los detalles de un usuario
+      tags:
+      - Usuarios
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Autentica un usuario dado su nombre de usuario y contraseña
+      parameters:
+      - description: Detalles de inicio de sesión
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.SignInDetails'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuario autenticado exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: El usuario no existe
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Autentica un usuario
+      tags:
+      - Usuarios
+  /users/profesor-student:
+    post:
+      consumes:
+      - application/json
+      description: Registra un nuevo profesor y estudiante en la base de datos
+      parameters:
+      - description: Profesor y estudiante a registrar
+        in: body
+        name: profesor_student
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProfesorEstudiante'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profesor y estudiante creado exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Registra un nuevo profesor y estudiante
       tags:
       - Usuarios
   /users/student:

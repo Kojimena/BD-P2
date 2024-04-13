@@ -1,32 +1,46 @@
 package models
 
 type Persona struct {
-	Nombre          string   `json:"nombre"`
-	Apellido        string   `json:"apellido"`
-	FechaNacimiento string   `json:"fecha_nacimiento"` // Formato: YYYY-MM-DD
-	Genero          string   `json:"genero"`
-	Usuario         string   `json:"usuario"`
-	Password        string   `json:"password"`
+	Nombre          string   `json:"nombre" binding:"required"`
+	Apellido        string   `json:"apellido" binding:"required"`
+	FechaNacimiento string   `json:"fecha_nacimiento" binding:"required"` // Formato: YYYY-MM-DD
+	Genero          string   `json:"genero" binding:"required"`
+	Usuario         string   `json:"usuario" binding:"required"`
+	Password        string   `json:"password" binding:"required"`
 	Publicaciones   []string `json:"publicaciones"`
 	Conexiones      []string `json:"conexiones"` // Conexiones usuarios
 }
 
 type Estudiante struct {
 	Persona
-	Carnet  string `json:"carnet"`
-	Correo  string `json:"correo"`
-	Parqueo bool   `json:"parqueo"`
-	Foraneo bool   `json:"foraneo"`
-	Colegio string `json:"colegio"`
+	Carnet  string `json:"carnet" binding:"required"`
+	Correo  string `json:"correo" binding:"required"`
+	Parqueo bool   `json:"parqueo" binding:"required"`
+	Foraneo bool   `json:"foraneo" binding:"required"`
+	Colegio string `json:"colegio" binding:"required"`
 }
 
 type Profesor struct {
 	Persona
-	Code         string `json:"code"`
-	Correo       string `json:"correo"`
-	Departamento string `json:"departamento"`
-	Maestria     string `json:"maestria"`
-	Jornada      string `json:"jornada"`
+	Code           string `json:"code" binding:"required"`
+	CorreoProfesor string `json:"correo_profesor" binding:"required"`
+	Departamento   string `json:"departamento" binding:"required"`
+	Maestria       string `json:"maestria" binding:"required"`
+	Jornada        string `json:"jornada" binding:"required"`
+}
+
+type ProfesorEstudiante struct {
+	Persona
+	Carnet         string `json:"carnet" binding:"required"`
+	Correo         string `json:"correo" binding:"required"`
+	Parqueo        bool   `json:"parqueo" binding:"required"`
+	Foraneo        bool   `json:"foraneo" binding:"required"`
+	Colegio        string `json:"colegio" binding:"required"`
+	Code           string `json:"code" binding:"required"`
+	CorreoProfesor string `json:"correo_profesor" binding:"required"`
+	Departamento   string `json:"departamento" binding:"required"`
+	Maestria       string `json:"maestria" binding:"required"`
+	Jornada        string `json:"jornada"`
 }
 
 // Ejemplo

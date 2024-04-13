@@ -1,18 +1,18 @@
 package models
 
 type Signo struct {
-	Nombre    string `json:"nombre"`
-	Elemento  string `json:"elemento"`
-	Planeta   string `json:"planeta"`
-	Piedra    string `json:"piedra"`
-	Metal     string `json:"metal"`
-	DiaSemana string `json:"dia_semana"`
+	Nombre    string `json:"nombre" binding:"required"`
+	Elemento  string `json:"elemento" binding:"required"`
+	Planeta   string `json:"planeta" binding:"required"`
+	Piedra    string `json:"piedra" binding:"required"`
+	Metal     string `json:"metal" binding:"required"`
+	DiaSemana string `json:"dia_semana" binding:"required"`
 }
 
 type RelationEsSigno struct {
-	Signo          string `json:"signo"`          // Signo Nombre del signo zodiacal del usuario
-	Usuario        string `json:"usuario"`        // Usuario Nombre de usuario
-	Compatibilidad int    `json:"compatibilidad"` // Compatibilidad Nivel de compatibilidad del signo
-	Influencia     bool   `json:"influencia"`     // Influencia del signo en la vida del usuario
-	Compartir      bool   `json:"compartir"`      // Compartir si el usuario comparte signo con el signo
+	Signo          string `json:"signo" binding:"required"`          // Signo Nombre del signo zodiacal del usuario
+	Usuario        string `json:"usuario" binding:"required"`        // Usuario Nombre de usuario
+	Compatibilidad int    `json:"compatibilidad" binding:"required"` // Compatibilidad Nivel de compatibilidad del signo
+	Influencia     bool   `json:"influencia" binding:"required"`     // Influencia del signo en la vida del usuario
+	Compartir      bool   `json:"compartir" binding:"required"`      // Compartir si el usuario comparte signo con el signo
 }

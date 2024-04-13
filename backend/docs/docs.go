@@ -778,6 +778,98 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/login": {
+            "post": {
+                "description": "Autentica un usuario dado su nombre de usuario y contraseña",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Autentica un usuario",
+                "parameters": [
+                    {
+                        "description": "Detalles de inicio de sesión",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SignInDetails"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario autenticado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "El usuario no existe",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/profesor-student": {
+            "post": {
+                "description": "Registra un nuevo profesor y estudiante en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Registra un nuevo profesor y estudiante",
+                "parameters": [
+                    {
+                        "description": "Profesor y estudiante a registrar",
+                        "name": "profesor_student",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProfesorEstudiante"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profesor y estudiante creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/student": {
             "post": {
                 "description": "Registra un nuevo estudiante en la base de datos",
@@ -860,8 +952,30 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.SignInDetails": {
+            "type": "object",
+            "required": [
+                "password",
+                "usuario"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Cancion": {
             "type": "object",
+            "required": [
+                "disco",
+                "duracion",
+                "fecha_lanzamiento",
+                "genero",
+                "nombre"
+            ],
             "properties": {
                 "disco": {
                     "type": "string"
@@ -882,6 +996,13 @@ const docTemplate = `{
         },
         "models.Carrera": {
             "type": "object",
+            "required": [
+                "director",
+                "duracion",
+                "estudiantes_registrados",
+                "facultad",
+                "nombre_carrera"
+            ],
             "properties": {
                 "director": {
                     "type": "string"
@@ -902,6 +1023,13 @@ const docTemplate = `{
         },
         "models.Equipo": {
             "type": "object",
+            "required": [
+                "deporte",
+                "division",
+                "fecha_establecimiento",
+                "nombre",
+                "pais"
+            ],
             "properties": {
                 "deporte": {
                     "type": "string"
@@ -922,6 +1050,19 @@ const docTemplate = `{
         },
         "models.Estudiante": {
             "type": "object",
+            "required": [
+                "apellido",
+                "carnet",
+                "colegio",
+                "correo",
+                "fecha_nacimiento",
+                "foraneo",
+                "genero",
+                "nombre",
+                "parqueo",
+                "password",
+                "usuario"
+            ],
             "properties": {
                 "apellido": {
                     "type": "string"
@@ -974,6 +1115,13 @@ const docTemplate = `{
         },
         "models.Lugar": {
             "type": "object",
+            "required": [
+                "departamento",
+                "direccion",
+                "foto",
+                "nombre",
+                "tipo"
+            ],
             "properties": {
                 "departamento": {
                     "type": "string"
@@ -994,6 +1142,19 @@ const docTemplate = `{
         },
         "models.Profesor": {
             "type": "object",
+            "required": [
+                "apellido",
+                "code",
+                "correo_profesor",
+                "departamento",
+                "fecha_nacimiento",
+                "genero",
+                "jornada",
+                "maestria",
+                "nombre",
+                "password",
+                "usuario"
+            ],
             "properties": {
                 "apellido": {
                     "type": "string"
@@ -1008,7 +1169,7 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
-                "correo": {
+                "correo_profesor": {
                     "type": "string"
                 },
                 "departamento": {
@@ -1044,8 +1205,99 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ProfesorEstudiante": {
+            "type": "object",
+            "required": [
+                "apellido",
+                "carnet",
+                "code",
+                "colegio",
+                "correo",
+                "correo_profesor",
+                "departamento",
+                "fecha_nacimiento",
+                "foraneo",
+                "genero",
+                "maestria",
+                "nombre",
+                "parqueo",
+                "password",
+                "usuario"
+            ],
+            "properties": {
+                "apellido": {
+                    "type": "string"
+                },
+                "carnet": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "colegio": {
+                    "type": "string"
+                },
+                "conexiones": {
+                    "description": "Conexiones usuarios",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "correo": {
+                    "type": "string"
+                },
+                "correo_profesor": {
+                    "type": "string"
+                },
+                "departamento": {
+                    "type": "string"
+                },
+                "fecha_nacimiento": {
+                    "description": "Formato: YYYY-MM-DD",
+                    "type": "string"
+                },
+                "foraneo": {
+                    "type": "boolean"
+                },
+                "genero": {
+                    "type": "string"
+                },
+                "jornada": {
+                    "type": "string"
+                },
+                "maestria": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "parqueo": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "publicaciones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
         "models.RelationApoyaEquipo": {
             "type": "object",
+            "required": [
+                "equipo",
+                "fecha",
+                "mira_partidos",
+                "por_que",
+                "usuario"
+            ],
             "properties": {
                 "equipo": {
                     "type": "string"
@@ -1067,6 +1319,13 @@ const docTemplate = `{
         },
         "models.RelationEsSigno": {
             "type": "object",
+            "required": [
+                "compartir",
+                "compatibilidad",
+                "influencia",
+                "signo",
+                "usuario"
+            ],
             "properties": {
                 "compartir": {
                     "description": "Compartir si el usuario comparte signo con el signo",
@@ -1092,6 +1351,13 @@ const docTemplate = `{
         },
         "models.RelationEstudiaCarrera": {
             "type": "object",
+            "required": [
+                "activo",
+                "apasiona",
+                "carrera",
+                "usuario",
+                "year"
+            ],
             "properties": {
                 "activo": {
                     "description": "Activo si el usuario está activo en la carrera",
@@ -1117,6 +1383,13 @@ const docTemplate = `{
         },
         "models.RelationLeInteresaCarrera": {
             "type": "object",
+            "required": [
+                "carrera",
+                "estudiara",
+                "intereses",
+                "recomendado",
+                "usuario"
+            ],
             "properties": {
                 "carrera": {
                     "description": "Carrera Nombre de la carrera",
@@ -1145,6 +1418,13 @@ const docTemplate = `{
         },
         "models.RelationNoLeGustaLugar": {
             "type": "object",
+            "required": [
+                "categoria",
+                "cuando",
+                "lugar",
+                "rating",
+                "usuario"
+            ],
             "properties": {
                 "categoria": {
                     "description": "Categoria Categoria del lugar",
@@ -1170,6 +1450,13 @@ const docTemplate = `{
         },
         "models.RelationPersonaFavoritaCancion": {
             "type": "object",
+            "required": [
+                "cancion",
+                "como",
+                "cuando",
+                "frecuencia",
+                "usuario"
+            ],
             "properties": {
                 "cancion": {
                     "description": "Cancion Nombre de la cancion",
@@ -1195,6 +1482,13 @@ const docTemplate = `{
         },
         "models.RelationPersonaLeGustaCancion": {
             "type": "object",
+            "required": [
+                "cancion",
+                "como",
+                "escucha",
+                "mas_artista",
+                "usuario"
+            ],
             "properties": {
                 "cancion": {
                     "description": "Cancion Nombre de la cancion",
@@ -1220,6 +1514,13 @@ const docTemplate = `{
         },
         "models.RelationPersonaNoLeGustaCancion": {
             "type": "object",
+            "required": [
+                "cambiar",
+                "cancion",
+                "intensidad",
+                "motivo",
+                "usuario"
+            ],
             "properties": {
                 "cambiar": {
                     "description": "Cambiar de Opinión",
@@ -1245,6 +1546,13 @@ const docTemplate = `{
         },
         "models.RelationRechazaEquipo": {
             "type": "object",
+            "required": [
+                "equipo",
+                "fecha",
+                "mira_partidos",
+                "por_que",
+                "usuario"
+            ],
             "properties": {
                 "equipo": {
                     "type": "string"
@@ -1266,6 +1574,13 @@ const docTemplate = `{
         },
         "models.RelationVisitaLugar": {
             "type": "object",
+            "required": [
+                "categoria",
+                "cuando",
+                "lugar",
+                "rating",
+                "usuario"
+            ],
             "properties": {
                 "categoria": {
                     "description": "Categoria Categoria del lugar",
@@ -1291,6 +1606,14 @@ const docTemplate = `{
         },
         "models.Signo": {
             "type": "object",
+            "required": [
+                "dia_semana",
+                "elemento",
+                "metal",
+                "nombre",
+                "piedra",
+                "planeta"
+            ],
             "properties": {
                 "dia_semana": {
                     "type": "string"
