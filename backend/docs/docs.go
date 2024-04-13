@@ -830,6 +830,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/post": {
+            "post": {
+                "description": "Crea una nueva publicación para un usuario. Si el usuario no tiene publicaciones, se crea la propiedad Publicaciones, de lo contrario, se actualiza la propiedad Publicaciones",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Publicaciones"
+                ],
+                "summary": "Crea una nueva publicación",
+                "parameters": [
+                    {
+                        "description": "Publicación a crear",
+                        "name": "publication",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.NewPublicationInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Publicación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "El usuario no existe",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/profesor-student": {
             "post": {
                 "description": "Registra un nuevo profesor y estudiante en la base de datos",
@@ -952,6 +1004,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.NewPublicationInput": {
+            "type": "object",
+            "required": [
+                "contenido",
+                "usuario"
+            ],
+            "properties": {
+                "contenido": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.SignInDetails": {
             "type": "object",
             "required": [

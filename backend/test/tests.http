@@ -226,3 +226,13 @@ Content-Type: application/json
   "usuario": "juanperez",
   "password": "123456"
 }
+
+### Añadir publicación
+POST http://localhost:8080/users/post
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "contenido": "Hola, soy Juan Perez 2"
+}

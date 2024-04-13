@@ -367,3 +367,110 @@ func Login(c *gin.Context) {
 		},
 	})
 }
+
+type NewPublicationInput struct {
+	Usuario   string `json:"usuario" binding:"required"`
+	Contenido string `json:"contenido" binding:"required"`
+}
+
+// NewPublication Crea una nueva publicación
+// @Summary Crea una nueva publicación
+// @Description Crea una nueva publicación para un usuario. Si el usuario no tiene publicaciones, se crea la propiedad Publicaciones, de lo contrario, se actualiza la propiedad Publicaciones
+// @Tags Publicaciones
+// @Accept json
+// @Produce json
+// @Param publication body NewPublicationInput true "Publicación a crear"
+// @Success 200 {object} responses.StandardResponse "Publicación creada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 404 {object} responses.ErrorResponse "El usuario no existe"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /users/post [post]
+func NewPublication(c *gin.Context) {
+	var np NewPublicationInput
+
+	if err := c.ShouldBindJSON(&np); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El cuerpo de la solicitud no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer session.Close(c)
+
+	var usuario models.Persona
+	var hasPublications = false
+
+	r, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}) RETURN p",
+		map[string]interface{}{
+			"usuario": np.Usuario,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al obtener los datos del usuario",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	for r.Next(c) {
+		vals := r.Record().Values[0].(neo4j.Node).Props
+
+		usuario = models.Persona{
+			Usuario: vals["Usuario"].(string),
+		}
+
+		if vals["Publicaciones"] != nil {
+			hasPublications = true
+		}
+	}
+
+	if usuario.Usuario == "" {
+		c.JSON(http.StatusNotFound, responses.ErrorResponse{
+			Status:  http.StatusNotFound,
+			Message: "El usuario no existe",
+			Error:   "El usuario no existe",
+		})
+		return
+	}
+
+	if !hasPublications {
+		_, err = session.Run(
+			c,
+			"MATCH (p:Persona {Usuario: $usuario}) SET p.Publicaciones = [$contenido]",
+			map[string]interface{}{
+				"usuario":   np.Usuario,
+				"contenido": np.Contenido,
+			})
+	} else {
+		_, err = session.Run(
+			c,
+			"MATCH (p:Persona {Usuario: $usuario}) SET p.Publicaciones = p.Publicaciones + $contenido",
+			map[string]interface{}{
+				"usuario":   np.Usuario,
+				"contenido": np.Contenido,
+			})
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear la publicación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Publicación creada exitosamente",
+		Data:    nil,
+	})
+}

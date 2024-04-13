@@ -1,4 +1,14 @@
 definitions:
+  controllers.NewPublicationInput:
+    properties:
+      contenido:
+        type: string
+      usuario:
+        type: string
+    required:
+    - contenido
+    - usuario
+    type: object
   controllers.SignInDetails:
     properties:
       password:
@@ -1131,6 +1141,42 @@ paths:
       summary: Autentica un usuario
       tags:
       - Usuarios
+  /users/post:
+    post:
+      consumes:
+      - application/json
+      description: Crea una nueva publicación para un usuario. Si el usuario no tiene
+        publicaciones, se crea la propiedad Publicaciones, de lo contrario, se actualiza
+        la propiedad Publicaciones
+      parameters:
+      - description: Publicación a crear
+        in: body
+        name: publication
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.NewPublicationInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Publicación creada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: El usuario no existe
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Crea una nueva publicación
+      tags:
+      - Publicaciones
   /users/profesor-student:
     post:
       consumes:
