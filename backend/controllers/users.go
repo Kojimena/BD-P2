@@ -120,7 +120,16 @@ func NewTeacher(c *gin.Context) {
 	// crear nodo Profesor (con label Profesor y Persona)
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	f, _ := time.Parse(time.DateOnly, teacher.FechaNacimiento)
 
@@ -185,7 +194,16 @@ func NewProfesorStudent(c *gin.Context) {
 	// crear nodo Profesor (con label Profesor y Persona)
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	f, _ := time.Parse(time.DateOnly, ps.FechaNacimiento)
 
@@ -254,7 +272,16 @@ func GetUserDetails(c *gin.Context) {
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	r, err := session.Run(
 		c,
@@ -354,7 +381,16 @@ func Login(c *gin.Context) {
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	r, err := session.Run(
 		c,
@@ -429,7 +465,16 @@ func NewPublication(c *gin.Context) {
 
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	var usuario models.Persona
 	var hasPublications = false
@@ -519,7 +564,16 @@ func ClearPublications(c *gin.Context) {
 	user := c.Param("username")
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
-	defer session.Close(c)
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
 
 	_, err := session.Run(
 		c,
@@ -540,6 +594,73 @@ func ClearPublications(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.StandardResponse{
 		Status:  http.StatusOK,
 		Message: "Publicaciones limpiadas exitosamente",
+		Data:    nil,
+	})
+}
+
+type DeleteRelationsInput struct {
+	Usuario  string `json:"usuario" binding:"required"`  // Usuario de la persona
+	Nombre   string `json:"nombre" binding:"required"`   // Nombre del nodo de la relación
+	Relation string `json:"relation" binding:"required"` // Relación a eliminar
+}
+
+// DeleteRelations Elimina relaciones de un nodo
+// @Summary Elimina relaciones de un nodo
+// @Description Elimina relaciones de un nodo dado el nombre del nodo, el nombre de la relación y el nombre de usuario
+// @Tags Usuarios
+// @Accept json
+// @Produce json
+// @Param relations body DeleteRelationsInput true "Relaciones a eliminar"
+// @Success 200 {object} responses.StandardResponse "Relación eliminada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al eliminar la relación"
+// @Router /relations/delete [post]
+func DeleteRelations(c *gin.Context) {
+	var dr DeleteRelationsInput
+
+	if err := c.ShouldBindJSON(&dr); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El cuerpo de la solicitud no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	_, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r:$relation]->(n:$nombre) DELETE r",
+		map[string]interface{}{
+			"usuario":  dr.Usuario,
+			"relation": dr.Relation,
+			"nombre":   dr.Nombre,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al eliminar la relación",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relación eliminada exitosamente",
 		Data:    nil,
 	})
 }
