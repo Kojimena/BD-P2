@@ -50,7 +50,7 @@ func NewStudent(c *gin.Context) {
 
 	r, err := session.Run(
 		c,
-		"CREATE (p:Persona:Estudiante {nombre: $nombre, apellido: $apellido, fecha_nacimiento: $fecha_nacimiento, genero: $genero, usuario: $usuario, password: $password, carnet: $carnet, correo: $correo, parqueo: $parqueo, foraneo: $foraneo, colegio: $colegio})",
+		"CREATE (p:Persona:Estudiante {Nombre: $nombre, Apellido: $apellido, FechaNacimiento: $fecha_nacimiento, Genero: $genero, Usuario: $usuario, Password: $password, Carnet: $carnet, Correo: $correo, Parqueo: $parqueo, Foraneo: $foraneo, Colegio: $colegio})",
 		map[string]interface{}{
 			"nombre":           student.Nombre,
 			"apellido":         student.Apellido,
@@ -113,7 +113,7 @@ func NewTeacher(c *gin.Context) {
 
 	r, err := session.Run(
 		c,
-		"CREATE (p:Persona:Profesor {nombre: $nombre, apellido: $apellido, fecha_nacimiento: $fecha_nacimiento, genero: $genero, usuario: $usuario, password: $password, code: $code, correo: $correo, departamento: $departamento, maestria: $maestria, jornada: $jornada})",
+		"CREATE (p:Persona:Profesor {Nombre: $nombre, Apellido: $apellido, FechaNacimiento: $fecha_nacimiento, Genero: $genero, Usuario: $usuario, Password: $password, Code: $code, Correo: $correo, Departamento: $departamento, Maestria: $maestria, Jornada: $jornada})",
 		map[string]interface{}{
 			"nombre":           teacher.Nombre,
 			"apellido":         teacher.Apellido,
