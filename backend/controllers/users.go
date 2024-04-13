@@ -272,12 +272,12 @@ func GetUserDetails(c *gin.Context) {
 		return
 	}
 
-	var vals map[string]interface{}
+	var properties map[string]interface{}
 	for r.Next(c) {
-		vals = r.Record().Values[0].(neo4j.Node).Props
+		properties = r.Record().Values[0].(neo4j.Node).Props
 	}
 
-	if vals == nil {
+	if properties == nil {
 		c.JSON(http.StatusNotFound, responses.ErrorResponse{
 			Status:  http.StatusNotFound,
 			Message: "El usuario no existe",
@@ -286,10 +286,40 @@ func GetUserDetails(c *gin.Context) {
 		return
 	}
 
+	r, err = session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r:ES_FAVORITA]-(m) return m,r",
+		map[string]interface{}{
+			"usuario": user,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al obtener los datos del usuario",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	var relations []map[string]interface{}
+	for r.Next(c) {
+		nodeTo := r.Record().Values[0].(neo4j.Node)
+		rel := r.Record().Values[1].(neo4j.Relationship)
+
+		relations = append(relations, map[string]interface{}{
+			nodeTo.Labels[0]: nodeTo.Props,
+			rel.Type:         rel.Props,
+		})
+	}
+
 	c.JSON(http.StatusOK, responses.StandardResponse{
 		Status:  http.StatusOK,
 		Message: "Datos del usuario obtenidos exitosamente",
-		Data:    vals,
+		Data: map[string]interface{}{
+			"properties": properties,
+			"relations":  relations,
+		},
 	})
 }
 
