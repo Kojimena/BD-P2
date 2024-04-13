@@ -169,7 +169,7 @@ func NewTeacher(c *gin.Context) {
 // @Success 200 {object} responses.StandardResponse "Datos del usuario obtenidos exitosamente"
 // @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
 // @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
-// @Router /users/{username} [get]
+// @Router /users/details/{username} [get]
 func GetUserDetails(c *gin.Context) {
 	user := c.Param("username")
 
