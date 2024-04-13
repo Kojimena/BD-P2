@@ -37,7 +37,7 @@ func main() {
 	docs.SwaggerInfo.Title = "Bases de Datos 2 Proyecto 2: Backend"
 	docs.SwaggerInfo.Description = "API para el backend del proyecto 2 de Bases de Datos 2"
 	docs.SwaggerInfo.Version = "0.1.0"
-	docs.SwaggerInfo.Host = "https://super-trixi-kojimena.koyeb.app"
+	docs.SwaggerInfo.Host = "super-trixi-kojimena.koyeb.app"
 	docs.SwaggerInfo.BasePath = "/"
 
 	routes.Routes(router)
