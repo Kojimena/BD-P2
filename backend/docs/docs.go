@@ -318,7 +318,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/signs/relation": {
+        "/signs/is": {
             "post": {
                 "description": "Crea una relación entre un usuario y un signo zodiacal. La relación define de qué signo es el usuario, la compatibilidad, la influencia y si al usuario le gusta compartir su signo zodiacal",
                 "consumes": [

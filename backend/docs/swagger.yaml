@@ -792,7 +792,7 @@ paths:
       summary: Obtiene todos los signos zodiacales
       tags:
       - Signos Zodiacales
-  /signs/relation:
+  /signs/is:
     post:
       consumes:
       - application/json

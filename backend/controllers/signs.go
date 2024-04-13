@@ -81,7 +81,7 @@ func GetZodiacalSigns(c *gin.Context) {
 // @Param relation body models.RelationEsSigno true "Relación a crear"
 // @Success 200 {object} responses.StandardResponse "Relación ES_SIGNO creada exitosamente"
 // @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
-// @Router /signs/relation [post]
+// @Router /signs/is [post]
 func CreateRelationIsSign(c *gin.Context) {
 	var relation models.RelationEsSigno
 
