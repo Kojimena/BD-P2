@@ -12,6 +12,7 @@ const FormRol = ({lastdata , role}) => {
     const [departamento, setDepartamento] = useState('')
     const [correoTeacher, setCorreoTeacher] = useState('')
     const [jornada, setJornada] = useState('')
+    const [maestria, setMaestria] = useState('')
     let data = {}
     console.log(role)
     console.log(lastdata)
@@ -20,7 +21,6 @@ const FormRol = ({lastdata , role}) => {
     const [toggles, setToggles] = useState({
         toggle1 : false,
         toggle2 : false,
-        toggle3 : false,
     })
 
     const handleToggle = (name) => {
@@ -56,6 +56,10 @@ const FormRol = ({lastdata , role}) => {
         setCorreoTeacher(e.target.value)
     }
 
+    const handleMaestriaChange = (e) => {
+        setMaestria(e.target.value)
+    }
+
     const handleFormSubmit = async (e,role) => {
         e.preventDefault()
         
@@ -68,23 +72,23 @@ const FormRol = ({lastdata , role}) => {
         } : null
 
         role === 'teacher' ? data = {
-            "codigo": codigo,
-            "correo": correoTeacher,
+            "code": codigo,
+            "correo_profesor": correoTeacher,
             "departamento": departamento,
-            "maestria": toggles.toggle3,
+            "maestria": maestria,
             "jornada": jornada
         } : null
 
-        role === 'both' ? data = {
+        role === 'teacher-student' ? data = {
             "carnet": carnet,
-            "correoEstudiante": correoStudent,
+            "correo": correoStudent,
             "parqueo": toggles.toggle1,
             "foraneo": toggles.toggle2,
             "colegio": colegio,
-            "codigo": codigo,
-            "correoMaestro": correoTeacher,
+            "code": codigo,
+            "correo_profesor": correoTeacher,
             "departamento": departamento,
-            "maestria": toggles.toggle3,
+            "maestria": maestria,
             "jornada": jornada
         } : null
 
@@ -99,7 +103,13 @@ const FormRol = ({lastdata , role}) => {
             body: JSON.stringify(data)
         })
         if (response.ok) {
-            router.push('/login')
+            if (role === 'student') {
+                router.push('/student')
+            } else if (role === 'teacher') {
+                router.push('/teacher')
+            } else if (role === 'teacher-student') {
+                router.push('/studentTeacher')
+            }
         } else {
             const responseData = await response.json()
             console.log(responseData)
@@ -154,11 +164,9 @@ const FormRol = ({lastdata , role}) => {
                         <input className='inputStyle' type='email' placeholder='Departamento' onChange={handleDepartamentoChange}/>
                     </div>
 
-                    <div className="form-control p-4">
-                        <label className="cursor-pointer gap-4 flex justify-start items-center">
-                            <span className="label">Maestria?</span> 
-                            <input type="checkbox" className="toggle toggle-success" onChange={() => handleToggle('toggle3')} checked={toggles.toggle3} />
-                        </label>
+                    <div className="sm:col-span-3">
+                            <span className="label">Maestría</span> 
+                            <input type="text" className='inputStyle' placeholder='Maestría' onChange={handleMaestriaChange}/>
                     </div>
 
                     <div className="sm:col-span-3">
@@ -166,9 +174,9 @@ const FormRol = ({lastdata , role}) => {
                             <div tabIndex={0} role="button" className="btn m-1 bg-kaqui hover:bg-brown text-white w-full" onClick={() => setIsOpen(!isOpen)}>{jornada? jornada : 'Jornada'}</div>
                             {isOpen && (
                                 <ul tabIndex={0} className="dropdown-content bg-kaqui z-[1] menu p-2 shadow-md text-white rounded-box w-52">
-                                    <li><a onClick={() => handleChange('Matutina')}>Matutina</a></li>
-                                    <li><a onClick={() => handleChange('Vespertina')}>Vespertina</a></li>
-                                    <li><a onClick={() => handleChange('Ambas')}>Ambas</a></li>
+                                    <li><a onClick={() => setJornada('Matutina')}>Matutina</a></li>
+                                    <li><a onClick={() => setJornada('Vespertina')}>Vespertina</a></li>
+                                    <li><a onClick={() => setJornada('Ambas')}>Ambas</a></li>
                                 </ul>
                             )}
                         </div>
@@ -177,7 +185,7 @@ const FormRol = ({lastdata , role}) => {
 
             ) : null}
 
-            {role === 'both' ? (
+            {role === 'teacher-student' ? (
                 <div className='flex flex-col w-full justify-start'>
                     <div className="sm:col-span-3">
                         <label className='label'>Carnet</label>
@@ -218,11 +226,9 @@ const FormRol = ({lastdata , role}) => {
                         <input className='inputStyle' type='email' placeholder='Departamento' onChange={handleDepartamentoChange}/>
                     </div>
 
-                    <div className="form-control p-4">
-                        <label className="cursor-pointer gap-4 flex justify-start items-center">
-                            <span className="label">Maestria?</span> 
-                            <input type="checkbox" className="toggle toggle-success" onChange={() => handleToggle('toggle3')} checked={toggles.toggle3} />
-                        </label>
+                    <div className="sm:col-span-3">
+                            <span className="label">Maestría</span> 
+                            <input type="text" className='inputStyle' placeholder='Maestría' onChange={handleMaestriaChange}/>
                     </div>
 
                     <div className="sm:col-span-3">
