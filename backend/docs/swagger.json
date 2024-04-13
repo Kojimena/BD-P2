@@ -767,6 +767,46 @@
                 }
             }
         },
+        "/users/profesor-student": {
+            "post": {
+                "description": "Registra un nuevo profesor y estudiante en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Registra un nuevo profesor y estudiante",
+                "parameters": [
+                    {
+                        "description": "Profesor y estudiante a registrar",
+                        "name": "profesor_student",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProfesorEstudiante"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profesor y estudiante creado exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/student": {
             "post": {
                 "description": "Registra un nuevo estudiante en la base de datos",
@@ -997,7 +1037,7 @@
                         "type": "string"
                     }
                 },
-                "correo": {
+                "correo_profesor": {
                     "type": "string"
                 },
                 "departamento": {
@@ -1018,6 +1058,73 @@
                 },
                 "nombre": {
                     "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "publicaciones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ProfesorEstudiante": {
+            "type": "object",
+            "properties": {
+                "apellido": {
+                    "type": "string"
+                },
+                "carnet": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "colegio": {
+                    "type": "string"
+                },
+                "conexiones": {
+                    "description": "Conexiones usuarios",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "correo": {
+                    "type": "string"
+                },
+                "correo_profesor": {
+                    "type": "string"
+                },
+                "departamento": {
+                    "type": "string"
+                },
+                "fecha_nacimiento": {
+                    "description": "Formato: YYYY-MM-DD",
+                    "type": "string"
+                },
+                "foraneo": {
+                    "type": "boolean"
+                },
+                "genero": {
+                    "type": "string"
+                },
+                "jornada": {
+                    "type": "string"
+                },
+                "maestria": {
+                    "type": "string"
+                },
+                "nombre": {
+                    "type": "string"
+                },
+                "parqueo": {
+                    "type": "boolean"
                 },
                 "password": {
                     "type": "string"

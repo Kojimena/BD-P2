@@ -22,11 +22,25 @@ type Estudiante struct {
 
 type Profesor struct {
 	Persona
-	Code         string `json:"code"`
-	Correo       string `json:"correo"`
-	Departamento string `json:"departamento"`
-	Maestria     string `json:"maestria"`
-	Jornada      string `json:"jornada"`
+	Code           string `json:"code"`
+	CorreoProfesor string `json:"correo_profesor"`
+	Departamento   string `json:"departamento"`
+	Maestria       string `json:"maestria"`
+	Jornada        string `json:"jornada"`
+}
+
+type ProfesorEstudiante struct {
+	Persona
+	Carnet         string `json:"carnet"`
+	Correo         string `json:"correo"`
+	Parqueo        bool   `json:"parqueo"`
+	Foraneo        bool   `json:"foraneo"`
+	Colegio        string `json:"colegio"`
+	Code           string `json:"code"`
+	CorreoProfesor string `json:"correo_profesor"`
+	Departamento   string `json:"departamento"`
+	Maestria       string `json:"maestria"`
+	Jornada        string `json:"jornada"`
 }
 
 // Ejemplo

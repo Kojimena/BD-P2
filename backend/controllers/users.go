@@ -126,7 +126,7 @@ func NewTeacher(c *gin.Context) {
 
 	r, err := session.Run(
 		c,
-		"CREATE (p:Persona:Profesor {Nombre: $nombre, Apellido: $apellido, FechaNacimiento: $fecha_nacimiento, Genero: $genero, Usuario: $usuario, Password: $password, Code: $code, Correo: $correo, Departamento: $departamento, Maestria: $maestria, Jornada: $jornada})",
+		"CREATE (p:Persona:Profesor {Nombre: $nombre, Apellido: $apellido, FechaNacimiento: $fecha_nacimiento, Genero: $genero, Usuario: $usuario, Password: $password, Code: $code, CorreoProfesor: $correo, Departamento: $departamento, Maestria: $maestria, Jornada: $jornada})",
 		map[string]interface{}{
 			"nombre":           teacher.Nombre,
 			"apellido":         teacher.Apellido,
@@ -135,7 +135,7 @@ func NewTeacher(c *gin.Context) {
 			"usuario":          teacher.Usuario,
 			"password":         teacher.Password,
 			"code":             teacher.Code,
-			"correo":           teacher.Correo,
+			"correo":           teacher.CorreoProfesor,
 			"departamento":     teacher.Departamento,
 			"maestria":         teacher.Maestria,
 			"jornada":          teacher.Jornada,
@@ -155,6 +155,76 @@ func NewTeacher(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.StandardResponse{
 		Status:  http.StatusOK,
 		Message: "Profesor creado exitosamente",
+		Data:    nil,
+	})
+}
+
+// NewProfesorStudent Registra un nuevo profesor y estudiante
+// @Summary Registra un nuevo profesor y estudiante
+// @Description Registra un nuevo profesor y estudiante en la base de datos
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param profesor_student body models.ProfesorEstudiante true "Profesor y estudiante a registrar"
+// @Success 200 {object} responses.StandardResponse "Profesor y estudiante creado exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /users/profesor-student [post]
+func NewProfesorStudent(c *gin.Context) {
+	var ps models.ProfesorEstudiante
+
+	if err := c.ShouldBindJSON(&ps); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El cuerpo de la solicitud no es válido",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	fmt.Println(ps)
+	// crear nodo Profesor (con label Profesor y Persona)
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close(c)
+
+	f, _ := time.Parse(time.DateOnly, ps.FechaNacimiento)
+
+	r, err := session.Run(
+		c,
+		"CREATE (p:Persona:Profesor:Estudiante {Nombre: $nombre, Apellido: $apellido, FechaNacimiento: $fecha_nacimiento, Genero: $genero, Usuario: $usuario, Password: $password, Code: $code, CorreoProfesor: $correo_profesor, Departamento: $departamento, Maestria: $maestria, Jornada: $jornada, Carnet: $carnet, Correo: $correo, Parqueo: $parqueo, Foraneo: $foraneo, Colegio: $colegio})",
+		map[string]interface{}{
+			"nombre":           ps.Nombre,
+			"apellido":         ps.Apellido,
+			"fecha_nacimiento": f,
+			"genero":           ps.Genero,
+			"usuario":          ps.Usuario,
+			"password":         ps.Password,
+			"code":             ps.Code,
+			"correo_profesor":  ps.CorreoProfesor,
+			"departamento":     ps.Departamento,
+			"maestria":         ps.Maestria,
+			"jornada":          ps.Jornada,
+			"carnet":           ps.Carnet,
+			"correo":           ps.Correo,
+			"parqueo":          ps.Parqueo,
+			"foraneo":          ps.Foraneo,
+			"colegio":          ps.Colegio,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al crear el profesor",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	fmt.Println(r.Single(c))
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Profesor/Estudiante creado exitosamente",
 		Data:    nil,
 	})
 }

@@ -97,7 +97,7 @@ definitions:
         items:
           type: string
         type: array
-      correo:
+      correo_profesor:
         type: string
       departamento:
         type: string
@@ -112,6 +112,51 @@ definitions:
         type: string
       nombre:
         type: string
+      password:
+        type: string
+      publicaciones:
+        items:
+          type: string
+        type: array
+      usuario:
+        type: string
+    type: object
+  models.ProfesorEstudiante:
+    properties:
+      apellido:
+        type: string
+      carnet:
+        type: string
+      code:
+        type: string
+      colegio:
+        type: string
+      conexiones:
+        description: Conexiones usuarios
+        items:
+          type: string
+        type: array
+      correo:
+        type: string
+      correo_profesor:
+        type: string
+      departamento:
+        type: string
+      fecha_nacimiento:
+        description: 'Formato: YYYY-MM-DD'
+        type: string
+      foraneo:
+        type: boolean
+      genero:
+        type: string
+      jornada:
+        type: string
+      maestria:
+        type: string
+      nombre:
+        type: string
+      parqueo:
+        type: boolean
       password:
         type: string
       publicaciones:
@@ -911,6 +956,32 @@ paths:
       summary: Obtiene los detalles de un usuario
       tags:
       - Usuarios
+  /users/profesor-student:
+    post:
+      consumes:
+      - application/json
+      description: Registra un nuevo profesor y estudiante en la base de datos
+      parameters:
+      - description: Profesor y estudiante a registrar
+        in: body
+        name: profesor_student
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProfesorEstudiante'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profesor y estudiante creado exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Registra un nuevo profesor y estudiante
+      tags:
+      - Users
   /users/student:
     post:
       consumes:

@@ -30,7 +30,31 @@ Content-Type: application/json
   "usuario": "JDOE",
   "password": "123456",
   "code": "19999",
-  "correo": "jdoe@uvg.edu.gt",
+  "correo_profesor": "jdoe@uvg.edu.gt",
+  "departamento": "Departamento de Matematicas",
+  "maestria": "Matematicas",
+  "jornada": "Matutina"
+}
+
+### Crear Profesor que también es Estudiante
+POST http://localhost:8080/users/teacher-student
+Accept: application/json
+Content-Type: application/json
+
+{
+  "nombre": "David",
+  "apellido": "Perez",
+  "fecha_nacimiento": "1990-01-01",
+  "genero": "M",
+  "usuario": "davidperez",
+  "password": "123456",
+  "carnet": "21654",
+  "correo": "dperz@gmail.com",
+  "parqueo": false,
+  "foranteo": false,
+  "colegio": "Colegio de San Francisco",
+  "code": "19562",
+  "correo_profesor": "dper@uvg.edu.gt",
   "departamento": "Departamento de Matematicas",
   "maestria": "Matematicas",
   "jornada": "Matutina"
