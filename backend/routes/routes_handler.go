@@ -29,6 +29,7 @@ func Routes(router *gin.Engine) {
 
 		users.POST("/login", controllers.Login)
 		users.POST("/post", controllers.NewPublication)
+		users.DELETE("/clear/:username", controllers.ClearPublications)
 	}
 
 	careers := router.Group("/careers")

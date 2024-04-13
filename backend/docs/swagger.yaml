@@ -1261,6 +1261,31 @@ paths:
       summary: Crea una relación de apoyo entre una persona y un equipo
       tags:
       - Equipos
+  /users/clear/{username}:
+    delete:
+      consumes:
+      - application/json
+      description: Limpia las publicaciones de un usuario en la base de datos
+      parameters:
+      - description: Nombre de usuario
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Publicaciones limpiadas exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "500":
+          description: Error al limpiar las publicaciones
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Limpia las publicaciones de un usuario en la base de datos
+      tags:
+      - Publicaciones
   /users/details/{username}:
     get:
       consumes:

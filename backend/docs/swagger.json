@@ -874,6 +874,44 @@
                 }
             }
         },
+        "/users/clear/{username}": {
+            "delete": {
+                "description": "Limpia las publicaciones de un usuario en la base de datos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Publicaciones"
+                ],
+                "summary": "Limpia las publicaciones de un usuario en la base de datos",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Publicaciones limpiadas exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al limpiar las publicaciones",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/details/{username}": {
             "get": {
                 "description": "Obtiene los detalles de un usuario dado su nombre de usuario",

@@ -504,3 +504,42 @@ func NewPublication(c *gin.Context) {
 		Data:    nil,
 	})
 }
+
+// ClearPublications Limpia las publicaciones de un usuario
+// @Summary Limpia las publicaciones de un usuario en la base de datos
+// @Description Limpia las publicaciones de un usuario en la base de datos
+// @Tags Publicaciones
+// @Accept json
+// @Produce json
+// @Param username path string true "Nombre de usuario"
+// @Success 200 {object} responses.StandardResponse "Publicaciones limpiadas exitosamente"
+// @Failure 500 {object} responses.ErrorResponse "Error al limpiar las publicaciones"
+// @Router /users/clear/{username} [delete]
+func ClearPublications(c *gin.Context) {
+	user := c.Param("username")
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer session.Close(c)
+
+	_, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario}) REMOVE p.Publicaciones",
+		map[string]interface{}{
+			"usuario": user,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al limpiar las publicaciones",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Publicaciones limpiadas exitosamente",
+		Data:    nil,
+	})
+}

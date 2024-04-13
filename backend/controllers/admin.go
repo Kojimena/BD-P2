@@ -192,7 +192,7 @@ func DeleteUsers(c *gin.Context) {
 type TagUsersInput struct {
 	Users []string `json:"users" binding:"required"` // Usuarios a etiquetar
 	Tag   string   `json:"tag" binding:"required"`   // Propiedad a crear
-	Value bool     `json:"value" binding:"required"` // Valor de la propiedad
+	Value *bool    `json:"value" binding:"required"` // Valor de la propiedad
 }
 
 // TagUsers crea una propiedad en los nodos de los usuarios
