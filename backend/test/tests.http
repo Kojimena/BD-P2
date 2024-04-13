@@ -248,6 +248,16 @@ Content-Type: application/json
   "value": true
 }
 
+### Admin remove tag from user
+POST http://localhost:8080/admin/tag/remove
+Accept: application/json
+Content-Type: application/json
+
+{
+    "users": ["koji"],
+    "tag": "Premium"
+}
+
 ### Admin Get all users
 GET http://localhost:8080/admin/users?filter=Premium
 Accept: application/json

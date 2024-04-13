@@ -49,6 +49,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/tag/remove": {
+            "post": {
+                "description": "Eliminar una propiedad de multiples usuarios",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Eliminar propiedad de usuarios",
+                "parameters": [
+                    {
+                        "description": "Usuarios y etiqueta",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RemoveTagInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users": {
             "get": {
                 "description": "Obtiene todos los usuarios registrados en la base de datos",
@@ -1087,6 +1121,26 @@ const docTemplate = `{
                 },
                 "usuario": {
                     "type": "string"
+                }
+            }
+        },
+        "controllers.RemoveTagInput": {
+            "type": "object",
+            "required": [
+                "tag",
+                "users"
+            ],
+            "properties": {
+                "tag": {
+                    "description": "Propiedad a eliminar",
+                    "type": "string"
+                },
+                "users": {
+                    "description": "Usuarios a etiquetar",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

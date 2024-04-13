@@ -16,6 +16,7 @@ func Routes(router *gin.Engine) {
 	{
 		admin.GET("/users", controllers.GetAllUsers)
 		admin.POST("/tag", controllers.TagUsers)
+		admin.POST("/tag/remove", controllers.RemoveTag)
 	}
 
 	users := router.Group("/users")

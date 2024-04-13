@@ -9,6 +9,20 @@ definitions:
     - contenido
     - usuario
     type: object
+  controllers.RemoveTagInput:
+    properties:
+      tag:
+        description: Propiedad a eliminar
+        type: string
+      users:
+        description: Usuarios a etiquetar
+        items:
+          type: string
+        type: array
+    required:
+    - tag
+    - users
+    type: object
   controllers.SignInDetails:
     properties:
       password:
@@ -685,6 +699,28 @@ paths:
           schema:
             $ref: '#/definitions/responses.StandardResponse'
       summary: Etiquetar usuarios
+      tags:
+      - Admin
+  /admin/tag/remove:
+    post:
+      consumes:
+      - application/json
+      description: Eliminar una propiedad de multiples usuarios
+      parameters:
+      - description: Usuarios y etiqueta
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RemoveTagInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+      summary: Eliminar propiedad de usuarios
       tags:
       - Admin
   /admin/users:

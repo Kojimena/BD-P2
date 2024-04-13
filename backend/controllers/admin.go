@@ -150,8 +150,8 @@ func TagUsers(c *gin.Context) {
 			})
 		}
 
-		var persona models.Persona
 		for r.Next(c) {
+			var persona models.Persona
 			vals := r.Record().Values[0].(neo4j.Node).Props
 			persona = models.Persona{
 				Usuario: vals["Usuario"].(string),
@@ -207,6 +207,105 @@ func TagUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.StandardResponse{
 		Status:  http.StatusOK,
 		Message: "Usuarios etiquetados correctamente",
+		Data:    nil,
+	})
+
+}
+
+type RemoveTagInput struct {
+	Users []string `json:"users" binding:"required"` // Usuarios a etiquetar
+	Tag   string   `json:"tag" binding:"required"`   // Propiedad a eliminar
+}
+
+// RemoveTag elimina una propiedad en los nodos de los usuarios
+// @Summary Eliminar propiedad de usuarios
+// @Description Eliminar una propiedad de multiples usuarios
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param input body RemoveTagInput true "Usuarios y etiqueta"
+// @Success 200 {object} responses.StandardResponse
+// @Router /admin/tag/remove [post]
+func RemoveTag(c *gin.Context) {
+	var input RemoveTagInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	for _, user := range input.Users {
+		r, err := session.Run(
+			c,
+			"MATCH (p: Persona {Usuario: $user}) RETURN p",
+			map[string]interface{}{
+				"user": user,
+			},
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Message: "Error al buscar el usuario",
+				Error:   err.Error(),
+			})
+		}
+
+		for r.Next(c) {
+			var persona models.Persona
+			vals := r.Record().Values[0].(neo4j.Node).Props
+			persona = models.Persona{
+				Usuario: vals["Usuario"].(string),
+			}
+
+			if persona.Usuario == "" {
+				c.JSON(http.StatusNotFound, responses.ErrorResponse{
+					Status:  http.StatusNotFound,
+					Message: "Usuario no encontrado",
+					Error:   fmt.Sprintf("Usuario %s no encontrado", user),
+				})
+				return
+			}
+
+			if vals[input.Tag] != nil { // Actualizar propiedad
+				_, err = session.Run(
+					c,
+					fmt.Sprintf("MATCH (p: Persona {Usuario: $user}) REMOVE p.%s", input.Tag),
+					map[string]interface{}{
+						"user": user,
+					})
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+						Status:  http.StatusInternalServerError,
+						Message: "Error al eliminar la propiedad",
+						Error:   err.Error(),
+					})
+					return
+				}
+			} else { // Crear propiedad
+				fmt.Println("Propiedad no existe")
+				c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+					Status:  http.StatusBadRequest,
+					Message: "La propiedad no existe",
+					Error:   fmt.Sprintf("La propiedad %s no existe en el usuario %s", input.Tag, user),
+				})
+				return
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Propiedad eliminada correctamente",
 		Data:    nil,
 	})
 
