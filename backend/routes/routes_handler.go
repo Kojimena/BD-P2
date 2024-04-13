@@ -12,6 +12,11 @@ func Routes(router *gin.Engine) {
 		})
 	})
 
+	admin := router.Group("/admin")
+	{
+		admin.POST("/tag", controllers.TagUsers)
+	}
+
 	users := router.Group("/users")
 	{
 		users.POST("/student", controllers.NewStudent)

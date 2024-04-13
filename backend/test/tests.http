@@ -236,3 +236,13 @@ Content-Type: application/json
   "usuario": "juanperez",
   "contenido": "Hola, soy Juan Perez 2"
 }
+
+### Admin tag users
+POST http://localhost:8080/admin/tag
+Accept: application/json
+Content-Type: application/json
+
+{
+  "users": ["juanperez"],
+  "tag": "Amigo"
+}

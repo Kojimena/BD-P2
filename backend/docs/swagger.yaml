@@ -19,6 +19,21 @@ definitions:
     - password
     - usuario
     type: object
+  controllers.TagUsersInput:
+    properties:
+      tag:
+        type: string
+      users:
+        items:
+          type: string
+        type: array
+      value:
+        type: boolean
+    required:
+    - tag
+    - users
+    - value
+    type: object
   models.Cancion:
     properties:
       disco:
@@ -604,6 +619,28 @@ definitions:
 info:
   contact: {}
 paths:
+  /admin/tag:
+    post:
+      consumes:
+      - application/json
+      description: Etiquetar usuarios con una propiedad
+      parameters:
+      - description: Usuarios y etiqueta
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.TagUsersInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+      summary: Etiquetar usuarios
+      tags:
+      - Admin
   /careers:
     get:
       consumes:
@@ -1047,7 +1084,7 @@ paths:
       summary: Crea una relación de rechazo entre una persona y un equipo
       tags:
       - Equipos
-  /teams/supports:
+  /teams/likes:
     post:
       consumes:
       - application/json

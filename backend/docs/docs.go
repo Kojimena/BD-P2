@@ -15,6 +15,40 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/tag": {
+            "post": {
+                "description": "Etiquetar usuarios con una propiedad",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Etiquetar usuarios",
+                "parameters": [
+                    {
+                        "description": "Usuarios y etiqueta",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.TagUsersInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/careers": {
             "get": {
                 "description": "Obtiene todas las carreras de la base de datos",
@@ -688,7 +722,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/teams/supports": {
+        "/teams/likes": {
             "post": {
                 "description": "Crea una relación de de (Persona)-[:APOYA]-\u003e(Equipo) en la base de datos",
                 "consumes": [
@@ -1031,6 +1065,28 @@ const docTemplate = `{
                 },
                 "usuario": {
                     "type": "string"
+                }
+            }
+        },
+        "controllers.TagUsersInput": {
+            "type": "object",
+            "required": [
+                "tag",
+                "users",
+                "value"
+            ],
+            "properties": {
+                "tag": {
+                    "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "value": {
+                    "type": "boolean"
                 }
             }
         },
