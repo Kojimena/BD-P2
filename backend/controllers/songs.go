@@ -7,7 +7,6 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
-	"github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype"
 	"net/http"
 	"time"
 )
@@ -58,7 +57,7 @@ func GetSongs(c *gin.Context) {
 		song := models.Cancion{
 			Nombre:           vals["Nombre"].(string),
 			Disco:            vals["Disco"].(string),
-			FechaLanzamiento: vals["FechaDeLanzamiento"].(dbtype.Date).Time(),
+			FechaLanzamiento: vals["FechaDeLanzamiento"].(time.Time).String(),
 			Duracion:         vals["Duracion"].(float64),
 			Genero:           vals["Genero"].(string),
 		}
@@ -109,13 +108,16 @@ func NewSong(c *gin.Context) {
 	}
 
 	// Consulta para crear una nueva canción
-	_, err := session.Run(
+
+	f, err := time.Parse(time.DateOnly, song.FechaLanzamiento)
+
+	_, err = session.Run(
 		c,
 		"CREATE (s:Cancion {Nombre: $nombre, Disco: $disco, FechaDeLanzamiento: $fechaLanzamiento, Duracion: $duracion, Genero: $genero}) RETURN s",
 		map[string]interface{}{
 			"nombre":           song.Nombre,
 			"disco":            song.Disco,
-			"fechaLanzamiento": song.FechaLanzamiento,
+			"fechaLanzamiento": f,
 			"duracion":         song.Duracion,
 			"genero":           song.Genero,
 		},
@@ -320,6 +322,255 @@ func CreateRelationDislikesSong(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.StandardResponse{
 		Status:  http.StatusOK,
 		Message: "Relación creada exitosamente",
+		Data:    nil,
+	})
+}
+
+type SetSongRemembersInput struct {
+	Usuario    string `json:"usuario" binding:"required"`
+	Cancion    string `json:"cancion" binding:"required"`
+	MeRecuerda string `json:"me_recuerda_a" binding:"required"`
+}
+
+// SetSongNewProperty Establece una nueva propiedad a una relación de una persona con una canción
+// @Summary Establece una nueva propiedad a una relación de una persona con una canción
+// @Description Establece o actualiza una nueva propiedad a una relación de (Persona)-[ES_FAVORITA]->(Cancion). La propiedad es "MeRecuerda"
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param input body SetSongRemembersInput true "Datos de la relación a modificar"
+// @Success 200 {object} responses.StandardResponse "Propiedad modificada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/remembers [put]
+func SetSongNewProperty(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var input SetSongRemembersInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	_, err := session.Run(c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r:ES_FAVORITA]->(s:Cancion {Nombre: $cancion}) SET r.MeRecuerda = $me_recuerda_a RETURN r",
+		map[string]interface{}{
+			"cancion":       input.Cancion,
+			"usuario":       input.Usuario,
+			"me_recuerda_a": input.MeRecuerda,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Propiedad modificada exitosamente",
+		Data:    nil,
+	})
+}
+
+type DeleteSongRememberPropertyInput struct {
+	Usuario string `json:"usuario" binding:"required"`
+	Cancion string `json:"cancion" binding:"required"`
+}
+
+// DeleteSongRememberProperty Elimina una propiedad de una relación de una persona con una canción
+// @Summary Elimina una propiedad de una relación de una persona con una canción
+// @Description Elimina una propiedad de una relación de (Persona)-[ES_FAVORITA]->(Cancion). La propiedad es "MeRecuerda"
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param input body DeleteSongRememberPropertyInput true "Datos de la relación a modificar"
+// @Success 200 {object} responses.StandardResponse "Propiedad eliminada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/remembers/remove [post]
+func DeleteSongRememberProperty(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var input DeleteSongRememberPropertyInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	_, err := session.Run(c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r:ES_FAVORITA]->(s:Cancion {Nombre: $cancion}) REMOVE r.MeRecuerda RETURN r",
+		map[string]interface{}{
+			"cancion": input.Cancion,
+			"usuario": input.Usuario,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Propiedad eliminada exitosamente",
+		Data:    nil,
+	})
+}
+
+type SetPreferredMusicPlayerInput struct {
+	Usuario     string `json:"usuario" binding:"required"`      // Usuario Nombre de usuario
+	MusicPlayer string `json:"music_player" binding:"required"` // MusicPlayer Reproductor de música preferido (Spotify, Apple Music, etc)
+}
+
+// SetPreferredMusicPlayer Establece el reproductor de música preferido de un usuario
+// @Summary Establece o actualiza el reproductor de música preferido de un usuario
+// @Description Establece o actualiza el reproductor de música preferido de un usuario. A cualquier relación (p:Persona {Usuario: $usuario})-[r}-(c:Cancion) se le agrega la propiedad "MusicPlayer"
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param input body SetPreferredMusicPlayerInput true "Datos de la relación a modificar"
+// @Success 200 {object} responses.StandardResponse "Propiedad modificada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/music-player [put]
+func SetPreferredMusicPlayer(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	var input SetPreferredMusicPlayerInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	_, err := session.Run(c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r]-(c:Cancion) SET r.MusicPlayer = $music_player RETURN r",
+		map[string]interface{}{
+			"usuario":      input.Usuario,
+			"music_player": input.MusicPlayer,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Propiedad modificada exitosamente",
+		Data:    nil,
+	})
+}
+
+// DeletePreferredMusicPlayer Elimina el reproductor de música preferido de un usuario
+// @Summary Elimina el reproductor de música preferido de un usuario
+// @Description Elimina el reproductor de música preferido de un usuario. A cualquier relación (p:Persona {Usuario: $usuario})-[r}-(c:Cancion) se le elimina la propiedad "MusicPlayer"
+// @Tags Canciones
+// @Accept json
+// @Produce json
+// @Param username path string true "Nombre de usuario"
+// @Success 200 {object} responses.StandardResponse "Propiedad eliminada exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Router /songs/music-player/:username [delete]
+func DeletePreferredMusicPlayer(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	username := c.Param("username")
+
+	if username == "" {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "Error al procesar la solicitud",
+			Error:   "Falta el nombre de usuario",
+		})
+		return
+	}
+
+	_, err := session.Run(c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r]-(c:Cancion) REMOVE r.MusicPlayer RETURN r",
+		map[string]interface{}{
+			"usuario": username,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al procesar la solicitud",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Propiedad eliminada exitosamente",
 		Data:    nil,
 	})
 }

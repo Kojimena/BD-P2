@@ -429,6 +429,52 @@
                 }
             }
         },
+        "/relations/delete": {
+            "post": {
+                "description": "Elimina relaciones de un nodo dado el nombre del nodo, el nombre de la relación y el nombre de usuario",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Elimina relaciones de un nodo",
+                "parameters": [
+                    {
+                        "description": "Relaciones a eliminar",
+                        "name": "relations",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.DeleteRelationsInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación eliminada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al eliminar la relación",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/signs": {
             "get": {
                 "description": "Obtiene todos los signos zodiacales de la base de datos",
@@ -690,6 +736,188 @@
                 "responses": {
                     "200": {
                         "description": "Relación creada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/music-player": {
+            "put": {
+                "description": "Establece o actualiza el reproductor de música preferido de un usuario. A cualquier relación (p:Persona {Usuario: $usuario})-[r}-(c:Cancion) se le agrega la propiedad \"MusicPlayer\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Establece o actualiza el reproductor de música preferido de un usuario",
+                "parameters": [
+                    {
+                        "description": "Datos de la relación a modificar",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SetPreferredMusicPlayerInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Propiedad modificada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/music-player/:username": {
+            "delete": {
+                "description": "Elimina el reproductor de música preferido de un usuario. A cualquier relación (p:Persona {Usuario: $usuario})-[r}-(c:Cancion) se le elimina la propiedad \"MusicPlayer\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Elimina el reproductor de música preferido de un usuario",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Propiedad eliminada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/remembers": {
+            "put": {
+                "description": "Establece o actualiza una nueva propiedad a una relación de (Persona)-[ES_FAVORITA]-\u003e(Cancion). La propiedad es \"MeRecuerda\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Establece una nueva propiedad a una relación de una persona con una canción",
+                "parameters": [
+                    {
+                        "description": "Datos de la relación a modificar",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SetSongRemembersInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Propiedad modificada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/remembers/remove": {
+            "post": {
+                "description": "Elimina una propiedad de una relación de (Persona)-[ES_FAVORITA]-\u003e(Cancion). La propiedad es \"MeRecuerda\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Canciones"
+                ],
+                "summary": "Elimina una propiedad de una relación de una persona con una canción",
+                "parameters": [
+                    {
+                        "description": "Datos de la relación a modificar",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.DeleteSongRememberPropertyInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Propiedad eliminada exitosamente",
                         "schema": {
                             "$ref": "#/definitions/responses.StandardResponse"
                         }
@@ -1182,6 +1410,43 @@
         }
     },
     "definitions": {
+        "controllers.DeleteRelationsInput": {
+            "type": "object",
+            "required": [
+                "nombre",
+                "relation",
+                "usuario"
+            ],
+            "properties": {
+                "nombre": {
+                    "description": "Nombre del nodo de la relación",
+                    "type": "string"
+                },
+                "relation": {
+                    "description": "Relación a eliminar",
+                    "type": "string"
+                },
+                "usuario": {
+                    "description": "Usuario de la persona",
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.DeleteSongRememberPropertyInput": {
+            "type": "object",
+            "required": [
+                "cancion",
+                "usuario"
+            ],
+            "properties": {
+                "cancion": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.DeleteUsersInput": {
             "type": "object",
             "required": [
@@ -1229,6 +1494,42 @@
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "controllers.SetPreferredMusicPlayerInput": {
+            "type": "object",
+            "required": [
+                "music_player",
+                "usuario"
+            ],
+            "properties": {
+                "music_player": {
+                    "description": "MusicPlayer Reproductor de música preferido (Spotify, Apple Music, etc)",
+                    "type": "string"
+                },
+                "usuario": {
+                    "description": "Usuario Nombre de usuario",
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.SetSongRemembersInput": {
+            "type": "object",
+            "required": [
+                "cancion",
+                "me_recuerda_a",
+                "usuario"
+            ],
+            "properties": {
+                "cancion": {
+                    "type": "string"
+                },
+                "me_recuerda_a": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
                 }
             }
         },
@@ -1289,6 +1590,7 @@
                     "type": "number"
                 },
                 "fecha_lanzamiento": {
+                    "description": "Formato: YYYY-MM-DD",
                     "type": "string"
                 },
                 "genero": {

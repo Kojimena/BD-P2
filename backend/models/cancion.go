@@ -1,13 +1,11 @@
 package models
 
-import "time"
-
 type Cancion struct {
-	Nombre           string    `json:"nombre" binding:"required"`
-	Disco            string    `json:"disco" binding:"required"`
-	FechaLanzamiento time.Time `json:"fecha_lanzamiento" binding:"required"`
-	Duracion         float64   `json:"duracion" binding:"required"`
-	Genero           string    `json:"genero" binding:"required"`
+	Nombre           string  `json:"nombre" binding:"required"`
+	Disco            string  `json:"disco" binding:"required"`
+	FechaLanzamiento string  `json:"fecha_lanzamiento" binding:"required"` // Formato: YYYY-MM-DD
+	Duracion         float64 `json:"duracion" binding:"required"`
+	Genero           string  `json:"genero" binding:"required"`
 }
 
 type RelationPersonaFavoritaCancion struct {

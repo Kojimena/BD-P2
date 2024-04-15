@@ -17,7 +17,6 @@ Content-Type: application/json
   "parqueo": false
 }
 
-
 ### Crear estudiante
 POST http://localhost:8080/users/student
 Accept: application/json
@@ -93,6 +92,19 @@ GET http://localhost:8080/teams
 
 ### Obtener canciones
 GET http://localhost:8080/songs
+
+### Crear Cancion
+POST http://localhost:8080/songs
+Accept: application/json
+Content-Type: application/json
+
+{
+  "nombre": "Rap God",
+  "disco": "The Marshall Mathers LP 2",
+  "fecha_lanzamiento": "2013-10-15",
+  "genero": "Rap",
+  "duracion": 6.03
+}
 
 ### Crear relación Persona - ES_Signo -> Signo
 POST http://localhost:8080/signs/is
@@ -241,6 +253,40 @@ Content-Type: application/json
 DELETE http://localhost:8080/users/clear/juanperez
 Accept: application/json
 
+### Añadir 'me recuerda a' a canción favorita
+PUT http://localhost:8080/songs/remembers
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "cancion": "Bohemian Rhapsody",
+  "me_recuerda_a": "Mi infancia"
+}
+
+### eliminar 'me recuerda a' a canción favorita
+POST http://localhost:8080/songs/remembers/remove
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "cancion": "Bohemian Rhapsody"
+}
+
+### Añadir prefered music player
+PUT http://localhost:8080/songs/music-player
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "music_player": "Spotify"
+}
+
+### remove prefered music player
+DELETE http://localhost:8080/songs/music-player/juanperez
+Accept: application/json
 
 ### Admin tag users
 POST http://localhost:8080/admin/tag
@@ -275,3 +321,4 @@ Content-Type: application/json
 {
     "users": ["davidperez"]
 }
+
