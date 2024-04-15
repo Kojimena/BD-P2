@@ -58,7 +58,7 @@ func GetSongs(c *gin.Context) {
 		song := models.Cancion{
 			Nombre:           vals["Nombre"].(string),
 			Disco:            vals["Disco"].(string),
-			FechaLanzamiento: vals["FechaDeLanzamiento"].(dbtype.Date).Time(),
+			FechaLanzamiento: vals["FechaDeLanzamiento"].(dbtype.Date).Time().String(),
 			Duracion:         vals["Duracion"].(float64),
 			Genero:           vals["Genero"].(string),
 		}
@@ -109,13 +109,16 @@ func NewSong(c *gin.Context) {
 	}
 
 	// Consulta para crear una nueva canción
-	_, err := session.Run(
+
+	f, err := time.Parse(time.DateOnly, song.FechaLanzamiento)
+
+	_, err = session.Run(
 		c,
 		"CREATE (s:Cancion {Nombre: $nombre, Disco: $disco, FechaDeLanzamiento: $fechaLanzamiento, Duracion: $duracion, Genero: $genero}) RETURN s",
 		map[string]interface{}{
 			"nombre":           song.Nombre,
 			"disco":            song.Disco,
-			"fechaLanzamiento": song.FechaLanzamiento,
+			"fechaLanzamiento": f,
 			"duracion":         song.Duracion,
 			"genero":           song.Genero,
 		},

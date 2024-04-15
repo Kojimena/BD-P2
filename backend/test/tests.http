@@ -94,6 +94,19 @@ GET http://localhost:8080/teams
 ### Obtener canciones
 GET http://localhost:8080/songs
 
+### Crear Cancion
+POST http://localhost:8080/songs
+Accept: application/json
+Content-Type: application/json
+
+{
+  "nombre": "Rap God",
+  "disco": "The Marshall Mathers LP 2",
+  "fecha_lanzamiento": "2013-10-15",
+  "genero": "Rap",
+  "duracion": 6.03
+}
+
 ### Crear relación Persona - ES_Signo -> Signo
 POST http://localhost:8080/signs/is
 Accept: application/json

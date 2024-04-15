@@ -107,6 +107,7 @@ definitions:
       duracion:
         type: number
       fecha_lanzamiento:
+        description: 'Formato: YYYY-MM-DD'
         type: string
       genero:
         type: string

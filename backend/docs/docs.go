@@ -1494,6 +1494,7 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "fecha_lanzamiento": {
+                    "description": "Formato: YYYY-MM-DD",
                     "type": "string"
                 },
                 "genero": {
