@@ -150,7 +150,7 @@ const AdminPage = () => {
                                 <select className="select w-full" onChange={handleTag}>
                                     <option disabled selected>Selecciona el tag</option>
                                     <option>Verified</option>
-                                    <option>Normal User</option>
+                                    <option>Normal</option>
                                     <option>Offender</option>
                                 </select>
                                 <label className='text-white'>Usuarios</label>
