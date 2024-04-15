@@ -601,7 +601,7 @@ type DeleteRelationsInput struct {
 	Relation string `json:"relation" binding:"required"` // Relación a eliminar
 }
 
-// DeleteRelations Elimina relaciones de un nodo
+// DeleteSingleRelation Elimina relaciones de un nodo
 // @Summary Elimina relaciones de un nodo
 // @Description Elimina relaciones de un nodo dado el nombre del nodo, el nombre de la relación y el nombre de usuario
 // @Tags Usuarios
@@ -612,7 +612,7 @@ type DeleteRelationsInput struct {
 // @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
 // @Failure 500 {object} responses.ErrorResponse "Error al eliminar la relación"
 // @Router /relations/delete [post]
-func DeleteRelations(c *gin.Context) {
+func DeleteSingleRelation(c *gin.Context) {
 	var dr DeleteRelationsInput
 
 	if err := c.ShouldBindJSON(&dr); err != nil {
@@ -658,6 +658,54 @@ func DeleteRelations(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.StandardResponse{
 		Status:  http.StatusOK,
 		Message: "Relación eliminada exitosamente",
+		Data:    nil,
+	})
+}
+
+func DeleteAllRelations(c *gin.Context) {
+	username := c.Param("username")
+
+	if username == "" {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El nombre de usuario no puede estar vacío",
+			Error:   "El nombre de usuario no puede estar vacío. Por favor, ingrese un nombre de usuario válido en la URL.",
+		})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	_, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r]-() DELETE r",
+		map[string]interface{}{
+			"usuario": username,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al eliminar las relaciones",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relaciones eliminadas exitosamente",
 		Data:    nil,
 	})
 }

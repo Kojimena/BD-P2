@@ -292,6 +292,10 @@ Accept: application/json
 GET http://localhost:8080/users/recommendation/juanperez
 Accept: application/json
 
+
+### Delete all relations
+DELETE http://localhost:8080/users/relations/delete-all/JDOE
+
 ### Admin tag users
 POST http://localhost:8080/admin/tag
 Accept: application/json
