@@ -400,6 +400,15 @@ func RemoveTag(c *gin.Context) {
 
 }
 
+// Metrics obtiene métricas de la base de datos
+// @Summary Obtener métricas
+// @Description Obtiene métricas de la base de datos. Se utilizan consultas agregadas para obtener la cantidad de usuarios, publicaciones, lugares, equipos, canciones, carreras, signos zodiacales y relaciones de usuario con canciones, lugares, equipos, carreras y signos zodiacales
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Success 200 {object} responses.MetricsResponse
+// @Failure 500 {object} responses.ErrorResponse
+// @Router /admin/metrics [get]
 func Metrics(c *gin.Context) {
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 

@@ -4,6 +4,35 @@
         "contact": {}
     },
     "paths": {
+        "/admin/metrics": {
+            "get": {
+                "description": "Obtiene métricas de la base de datos. Se utilizan consultas agregadas para obtener la cantidad de usuarios, publicaciones, lugares, equipos, canciones, carreras, signos zodiacales y relaciones de usuario con canciones, lugares, equipos, carreras y signos zodiacales",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Obtener métricas",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.MetricsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/tag": {
             "post": {
                 "description": "Etiquetar multiples usuarios con una propiedad",
@@ -2320,6 +2349,26 @@
                 },
                 "status": {
                     "description": "Código de error de la respuesta",
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.MetricsResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
+                },
+                "metrics": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
                     "type": "integer"
                 }
             }

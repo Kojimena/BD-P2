@@ -659,6 +659,20 @@ definitions:
         description: Código de error de la respuesta
         type: integer
     type: object
+  responses.MetricsResponse:
+    properties:
+      message:
+        description: Mensaje de la respuesta
+        type: string
+      metrics:
+        additionalProperties:
+          type: integer
+        description: Datos adicionales de la respuesta
+        type: object
+      status:
+        description: Código de estado de la respuesta
+        type: integer
+    type: object
   responses.PlacesResponse:
     properties:
       message:
@@ -742,6 +756,28 @@ definitions:
 info:
   contact: {}
 paths:
+  /admin/metrics:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene métricas de la base de datos. Se utilizan consultas agregadas
+        para obtener la cantidad de usuarios, publicaciones, lugares, equipos, canciones,
+        carreras, signos zodiacales y relaciones de usuario con canciones, lugares,
+        equipos, carreras y signos zodiacales
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.MetricsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtener métricas
+      tags:
+      - Admin
   /admin/tag:
     post:
       consumes:
