@@ -56,3 +56,9 @@ type UsersResponse struct {
 	Status int              `json:"status"` // Código de estado de la respuesta
 	Users  []models.Persona `json:"users"`  // Datos adicionales de la respuesta
 }
+
+type MetricsResponse struct {
+	Status  int              `json:"status"`  // Código de estado de la respuesta
+	Message string           `json:"message"` // Mensaje de la respuesta
+	Metrics map[string]int64 `json:"metrics"` // Datos adicionales de la respuesta
+}
