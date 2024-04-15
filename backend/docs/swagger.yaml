@@ -782,7 +782,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Etiquetar multiples usuarios con una propiedad
+      description: Etiquetar multiples usuarios con una propiedad.
       parameters:
       - description: Usuarios y etiqueta
         in: body

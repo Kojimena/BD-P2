@@ -46,7 +46,7 @@ const docTemplate = `{
         },
         "/admin/tag": {
             "post": {
-                "description": "Etiquetar multiples usuarios con una propiedad",
+                "description": "Etiquetar multiples usuarios con una propiedad.",
                 "consumes": [
                     "application/json"
                 ],

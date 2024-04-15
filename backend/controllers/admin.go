@@ -187,7 +187,7 @@ type TagUsersInput struct {
 
 // TagUsers crea una propiedad en los nodos de los usuarios
 // @Summary Etiquetar usuarios
-// @Description Etiquetar multiples usuarios con una propiedad
+// @Description Etiquetar multiples usuarios con una propiedad.
 // @Tags Admin
 // @Accept json
 // @Produce json
