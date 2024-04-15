@@ -134,51 +134,41 @@ func DeleteUsers(c *gin.Context) {
 		}
 	}(session, c)
 
-	for _, user := range input.Users {
-		r, err := session.Run(
+	// Eliminar un solo usuario
+	if len(input.Users) == 1 {
+		_, err := session.Run(
 			c,
-			"MATCH (p: Persona {Usuario: $user}) RETURN p",
+			"MATCH (p: Persona {Usuario: $user}) DETACH DELETE p",
 			map[string]interface{}{
-				"user": user,
+				"user": input.Users[0],
 			},
 		)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
-				Message: "Error al buscar el usuario",
+				Message: "Error al eliminar el usuario",
 				Error:   err.Error(),
 			})
 		}
+	} else { // Eliminar multiples usuarios
+		list := ""
+		for _, user := range input.Users {
+			list += "'" + user + "',"
+		}
 
-		for r.Next(c) {
-			var persona models.Persona
-			vals := r.Record().Values[0].(neo4j.Node).Props
-			persona = models.Persona{
-				Usuario: vals["Usuario"].(string),
-			}
+		list = list[:len(list)-1] // Eliminar la última coma
 
-			if persona.Usuario == "" {
-				c.JSON(http.StatusNotFound, responses.ErrorResponse{
-					Status:  http.StatusNotFound,
-					Message: "Usuario no encontrado",
-					Error:   fmt.Sprintf("Usuario %s no encontrado", user),
-				})
-				return
-			}
+		query := fmt.Sprintf("MATCH (p: Persona) WHERE p.Usuario IN [%s] DETACH DELETE p", list)
+		_, err := session.Run(
+			c,
+			query,
+			nil,
+		)
 
-			_, err = session.Run(
-				c,
-				"MATCH (p: Persona {Usuario: $user}) DETACH DELETE p",
-				map[string]interface{}{
-					"user": user,
-				})
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
-					Status:  http.StatusInternalServerError,
-					Message: "Error al eliminar el usuario",
-					Error:   err.Error(),
-				})
-				return
-			}
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Message: "Error al eliminar los usuarios",
+				Error:   err.Error(),
+			})
 		}
 	}
 

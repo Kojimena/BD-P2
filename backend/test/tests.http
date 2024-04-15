@@ -319,7 +319,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "users": ["davidperez"]
+    "users": ["juanperezz", "juanperezzz"]
 }
 
 ### Admin metrics
