@@ -6,6 +6,8 @@ const Profile = ({params}) => {
   const [addPost, setAddPost] = useState(false)
   const [contenido, setContenido] = useState('')
   const [showAddPost, setShowAddPost] = useState(false)
+  const [deletePost, setDeletePost] = useState(false)
+  const [showDeletePost, setShowDeletePost] = useState(false)
 
   const fetchData = async () => {
     const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/details/${params.userid}`)
@@ -50,7 +52,22 @@ const Profile = ({params}) => {
     const veryfyUser = () => {
         if (localStorage.getItem('user') === params.userid) {
             setShowAddPost(true)
+            setShowDeletePost(true)
         }
+    }
+
+    const handleDeletePost = async () => {
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/clear/${params.userid}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        console.log(data)
     }
 
 
@@ -135,16 +152,25 @@ const Profile = ({params}) => {
                     <button className='fixed bottom-10 right-10 bg-kaqui text-white py-4 px-6 rounded-full' onClick={() => setAddPost(true)}>Agregar post</button>
                 )
             }
+            
             {
                 addPost && (
                     <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
                         <div className='bg-white p-4 rounded-lg'>
-                            <h2 className='font-bold text-kaqui py-2'>Agregar post</h2>
+                            <div className='flex justify-end'>
+                                <button onClick={() => setAddPost(false)}>X</button>
+                            </div>
+                            <h2 className='font-bold text-kaqui py-2'>Nuevo post</h2>
                             <textarea placeholder='Contenido' className='w-full p-2 rounded-lg mt-4 min-h-32' onChange={handleContenido}>
                             </textarea>
                             <button className='bg-kaqui text-white py-2 px-4 rounded-lg mt-4' onClick={handleAddPost}>Agregar</button>
                         </div>
                     </div>
+                )
+            }
+            {
+                showDeletePost && (
+                    <button className='fixed bottom-24 right-10 bg-brown text-white py-4 px-6 rounded-full' onClick={() => handleDeletePost()}>Eliminar posts</button>
                 )
             }
         </div>

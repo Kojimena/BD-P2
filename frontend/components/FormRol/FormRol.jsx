@@ -109,7 +109,7 @@ const FormRol = ({lastdata , role}) => {
             } else if (role === 'teacher') {
                 router.push('/teacher')
             } else if (role === 'teacher-student') {
-                router.push('/studentTeacher')
+                router.push('/student')
             }
         } else {
             const responseData = await response.json()
