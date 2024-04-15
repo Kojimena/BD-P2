@@ -62,3 +62,9 @@ type MetricsResponse struct {
 	Message string           `json:"message"` // Mensaje de la respuesta
 	Metrics map[string]int64 `json:"metrics"` // Datos adicionales de la respuesta
 }
+
+type RecommendationResponse struct {
+	Status  int            `json:"status"`  // Código de estado de la respuesta
+	Message string         `json:"message"` // Mensaje de la respuesta
+	Matches map[string]int `json:"matches"` // Datos adicionales de la respuesta
+}

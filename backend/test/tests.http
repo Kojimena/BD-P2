@@ -288,6 +288,10 @@ Content-Type: application/json
 DELETE http://localhost:8080/songs/music-player/juanperez
 Accept: application/json
 
+### Recomendación
+GET http://localhost:8080/users/recommendation/juanperez
+Accept: application/json
+
 ### Admin tag users
 POST http://localhost:8080/admin/tag
 Accept: application/json
@@ -325,4 +329,7 @@ Content-Type: application/json
 ### Admin metrics
 GET http://localhost:8080/admin/metrics
 Accept: application/json
+
+
+
 
