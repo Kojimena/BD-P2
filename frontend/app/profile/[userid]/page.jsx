@@ -105,6 +105,25 @@ const Profile = ({params}) => {
         console.log(responseData)
     }
 
+    const handleRemoveRemind = async ({song}) => {
+        const data = {
+                "cancion": song,
+                "usuario": params.userid
+            }
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/songs/remembers/remove`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const responseData = await response.json()
+        console.log(responseData)
+    }
+
 
     if (!userData) {
         return <div>Loading...</div>
@@ -248,28 +267,33 @@ const Profile = ({params}) => {
                     ))
                 )}
                 { userData.data.relations && (
-                <div className='justify-start w-full flex gap-4'>
-                        Te recuerda a alguien?
-                        <div className="dropdown dropdown-end">
-                            <div tabIndex={0} role="button" className="btn btn-circle btn-ghost btn-xs text-info">
-                                <IoMdHeart className='text-kaqui text-md' />
-                            </div>
-                            <div tabIndex={0} className="card compact dropdown-content z-[1] shadow glassmorph rounded-box w-40">
-                                <div tabIndex={0} className="card-body">
-                                    <h2 className="card-title text-white w-full">A quién te recuerda?</h2> 
-                                    <select className="select w-full max-w-xs" onChange={handleChangeRemind}>
-                                        <option disabled selected>Selecciona</option>
-                                        <option>A un familiar</option>
-                                        <option>A un amigo</option>
-                                        <option>A mi novio/a</option>
-                                        <option>A mi mascota</option>
-                                        <option>A mi ex</option>
-                                    </select>
-                                    <button className="bg-kaqui text-white py-2 px-4 rounded-lg mt-4" onClick={() => handleAddRemind({song: userData.data.relations[0].Cancion.Nombre})}>Agregar</button>
+                <div className='justify-between w-full flex gap-4 items-center'>
+                        <div className='flex gap-4'>
+                            Te recuerda a alguien?
+                            <div className="dropdown dropdown-end">
+                                <div tabIndex={0} role="button" className="btn btn-circle btn-ghost btn-xs text-info">
+                                    <IoMdHeart className='text-kaqui text-xl' />
+                                </div>
+                                <div tabIndex={0} className="card compact dropdown-content z-[1] shadow glassmorph rounded-box w-60">
+                                    <div tabIndex={0} className="card-body">
+                                        <h2 className="card-title text-white w-full">A quién te recuerda?</h2> 
+                                        <select className="select w-full max-w-xs" onChange={handleChangeRemind}>
+                                            <option disabled selected>Selecciona</option>
+                                            <option>A un familiar</option>
+                                            <option>A un amigo</option>
+                                            <option>A mi novio/a</option>
+                                            <option>A mi mascota</option>
+                                            <option>A mi ex</option>
+                                        </select>
+                                        <button className="bg-kaqui text-white py-2 px-4 rounded-lg mt-4" onClick={() => handleAddRemind({song: userData.data.relations[0].Cancion.Nombre})}>Agregar</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div tabIndex={0} role="button" className="btn btn-circle btn-ghost btn-xs text-info">
+                            <FaHeartBroken className='text-kaqui text-xl' onClick={() => handleRemoveRemind({song: userData.data.relations[0].Cancion.Nombre})} />
+                        </div>
+                </div>
                 )}
             </div>
             <div className='flex justify-start items-center gap-4 mt-4 flex-col w-full'>
