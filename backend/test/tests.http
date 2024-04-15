@@ -322,3 +322,7 @@ Content-Type: application/json
     "users": ["davidperez"]
 }
 
+### Admin metrics
+GET http://localhost:8080/admin/metrics
+Accept: application/json
+

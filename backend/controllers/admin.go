@@ -399,3 +399,153 @@ func RemoveTag(c *gin.Context) {
 	})
 
 }
+
+func Metrics(c *gin.Context) {
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	/*
+		Métricas:
+		- Cantidad de usuarios (Estudiantes y Profesores)
+		- Cantidad de publicaciones
+		- Cantidad de lugares
+		- Cantidad de equipos
+		- Cantidad de canciones
+		- Cantidad de carreras
+		- Cantidad de signos zodiacales
+		- Cantidad de relaciones de usuario con canciones
+		- Cantidad de relaciones de usuario con lugares
+		- Cantidad de relaciones de usuario con equipos
+		- Cantidad de relaciones de usuario con carreras
+		- Cantidad de relaciones de usuario con signos zodiacales
+	*/
+
+	var metrics = make(map[string]int64)
+
+	// Cantidad de usuarios
+	r, err := session.Run(
+		c,
+		"MATCH (p: Persona) RETURN count(p)",
+		nil,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Message: "Error al buscar la cantidad de usuarios",
+			Error:   err.Error(),
+		})
+	}
+
+	for r.Next(c) {
+		metrics["Cantidad de usuarios"] = r.Record().Values[0].(int64)
+	}
+
+	// Cantidad de Estudiantes
+	r, err = session.Run(
+		c,
+		"MATCH (p: Estudiante) RETURN count(p)",
+		nil,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Message: "Error al buscar la cantidad de estudiantes",
+			Error:   err.Error(),
+		})
+	}
+
+	for r.Next(c) {
+		metrics["Cantidad de estudiantes"] = r.Record().Values[0].(int64)
+	}
+
+	// Cantidad de Profesores
+	r, err = session.Run(
+		c,
+		"MATCH (p: Profesor) RETURN count(p)",
+		nil,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Message: "Error al buscar la cantidad de profesores",
+			Error:   err.Error(),
+		})
+	}
+
+	for r.Next(c) {
+		metrics["Cantidad de profesores"] = r.Record().Values[0].(int64)
+	}
+
+	// Cantidad de publicaciones
+	r, err = session.Run(
+		c,
+		"MATCH (p: Persona) RETURN sum(size(p.Publicaciones))",
+		nil,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Message: "Error al buscar la cantidad de publicaciones",
+			Error:   err.Error(),
+		})
+	}
+
+	for r.Next(c) {
+		metrics["Cantidad de publicaciones"] = r.Record().Values[0].(int64)
+	}
+
+	// Cantidad de nodos
+	counts := []string{"lugares", "equipos", "carreras", "signos zodiacales", "canciones"}
+	r, err = session.Run(
+		c,
+		"MATCH (n: Lugar) RETURN count(n) UNION ALL MATCH (n: Equipo) RETURN count(n) UNION ALL MATCH (n: Carrera) RETURN count(n) UNION ALL MATCH (n: SignoZodiacal) RETURN count(n) UNION ALL MATCH (n: Cancion) RETURN count(n)",
+		nil,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Message: "Error al buscar la cantidad de nodos",
+			Error:   err.Error(),
+		})
+	}
+
+	for _, count := range counts {
+		r.Next(c)
+		metrics[fmt.Sprintf("Cantidad de %s", count)] = r.Record().Values[0].(int64)
+	}
+
+	// Cantidad de relaciones
+	relations := []string{"usuario-cancion", "usuario-lugar", "usuario-equipo", "usuario-carrera", "usuario-signo"}
+	r, err = session.Run(
+		c,
+		"MATCH (u: Persona)-[r]->(c: Cancion) RETURN count(r) UNION ALL MATCH (u: Persona)-[r]->(l: Lugar) RETURN count(r) UNION ALL MATCH (u: Persona)-[r]->(e: Equipo) RETURN count(r) UNION ALL MATCH (u: Persona)-[r]->(c: Carrera) RETURN count(r) UNION ALL MATCH (u: Persona)-[r]->(s: SignoZodiacal) RETURN count(r)",
+		nil,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Message: "Error al buscar la cantidad de relaciones",
+			Error:   err.Error(),
+		})
+	}
+
+	for _, relation := range relations {
+		r.Next(c)
+		metrics[fmt.Sprintf("Cantidad de relaciones de %s", relation)] = r.Record().Values[0].(int64)
+	}
+
+	c.JSON(http.StatusOK, responses.MetricsResponse{
+		Status:  http.StatusOK,
+		Message: "Métricas obtenidas correctamente",
+		Metrics: metrics,
+	})
+}
