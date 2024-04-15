@@ -274,6 +274,20 @@ Content-Type: application/json
   "cancion": "Bohemian Rhapsody"
 }
 
+### Añadir prefered music player
+PUT http://localhost:8080/songs/music-player
+Accept: application/json
+Content-Type: application/json
+
+{
+  "usuario": "juanperez",
+  "music_player": "Spotify"
+}
+
+### remove prefered music player
+DELETE http://localhost:8080/songs/music-player/juanperez
+Accept: application/json
+
 ### Admin tag users
 POST http://localhost:8080/admin/tag
 Accept: application/json

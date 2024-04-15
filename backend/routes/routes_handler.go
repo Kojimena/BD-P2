@@ -71,6 +71,9 @@ func Routes(router *gin.Engine) {
 
 		songs.PUT("/remembers", controllers.SetSongNewProperty)
 		songs.POST("/remembers/remove", controllers.DeleteSongRememberProperty)
+
+		songs.PUT("/music-player", controllers.SetPreferredMusicPlayer)
+		songs.DELETE("/music-player/:username", controllers.DeletePreferredMusicPlayer)
 	}
 
 }
