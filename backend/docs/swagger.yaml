@@ -1,4 +1,30 @@
 definitions:
+  controllers.DeleteRelationsInput:
+    properties:
+      nombre:
+        description: Nombre del nodo de la relación
+        type: string
+      relation:
+        description: Relación a eliminar
+        type: string
+      usuario:
+        description: Usuario de la persona
+        type: string
+    required:
+    - nombre
+    - relation
+    - usuario
+    type: object
+  controllers.DeleteSongRememberPropertyInput:
+    properties:
+      cancion:
+        type: string
+      usuario:
+        type: string
+    required:
+    - cancion
+    - usuario
+    type: object
   controllers.DeleteUsersInput:
     properties:
       users:
@@ -979,6 +1005,37 @@ paths:
       summary: Crea una relación de visita de un usuario a un lugar
       tags:
       - Lugares
+  /relations/delete:
+    post:
+      consumes:
+      - application/json
+      description: Elimina relaciones de un nodo dado el nombre del nodo, el nombre
+        de la relación y el nombre de usuario
+      parameters:
+      - description: Relaciones a eliminar
+        in: body
+        name: relations
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.DeleteRelationsInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación eliminada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al eliminar la relación
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Elimina relaciones de un nodo
+      tags:
+      - Usuarios
   /signs:
     get:
       consumes:
@@ -1194,6 +1251,37 @@ paths:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Establece una nueva propiedad a una relación de una persona con una
         canción
+      tags:
+      - Canciones
+  /songs/remembers/remove:
+    post:
+      consumes:
+      - application/json
+      description: Elimina una propiedad de una relación de (Persona)-[ES_FAVORITA]->(Cancion).
+        La propiedad es "MeRecuerda"
+      parameters:
+      - description: Datos de la relación a modificar
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.DeleteSongRememberPropertyInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Propiedad eliminada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Elimina una propiedad de una relación de una persona con una canción
       tags:
       - Canciones
   /teams/:
