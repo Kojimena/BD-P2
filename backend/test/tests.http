@@ -17,7 +17,6 @@ Content-Type: application/json
   "parqueo": false
 }
 
-
 ### Crear estudiante
 POST http://localhost:8080/users/student
 Accept: application/json

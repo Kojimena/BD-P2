@@ -34,9 +34,6 @@ func NewStudent(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(student)
-	// crear nodo Estudiante (con label Estudiante y Persona)
-
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer func(session neo4j.SessionWithContext, ctx context.Context) {
 		err := session.Close(ctx)
