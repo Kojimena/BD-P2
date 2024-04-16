@@ -1,10 +1,10 @@
 "use client"
-import { data } from 'autoprefixer'
 import React, { useState, useEffect } from 'react'
 import { IoMdHeart } from "react-icons/io"
 import { FaHeartBroken } from "react-icons/fa"
 import { TbMusicPlus } from "react-icons/tb"
 import { TbMusicOff } from "react-icons/tb"
+import { TiThMenu } from "react-icons/ti"
 
 const Profile = ({params}) => {
     const [userData, setUserData] = useState(null)
@@ -16,6 +16,12 @@ const Profile = ({params}) => {
     const [remindSomeone, setRemindSomeone] = useState("")
     const [musicPlayer, setMusicPlayer] = useState("")
     const [showMusicPlayer, setShowMusicPlayer] = useState(false)
+    const [showRemind, setShowRemind] = useState(false)
+    const [showDeleteActions, setShowDeleteActions] = useState(false)
+    const [openMenu, setOpenMenu] = useState(false)
+    const [deleteRelation, setDeleteRelation] = useState(false)
+    const [deleteRelation2, setDeleteRelation2] = useState("")
+    const [relationsData, setRelationsData] = useState(null)
 
 
     const fetchData = async () => {
@@ -27,10 +33,20 @@ const Profile = ({params}) => {
         setUserData(data)
     }
 
+    const fetchDataRelations = async () => {
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/relations/${params.userid}`)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setRelationsData(data.data.relations)
+    }
+
     useEffect(() => {
         if (params.userid) {
             fetchData()
             veryfyUser()
+            fetchDataRelations()
         }
     }, [params.userid])
 
@@ -62,6 +78,9 @@ const Profile = ({params}) => {
             setShowAddPost(true)
             setShowDeletePost(true)
             setShowMusicPlayer(true)
+            setShowRemind(true)
+            setShowDeleteActions(true)
+            setDeleteRelation(true)
         }
     }
 
@@ -131,6 +150,10 @@ const Profile = ({params}) => {
         setMusicPlayer(e.target.value)
     }
 
+    const handleChangeDeleteRelation = (e) => {
+        setDeleteRelation2(e.target.value)
+    }
+
     const handleAddMusicPlayer = async () => {
         const data = {
                 "music_player": musicPlayer,
@@ -166,13 +189,50 @@ const Profile = ({params}) => {
         console.log(responseData)
     }
 
+    const handleDeleteAll = async () => {
+        const username = params.userid
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/relations/delete-all/${username}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const responseData = await response.json()
+        console.log(responseData)
+    }
+
     if (!userData) {
         return <div>Loading...</div>
+    }
+
+    //REVISAR
+    const handleDeleteRelation = async () => {
+        const data = {
+            "nombre": userData.data.properties.Nombre, //hay que revisar esto
+            "relation": deleteRelation2,
+            "usuario": params.userid
+        }
+        console.log(data)
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/relations/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const responseData = await response.json()
+        console.log(responseData)
     }
     
     return (
         <div className='isolate w-full flex justify-center items-center flex-col p-10'>
             <div className="avatar shadow-xl">
+                {console.log("RELACIONES", relationsData)}
                 {console.log(userData)}
                 {
                     userData.data.properties.Verified && (
@@ -307,7 +367,7 @@ const Profile = ({params}) => {
                         ))
                     ))
                 )}
-                { userData.data.relations && (
+                { userData.data.relations && showRemind && (
                 <div className='justify-between w-full flex gap-4 items-center'>
                         <div className='flex gap-4'>
                             Te recuerda a alguien?
@@ -319,7 +379,7 @@ const Profile = ({params}) => {
                                     <div tabIndex={0} className="card-body">
                                         <h2 className="card-title text-white w-full">A quién te recuerda?</h2> 
                                         <select className="select w-full max-w-xs" onChange={handleChangeRemind}>
-                                            <option disabled selected>Selecciona</option>
+                                            <option disabled selected >Selecciona</option>
                                             <option>A un familiar</option>
                                             <option>A un amigo</option>
                                             <option>A mi novio/a</option>
@@ -336,7 +396,7 @@ const Profile = ({params}) => {
                         </div>
                 </div>
                 )}
-                { userData.data && (
+                { showMusicPlayer && (
                 <div className='justify-between w-full flex gap-4 items-center'>
                         <div className='flex gap-4'>
                             Selecciona tu reproductor de música
@@ -389,32 +449,61 @@ const Profile = ({params}) => {
                     }
                 </div>
             </div>
-            {
-                showAddPost && (
-                    <button className='fixed bottom-10 right-10 bg-kaqui text-white py-4 px-6 rounded-full' onClick={() => setAddPost(true)}>Agregar post</button>
-                )
-            }
             
-            {
-                addPost && (
-                    <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
-                        <div className='bg-white p-4 rounded-lg'>
-                            <div className='flex justify-end'>
-                                <button onClick={() => setAddPost(false)}>X</button>
+            <div className='fixed bottom-10 right-10 p-4 flex flex-col gap-2'>
+                <button className='bg-kaqui text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setOpenMenu(!openMenu)}> {openMenu ? "X" : <TiThMenu />}</button>
+                {openMenu && (
+                    <div className='flex flex-col'>
+                        {addPost && (
+                            <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
+                                <div className='bg-white p-4 rounded-lg'>
+                                    <div className='flex justify-end'>
+                                        <button onClick={() => setAddPost(false)}>X</button>
+                                    </div>
+                                    <h2 className='font-bold text-kaqui py-2'>Nuevo post</h2>
+                                    <textarea placeholder='Contenido' className='w-full p-2 rounded-lg mt-4 min-h-32' onChange={handleContenido}>
+                                    </textarea>
+                                    <button className='bg-kaqui text-white py-2 px-4 rounded-lg mt-4' onClick={handleAddPost}>Agregar</button>
+                                </div>
                             </div>
-                            <h2 className='font-bold text-kaqui py-2'>Nuevo post</h2>
-                            <textarea placeholder='Contenido' className='w-full p-2 rounded-lg mt-4 min-h-32' onChange={handleContenido}>
-                            </textarea>
-                            <button className='bg-kaqui text-white py-2 px-4 rounded-lg mt-4' onClick={handleAddPost}>Agregar</button>
-                        </div>
+                        )}
+                        {deleteRelation && (
+                            <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
+                                <div className='bg-white p-4 rounded-lg'>
+                                    <div className='flex justify-end'>
+                                        <button onClick={() => setDeleteRelation(false)}>X</button>
+                                    </div>
+                                    <h2 className='font-bold text-kaqui py-2'>Eliminar una relación</h2>
+                                    <select className="select w-full max-w-xs" onChange={handleChangeDeleteRelation}>
+                                        <option disabled selected>Selecciona</option>
+                                        {
+                                            Object.keys(relationsData).map((relation, index) => (
+                                                <option key={index}>
+                                                    {
+                                                        Object.keys(relationsData[relation]).map((key, index) => (
+                                                            <p key={index}>{key} </p>
+                                                        ))
+                                                    }
+                                                </option>
+                                            ))
+                                        }
+                                        
+                                    </select>
+                                    <button className='bg-kaqui text-white py-2 px-4 rounded-lg mt-4' onClick={handleDeleteRelation}>Eliminar</button>
+                                </div>
+                            </div>
+                        )}
+                        {showDeleteActions && (
+                            <div className='flex flex-col'>
+                                <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setAddPost(true)}>Agregar post</button>
+                                <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => handleDeletePost()}>Eliminar todos los posts</button>
+                                <button className="mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full" onClick={() => handleDeleteAll()}>Eliminar toda mis relaciones</button>
+                                <button className="mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full" onClick={() => setDeleteRelation(true)}>Eliminar una relación</button>
+                            </div>
+                        )}
                     </div>
-                )
-            }
-            {
-                showDeletePost && (
-                    <button className='fixed bottom-24 right-10 bg-brown text-white py-4 px-6 rounded-full' onClick={() => handleDeletePost()}>Eliminar posts</button>
-                )
-            }
+                )}
+            </div>
         </div>
     )
 }
