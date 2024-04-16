@@ -611,7 +611,7 @@ type DeleteRelationsInput struct {
 // @Success 200 {object} responses.StandardResponse "Relación eliminada exitosamente"
 // @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
 // @Failure 500 {object} responses.ErrorResponse "Error al eliminar la relación"
-// @Router /relations/delete [post]
+// @Router /user/relations/delete [post]
 func DeleteSingleRelation(c *gin.Context) {
 	var dr DeleteRelationsInput
 

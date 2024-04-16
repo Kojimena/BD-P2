@@ -469,52 +469,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/relations/delete": {
-            "post": {
-                "description": "Elimina relaciones de un nodo dado el nombre del nodo, el nombre de la relación y el nombre de usuario",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Elimina relaciones de un nodo",
-                "parameters": [
-                    {
-                        "description": "Relaciones a eliminar",
-                        "name": "relations",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controllers.DeleteRelationsInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Relación eliminada exitosamente",
-                        "schema": {
-                            "$ref": "#/definitions/responses.StandardResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error al procesar la solicitud",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Error al eliminar la relación",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/signs": {
             "get": {
                 "description": "Obtiene todos los signos zodiacales de la base de datos",
@@ -1135,6 +1089,52 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/relations/delete": {
+            "post": {
+                "description": "Elimina relaciones de un nodo dado el nombre del nodo, el nombre de la relación y el nombre de usuario",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Elimina relaciones de un nodo",
+                "parameters": [
+                    {
+                        "description": "Relaciones a eliminar",
+                        "name": "relations",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.DeleteRelationsInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación eliminada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al eliminar la relación",
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorResponse"
                         }

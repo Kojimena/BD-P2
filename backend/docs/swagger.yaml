@@ -1069,37 +1069,6 @@ paths:
       summary: Crea una relación de visita de un usuario a un lugar
       tags:
       - Lugares
-  /relations/delete:
-    post:
-      consumes:
-      - application/json
-      description: Elimina relaciones de un nodo dado el nombre del nodo, el nombre
-        de la relación y el nombre de usuario
-      parameters:
-      - description: Relaciones a eliminar
-        in: body
-        name: relations
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.DeleteRelationsInput'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Relación eliminada exitosamente
-          schema:
-            $ref: '#/definitions/responses.StandardResponse'
-        "400":
-          description: Error al procesar la solicitud
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Error al eliminar la relación
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Elimina relaciones de un nodo
-      tags:
-      - Usuarios
   /signs:
     get:
       consumes:
@@ -1521,6 +1490,37 @@ paths:
       summary: Crea una relación de apoyo entre una persona y un equipo
       tags:
       - Equipos
+  /user/relations/delete:
+    post:
+      consumes:
+      - application/json
+      description: Elimina relaciones de un nodo dado el nombre del nodo, el nombre
+        de la relación y el nombre de usuario
+      parameters:
+      - description: Relaciones a eliminar
+        in: body
+        name: relations
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.DeleteRelationsInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación eliminada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al eliminar la relación
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Elimina relaciones de un nodo
+      tags:
+      - Usuarios
   /users/clear/{username}:
     delete:
       consumes:
