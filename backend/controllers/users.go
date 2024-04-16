@@ -637,13 +637,14 @@ func DeleteSingleRelation(c *gin.Context) {
 		}
 	}(session, c)
 
+	query := fmt.Sprintf("MATCH (p:Persona {Usuario: $usuario})-[r:%s]->(n:Equipo {Nombre: $nombre}) DELETE r", dr.Relation)
+
 	_, err := session.Run(
 		c,
-		"MATCH (p:Persona {Usuario: $usuario})-[r:$relation]->(n:$nombre) DELETE r",
+		query,
 		map[string]interface{}{
-			"usuario":  dr.Usuario,
-			"relation": dr.Relation,
-			"nombre":   dr.Nombre,
+			"usuario": dr.Usuario,
+			"nombre":  dr.Nombre,
 		})
 
 	if err != nil {

@@ -340,5 +340,14 @@ GET http://localhost:8080/admin/metrics
 Accept: application/json
 
 
+### Delete single relation
+POST http://localhost:8080/users/relations/delete
+Accept: application/json
+Content-Type: application/json
 
+{
+    "usuario": "meliperez",
+    "relation": "APOYA",
+    "nombre": "Real Madrid"
+}
 
