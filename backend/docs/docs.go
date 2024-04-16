@@ -1368,6 +1368,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/recommendation/{username}": {
+            "get": {
+                "description": "Dado un usuario, encontrar a usuario que tengan intereses en común. Se comparan las relaciones de favoritos, gustos y desagrados.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Sistema simple de recomendación de usuarios.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recomendaciones encontradas",
+                        "schema": {
+                            "$ref": "#/definitions/responses.RecommendationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "El nombre de usuario no puede estar vacío",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al buscar coincidencias",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/relations/delete-all/{username}": {
             "delete": {
                 "description": "Elimina todas las relaciones de un usuario dado su nombre de usuario",
@@ -2485,6 +2529,26 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.Lugar"
                     }
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.RecommendationResponse": {
+            "type": "object",
+            "properties": {
+                "matches": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
                 },
                 "status": {
                     "description": "Código de estado de la respuesta",
