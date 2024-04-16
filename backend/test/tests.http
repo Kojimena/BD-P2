@@ -293,6 +293,11 @@ GET http://localhost:8080/users/recommendation/juanperez
 Accept: application/json
 
 
+### Get all relations
+GET http://localhost:8080/users/relations/juanperez
+Accept: application/json
+
+
 ### Delete all relations
 DELETE http://localhost:8080/users/relations/delete-all/JDOE
 

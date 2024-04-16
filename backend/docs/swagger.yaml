@@ -1086,6 +1086,35 @@ paths:
       summary: Elimina relaciones de un nodo
       tags:
       - Usuarios
+  /relations/delete-all/{username}:
+    delete:
+      consumes:
+      - application/json
+      description: Elimina todas las relaciones de un usuario dado su nombre de usuario
+      parameters:
+      - description: Nombre de usuario
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relaciones eliminadas exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al eliminar las relaciones
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Elimina todas las relaciones de un usuario
+      tags:
+      - Usuarios
   /signs:
     get:
       consumes:
@@ -1655,6 +1684,35 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Registra un nuevo profesor y estudiante
+      tags:
+      - Usuarios
+  /users/relations/{username}:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene las relaciones de un usuario dado su nombre de usuario
+      parameters:
+      - description: Nombre de usuario
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relaciones del usuario obtenidas exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al obtener las relaciones del usuario
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene las relaciones de un usuario
       tags:
       - Usuarios
   /users/student:
