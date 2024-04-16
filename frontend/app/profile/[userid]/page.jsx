@@ -1,12 +1,16 @@
 "use client"
 import React, { useState, useEffect } from 'react'
+import { useRouter } from "next/navigation"
 import { IoMdHeart } from "react-icons/io"
 import { FaHeartBroken } from "react-icons/fa"
 import { TbMusicPlus } from "react-icons/tb"
 import { TbMusicOff } from "react-icons/tb"
 import { TiThMenu } from "react-icons/ti"
+import { ImCross } from "react-icons/im"
+import { IoLogOut } from "react-icons/io5"
 
 const Profile = ({params}) => {
+    const router = useRouter()
     const [userData, setUserData] = useState(null)
     const [addPost, setAddPost] = useState(false)
     const [contenido, setContenido] = useState('')
@@ -150,10 +154,6 @@ const Profile = ({params}) => {
         setMusicPlayer(e.target.value)
     }
 
-    const handleChangeDeleteRelation = (e) => {
-        setDeleteRelation2(e.target.value)
-    }
-
     const handleAddMusicPlayer = async () => {
         const data = {
                 "music_player": musicPlayer,
@@ -208,32 +208,49 @@ const Profile = ({params}) => {
         return <div>Loading...</div>
     }
 
-    //REVISAR
     const handleDeleteRelation = async () => {
+        console.log(deleteRelation2)
+        const [relation, name] = deleteRelation2.split(': ')
+        console.log(name, relation)
         const data = {
-            "nombre": userData.data.properties.Nombre, //hay que revisar esto
-            "relation": deleteRelation2,
+            "nombre": name, 
+            "relation": relation,
             "usuario": params.userid
         }
-        console.log(data)
         const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/relations/delete`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify(data)
         })
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)
+            const responseData = await response.json()
+            console.log(responseData)
+        }else {
+            const responseData = await response.json()
+            console.log(responseData)
         }
-        const responseData = await response.json()
-        console.log(responseData)
     }
+
+    const onChangeDeleteRelation = (e) => {
+        setDeleteRelation2(e.target.value)
+    }
+
+    const logOut = () => {
+        localStorage.removeItem('user')
+        router.push('/login')
+    }
+
     
     return (
         <div className='isolate w-full flex justify-center items-center flex-col p-10'>
+            <div className="fixed top-0 right-0 p-4">
+                <button className="bg-kaqui text-white hover:bg-white hover:text-kaqui py-2 px-4 rounded-full" onClick={() => logOut()}>
+                    <IoLogOut className='text-2xl' />
+                </button>
+            </div>
             <div className="avatar shadow-xl">
-                {console.log("RELACIONES", relationsData)}
-                {console.log(userData)}
                 {
                     userData.data.properties.Verified && (
                         <label className="bg-green-500 text-white rounded-full p-2 absolute left-14 top-0 text-xs">Verificado</label>
@@ -441,9 +458,10 @@ const Profile = ({params}) => {
                 <div className='flex flex-wrap gap-4'>
                     {
                         userData.data.properties.Publicaciones && userData.data.properties.Publicaciones.map((post, index) => (
-                            <div key={index} className='glassmorph p-4 rounded-lg w-full'>
-                                <h3 className=' text-white'>{post}</h3>
-                                <p>{post.body}</p>
+                            <div className="chat chat-start" key={index}>
+                                <div className="chat-bubble p-4">
+                                    <p className='text-white font-montserrat'>{post}</p>
+                                </div>
                             </div>
                         ))
                     }
@@ -451,7 +469,6 @@ const Profile = ({params}) => {
             </div>
             
             <div className='fixed bottom-10 right-10 p-4 flex flex-col gap-2'>
-                <button className='bg-kaqui text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setOpenMenu(!openMenu)}> {openMenu ? "X" : <TiThMenu />}</button>
                 {openMenu && (
                     <div className='flex flex-col'>
                         {addPost && (
@@ -474,17 +491,11 @@ const Profile = ({params}) => {
                                         <button onClick={() => setDeleteRelation(false)}>X</button>
                                     </div>
                                     <h2 className='font-bold text-kaqui py-2'>Eliminar una relación</h2>
-                                    <select className="select w-full max-w-xs" onChange={handleChangeDeleteRelation}>
+                                    <select className="select w-full max-w-xs" onChange={onChangeDeleteRelation}>
                                         <option disabled selected>Selecciona</option>
                                         {
-                                            Object.keys(relationsData).map((relation, index) => (
-                                                <option key={index}>
-                                                    {
-                                                        Object.keys(relationsData[relation]).map((key, index) => (
-                                                            <p key={index}>{key} </p>
-                                                        ))
-                                                    }
-                                                </option>
+                                            relationsData && relationsData.map((relation, index) => (
+                                                <option key={index}>{relation.details.relation_type}: {relation.node.Nombre}</option>
                                             ))
                                         }
                                         
@@ -493,6 +504,7 @@ const Profile = ({params}) => {
                                 </div>
                             </div>
                         )}
+
                         {showDeleteActions && (
                             <div className='flex flex-col'>
                                 <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setAddPost(true)}>Agregar post</button>
@@ -501,8 +513,14 @@ const Profile = ({params}) => {
                                 <button className="mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full" onClick={() => setDeleteRelation(true)}>Eliminar una relación</button>
                             </div>
                         )}
+
+                        
                     </div>
                 )}
+                
+                { deleteRelation && (<button className='bg-kaqui text-white hover:bg-white hover:text-kaqui rounded-full max-w-10 block p-2 ml-auto' onClick={() => setOpenMenu(!openMenu)}> {openMenu ? <ImCross/> : <TiThMenu className='text-2xl text-center' />}</button>)
+                }
+
             </div>
         </div>
     )

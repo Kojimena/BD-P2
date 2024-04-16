@@ -41,7 +41,7 @@ const PeoplePage = () => {
             {
                 Object.keys(people).map((key) => {
                     return (
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center" key={key}>
                             <div className='flex justify-between glassmorph rounded-lg p-4 flex-col cursor-pointer w-60 relative' onClick={() => router.push(`/profile/${key}`)}>
                                 <span className='text-white font-bold text-2xl'>{key}</span>
                                 <span className='bg-kaqui text-white font-bold text-2xl absolute top-0 right-0 rounded-xl py-2 px-4'>{people[key]}</span>
