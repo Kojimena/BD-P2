@@ -515,50 +515,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/relations/delete-all/{username}": {
-            "delete": {
-                "description": "Elimina todas las relaciones de un usuario dado su nombre de usuario",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Elimina todas las relaciones de un usuario",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Nombre de usuario",
-                        "name": "username",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Relaciones eliminadas exitosamente",
-                        "schema": {
-                            "$ref": "#/definitions/responses.StandardResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error al procesar la solicitud",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Error al eliminar las relaciones",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/signs": {
             "get": {
                 "description": "Obtiene todos los signos zodiacales de la base de datos",
@@ -1405,6 +1361,50 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/relations/delete-all/{username}": {
+            "delete": {
+                "description": "Elimina todas las relaciones de un usuario dado su nombre de usuario",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Elimina todas las relaciones de un usuario",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relaciones eliminadas exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al eliminar las relaciones",
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorResponse"
                         }
