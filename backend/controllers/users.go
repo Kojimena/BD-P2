@@ -782,8 +782,12 @@ func GetUserRelations(c *gin.Context) {
 		nodeTo := r.Record().Values[1].(neo4j.Node)
 
 		relations = append(relations, map[string]interface{}{
-			nodeTo.Labels[0]: nodeTo.Props,
-			rel.Type:         rel.Props,
+			"node":     nodeTo.Props,
+			"relation": rel.Props,
+			"details": map[string]interface{}{
+				"node_type":     nodeTo.Labels[0],
+				"relation_type": rel.Type,
+			},
 		})
 	}
 
