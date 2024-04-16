@@ -347,7 +347,7 @@ Content-Type: application/json
 
 {
     "usuario": "meliperez",
-    "relation": "APOYA",
-    "nombre": "Real Madrid"
+    "relation": "NO_LE_GUSTA",
+    "nombre": "Monterrico"
 }
 

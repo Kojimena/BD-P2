@@ -55,11 +55,11 @@ func GetSongs(c *gin.Context) {
 		vals := r.Record().Values[0].(neo4j.Node).Props
 
 		song := models.Cancion{
-			Nombre:           vals["Nombre"].(string),
-			Disco:            vals["Disco"].(string),
-			FechaLanzamiento: vals["FechaDeLanzamiento"].(time.Time).String(),
-			Duracion:         vals["Duracion"].(float64),
-			Genero:           vals["Genero"].(string),
+			Nombre: vals["Nombre"].(string),
+			Disco:  vals["Disco"].(string),
+			//FechaLanzamiento: vals["FechaDeLanzamiento"].(time.Time).String(),
+			Duracion: vals["Duracion"].(float64),
+			Genero:   vals["Genero"].(string),
 		}
 
 		songs = append(songs, song)
