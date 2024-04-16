@@ -1,14 +1,28 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from "next/navigation"
 
 
 const PeoplePage = () => {
     const router = useRouter()
-  const [people, setPeople] = useState([
-    { name: 'Juan', lastName: 'Perez', career: 'Ingeniería' },
-    { name: 'koji', lastName: 'Gomez', career: 'Medicina' },
-  ])
+  const [people, setPeople] = useState([])
+
+  const fetchPeople = async () => {
+    const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/recommendation/${localStorage.getItem('user')}`)
+    if (response.ok) {
+      const data = await response.json()
+      console.log(data)
+      setPeople(data.matches)
+    } else {
+      console.error('Error al obtener los usuarios')
+    }
+  }
+
+    useEffect(() => {
+        fetchPeople()
+    }
+    , [])
+
 
   return (
     <div className="w-full isolate">
@@ -21,16 +35,21 @@ const PeoplePage = () => {
         </div>
         <div className='flex justify-center items-center flex-col pt-10'>
         <h2 className="font-montserrat text-bold text-4xl text-kaqui font-bold">Mira tus matchs!</h2>
+        <span className="font-montserrat text-bold text-2xl text-white font-normal">Haz click en el usuario para ver su perfil</span>
         <div className="flex flex-wrap py-10 gap-10">
-            {people.map((person, index) => (
-                <div key={index} className="p-5 glassmorph">
-                    <h3 className="font-montserrat text-bold text-white">{person.name} {person.lastName}</h3>
-                    <p className="font-montserrat text-white">Carrera: {person.career}</p>
-                    <button className="mt-2 font-montserrat rounded-md bg-white px-3 py-2 text-sm font-semibold text-kaqui shadow-sm hover:bg-kaqui hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-none" onClick={() => router.push(`/profile/${person.name}`)}>
-                        Ver perfil
-                    </button>
-                </div>
-            ))}
+            {console.log(people)}
+            {
+                Object.keys(people).map((key) => {
+                    return (
+                        <div className="flex flex-col items-center">
+                            <div className='flex justify-between glassmorph rounded-lg p-4 flex-col cursor-pointer w-60 relative' onClick={() => router.push(`/profile/${key}`)}>
+                                <span className='text-white font-bold text-2xl'>{key}</span>
+                                <span className='bg-kaqui text-white font-bold text-2xl absolute top-0 right-0 rounded-xl py-2 px-4'>{people[key]}</span>
+                            </div>
+                        </div>
+                    )
+                })
+            }
         </div>
         </div>
     </div>

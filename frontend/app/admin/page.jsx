@@ -159,10 +159,10 @@ const AdminPage = () => {
         <div className="w-full isolate">
             <div className="fixed top-0 right-0 p-4">
                 <button className="bg-kaqui text-white hover:bg-white hover:text-kaqui py-2 px-4 rounded-full" onClick={() => logOut()}>
-                    <IoLogOut />
+                    <IoLogOut className='text-2xl' />
                 </button>
             </div>
-            <div className='flex justify-center items-center flex-col pt-10'>
+            <div className='flex justify-center items-center flex-col pt-20'>
                 <div className='flex justify-end items-center gap-4 w-full p-8'>
                     <div className="dropdown dropdown-hover border border-kaqui rounded-md">
                         <select className="select w-full max-w-xs" onChange={(e) => handleFilter(e)}>
@@ -175,10 +175,10 @@ const AdminPage = () => {
                     </div>
                 </div>
                 <h2 className="font-montserrat text-bold text-4xl text-kaqui font-bold">Usuarios</h2>
-                <div className="flex flex-wrap py-10 gap-2 px-20">
+                <div className="flex flex-wrap py-10 gap-4 px-20">
                     {usuarios && usuarios.map((user, index) => (
                         <div key={index} className="p-5 glassmorph w-60">
-                            <h2 className="font-montserrat font-bold text-brown">{user.usuario}</h2>
+                            <h2 className="font-montserrat font-bold text-brown py-4 text-xl">{user.usuario}</h2>
                             <p className="font-montserrat text-white">Nombre: {user.nombre}</p>
                             <p className="font-montserrat text-white">Apellido: {user.apellido}</p>
                             <p className="font-montserrat text-white">Genero: {user.genero}</p>
@@ -196,7 +196,7 @@ const AdminPage = () => {
                         <div className='flex flex-col'>
                             <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setAddTags(!addTags)}>Añadir tags</button>
                             <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setDeleteUsers(!deleteUsers)}>Eliminar usuarios</button>
-                            <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => router.push('/admin/stats')}>Ver stats</button>
+                            <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => router.push('/stats')}>Ver stats</button>
                         </div>
                     )
                 }
