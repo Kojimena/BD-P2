@@ -601,7 +601,7 @@ type DeleteRelationsInput struct {
 	Relation string `json:"relation" binding:"required"` // Relación a eliminar
 }
 
-// DeleteRelations Elimina relaciones de un nodo
+// DeleteSingleRelation Elimina relaciones de un nodo
 // @Summary Elimina relaciones de un nodo
 // @Description Elimina relaciones de un nodo dado el nombre del nodo, el nombre de la relación y el nombre de usuario
 // @Tags Usuarios
@@ -611,8 +611,8 @@ type DeleteRelationsInput struct {
 // @Success 200 {object} responses.StandardResponse "Relación eliminada exitosamente"
 // @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
 // @Failure 500 {object} responses.ErrorResponse "Error al eliminar la relación"
-// @Router /relations/delete [post]
-func DeleteRelations(c *gin.Context) {
+// @Router /user/relations/delete [post]
+func DeleteSingleRelation(c *gin.Context) {
 	var dr DeleteRelationsInput
 
 	if err := c.ShouldBindJSON(&dr); err != nil {
@@ -659,5 +659,143 @@ func DeleteRelations(c *gin.Context) {
 		Status:  http.StatusOK,
 		Message: "Relación eliminada exitosamente",
 		Data:    nil,
+	})
+}
+
+// DeleteAllRelations Elimina todas las relaciones de un usuario
+// @Summary Elimina todas las relaciones de un usuario
+// @Description Elimina todas las relaciones de un usuario dado su nombre de usuario
+// @Tags Usuarios
+// @Accept json
+// @Produce json
+// @Param username path string true "Nombre de usuario"
+// @Success 200 {object} responses.StandardResponse "Relaciones eliminadas exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al eliminar las relaciones"
+// @Router /users/relations/delete-all/{username} [delete]
+func DeleteAllRelations(c *gin.Context) {
+	username := c.Param("username")
+
+	if username == "" {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El nombre de usuario no puede estar vacío",
+			Error:   "El nombre de usuario no puede estar vacío. Por favor, ingrese un nombre de usuario válido en la URL.",
+		})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	_, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r]-() DELETE r",
+		map[string]interface{}{
+			"usuario": username,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al eliminar las relaciones",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relaciones eliminadas exitosamente",
+		Data:    nil,
+	})
+}
+
+// GetUserRelations Obtiene las relaciones de un usuario
+// @Summary Obtiene las relaciones de un usuario
+// @Description Obtiene las relaciones de un usuario dado su nombre de usuario
+// @Tags Usuarios
+// @Accept json
+// @Produce json
+// @Param username path string true "Nombre de usuario"
+// @Success 200 {object} responses.StandardResponse "Relaciones del usuario obtenidas exitosamente"
+// @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
+// @Failure 500 {object} responses.ErrorResponse "Error al obtener las relaciones del usuario"
+// @Router /users/relations/{username} [get]
+func GetUserRelations(c *gin.Context) {
+	username := c.Param("username")
+
+	if username == "" {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse{
+			Status:  http.StatusBadRequest,
+			Message: "El nombre de usuario no puede estar vacío",
+			Error:   "El nombre de usuario no puede estar vacío. Por favor, ingrese un nombre de usuario válido en la URL.",
+		})
+		return
+	}
+
+	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeRead})
+
+	defer func(session neo4j.SessionWithContext, ctx context.Context) {
+		err := session.Close(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+				Status:  http.StatusInternalServerError,
+				Message: "Error al cerrar la sesión",
+				Error:   err.Error(),
+			})
+		}
+	}(session, c)
+
+	// buscar todas las relations de un usuario
+
+	r, err := session.Run(
+		c,
+		"MATCH (p:Persona {Usuario: $usuario})-[r]-(n) RETURN r,n",
+		map[string]interface{}{
+			"usuario": username,
+		})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Error al obtener las relaciones del usuario",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	var relations []map[string]interface{}
+
+	for r.Next(c) {
+		rel := r.Record().Values[0].(neo4j.Relationship)
+		nodeTo := r.Record().Values[1].(neo4j.Node)
+
+		relations = append(relations, map[string]interface{}{
+			"node":     nodeTo.Props,
+			"relation": rel.Props,
+			"details": map[string]interface{}{
+				"node_type":     nodeTo.Labels[0],
+				"relation_type": rel.Type,
+			},
+		})
+	}
+
+	c.JSON(http.StatusOK, responses.StandardResponse{
+		Status:  http.StatusOK,
+		Message: "Relaciones del usuario obtenidas exitosamente",
+		Data: map[string]interface{}{
+			"relations": relations,
+		},
 	})
 }

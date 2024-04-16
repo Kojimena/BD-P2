@@ -31,6 +31,12 @@ func Routes(router *gin.Engine) {
 		users.POST("/login", controllers.Login)
 		users.POST("/post", controllers.NewPublication)
 		users.DELETE("/clear/:username", controllers.ClearPublications)
+
+		users.GET("/relations/:username", controllers.GetUserRelations)
+		users.POST("/relations/delete", controllers.DeleteSingleRelation)
+		users.DELETE("/relations/delete-all/:username", controllers.DeleteAllRelations)
+
+		users.GET("/recommendation/:username", controllers.Recommendation)
 	}
 
 	careers := router.Group("/careers")

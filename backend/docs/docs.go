@@ -469,52 +469,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/relations/delete": {
-            "post": {
-                "description": "Elimina relaciones de un nodo dado el nombre del nodo, el nombre de la relación y el nombre de usuario",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Elimina relaciones de un nodo",
-                "parameters": [
-                    {
-                        "description": "Relaciones a eliminar",
-                        "name": "relations",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controllers.DeleteRelationsInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Relación eliminada exitosamente",
-                        "schema": {
-                            "$ref": "#/definitions/responses.StandardResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error al procesar la solicitud",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Error al eliminar la relación",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/signs": {
             "get": {
                 "description": "Obtiene todos los signos zodiacales de la base de datos",
@@ -1142,6 +1096,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/relations/delete": {
+            "post": {
+                "description": "Elimina relaciones de un nodo dado el nombre del nodo, el nombre de la relación y el nombre de usuario",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Elimina relaciones de un nodo",
+                "parameters": [
+                    {
+                        "description": "Relaciones a eliminar",
+                        "name": "relations",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.DeleteRelationsInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relación eliminada exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al eliminar la relación",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/clear/{username}": {
             "delete": {
                 "description": "Limpia las publicaciones de un usuario en la base de datos",
@@ -1361,6 +1361,138 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/recommendation/{username}": {
+            "get": {
+                "description": "Dado un usuario, encontrar a usuario que tengan intereses en común. Se comparan las relaciones de favoritos, gustos y desagrados.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Sistema simple de recomendación de usuarios.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recomendaciones encontradas",
+                        "schema": {
+                            "$ref": "#/definitions/responses.RecommendationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "El nombre de usuario no puede estar vacío",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al buscar coincidencias",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/relations/delete-all/{username}": {
+            "delete": {
+                "description": "Elimina todas las relaciones de un usuario dado su nombre de usuario",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Elimina todas las relaciones de un usuario",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relaciones eliminadas exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al eliminar las relaciones",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/relations/{username}": {
+            "get": {
+                "description": "Obtiene las relaciones de un usuario dado su nombre de usuario",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Obtiene las relaciones de un usuario",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre de usuario",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relaciones del usuario obtenidas exitosamente",
+                        "schema": {
+                            "$ref": "#/definitions/responses.StandardResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error al procesar la solicitud",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error al obtener las relaciones del usuario",
                         "schema": {
                             "$ref": "#/definitions/responses.ErrorResponse"
                         }
@@ -2397,6 +2529,26 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.Lugar"
                     }
+                },
+                "status": {
+                    "description": "Código de estado de la respuesta",
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.RecommendationResponse": {
+            "type": "object",
+            "properties": {
+                "matches": {
+                    "description": "Datos adicionales de la respuesta",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "message": {
+                    "description": "Mensaje de la respuesta",
+                    "type": "string"
                 },
                 "status": {
                     "description": "Código de estado de la respuesta",

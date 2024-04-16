@@ -687,6 +687,20 @@ definitions:
         description: Código de estado de la respuesta
         type: integer
     type: object
+  responses.RecommendationResponse:
+    properties:
+      matches:
+        additionalProperties:
+          type: integer
+        description: Datos adicionales de la respuesta
+        type: object
+      message:
+        description: Mensaje de la respuesta
+        type: string
+      status:
+        description: Código de estado de la respuesta
+        type: integer
+    type: object
   responses.SongsResponse:
     properties:
       message:
@@ -1055,37 +1069,6 @@ paths:
       summary: Crea una relación de visita de un usuario a un lugar
       tags:
       - Lugares
-  /relations/delete:
-    post:
-      consumes:
-      - application/json
-      description: Elimina relaciones de un nodo dado el nombre del nodo, el nombre
-        de la relación y el nombre de usuario
-      parameters:
-      - description: Relaciones a eliminar
-        in: body
-        name: relations
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.DeleteRelationsInput'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Relación eliminada exitosamente
-          schema:
-            $ref: '#/definitions/responses.StandardResponse'
-        "400":
-          description: Error al procesar la solicitud
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Error al eliminar la relación
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Elimina relaciones de un nodo
-      tags:
-      - Usuarios
   /signs:
     get:
       consumes:
@@ -1507,6 +1490,37 @@ paths:
       summary: Crea una relación de apoyo entre una persona y un equipo
       tags:
       - Equipos
+  /user/relations/delete:
+    post:
+      consumes:
+      - application/json
+      description: Elimina relaciones de un nodo dado el nombre del nodo, el nombre
+        de la relación y el nombre de usuario
+      parameters:
+      - description: Relaciones a eliminar
+        in: body
+        name: relations
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.DeleteRelationsInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relación eliminada exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al eliminar la relación
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Elimina relaciones de un nodo
+      tags:
+      - Usuarios
   /users/clear/{username}:
     delete:
       consumes:
@@ -1655,6 +1669,94 @@ paths:
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Registra un nuevo profesor y estudiante
+      tags:
+      - Usuarios
+  /users/recommendation/{username}:
+    get:
+      consumes:
+      - application/json
+      description: Dado un usuario, encontrar a usuario que tengan intereses en común.
+        Se comparan las relaciones de favoritos, gustos y desagrados.
+      parameters:
+      - description: Nombre de usuario
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Recomendaciones encontradas
+          schema:
+            $ref: '#/definitions/responses.RecommendationResponse'
+        "400":
+          description: El nombre de usuario no puede estar vacío
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al buscar coincidencias
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Sistema simple de recomendación de usuarios.
+      tags:
+      - Usuarios
+  /users/relations/{username}:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene las relaciones de un usuario dado su nombre de usuario
+      parameters:
+      - description: Nombre de usuario
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relaciones del usuario obtenidas exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al obtener las relaciones del usuario
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Obtiene las relaciones de un usuario
+      tags:
+      - Usuarios
+  /users/relations/delete-all/{username}:
+    delete:
+      consumes:
+      - application/json
+      description: Elimina todas las relaciones de un usuario dado su nombre de usuario
+      parameters:
+      - description: Nombre de usuario
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Relaciones eliminadas exitosamente
+          schema:
+            $ref: '#/definitions/responses.StandardResponse'
+        "400":
+          description: Error al procesar la solicitud
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Error al eliminar las relaciones
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Elimina todas las relaciones de un usuario
       tags:
       - Usuarios
   /users/student:
