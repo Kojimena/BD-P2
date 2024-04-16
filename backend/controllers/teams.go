@@ -7,7 +7,6 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
-	"github.com/neo4j/neo4j-go-driver/v5/neo4j/dbtype"
 	"net/http"
 	"time"
 )
@@ -56,11 +55,11 @@ func GetTeams(c *gin.Context) {
 		vals := r.Record().Values[0].(neo4j.Node).Props
 
 		team := models.Equipo{
-			Nombre:               vals["Nombre"].(string),
-			Deporte:              vals["Deporte"].(string),
-			Pais:                 vals["País"].(string),
-			Division:             vals["División"].(string),
-			FechaEstablecimiento: vals["FechaDeEstablecimiento"].(dbtype.Date).Time().String(), // Convertir a tipo time.Time
+			Nombre:   vals["Nombre"].(string),
+			Deporte:  vals["Deporte"].(string),
+			Pais:     vals["País"].(string),
+			Division: vals["División"].(string),
+			//FechaEstablecimiento: vals["FechaDeEstablecimiento"].(dbtype.Date).Time().String(), // Convertir a tipo time.Time
 		}
 
 		teams = append(teams, team)
