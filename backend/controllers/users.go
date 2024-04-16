@@ -672,7 +672,7 @@ func DeleteSingleRelation(c *gin.Context) {
 // @Success 200 {object} responses.StandardResponse "Relaciones eliminadas exitosamente"
 // @Failure 400 {object} responses.ErrorResponse "Error al procesar la solicitud"
 // @Failure 500 {object} responses.ErrorResponse "Error al eliminar las relaciones"
-// @Router /relations/delete-all/{username} [delete]
+// @Router /users/relations/delete-all/{username} [delete]
 func DeleteAllRelations(c *gin.Context) {
 	username := c.Param("username")
 
