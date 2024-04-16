@@ -10,6 +10,17 @@ import (
 	"net/http"
 )
 
+// Recommendation Sistema simple de recomendación de usuarios.
+// @Summary Sistema simple de recomendación de usuarios.
+// @Description Dado un usuario, encontrar a usuario que tengan intereses en común. Se comparan las relaciones de favoritos, gustos y desagrados.
+// @Tags Usuarios
+// @Accept json
+// @Produce json
+// @Param username path string true "Nombre de usuario"
+// @Success 200 {object} responses.RecommendationResponse "Recomendaciones encontradas"
+// @Failure 400 {object} responses.ErrorResponse "El nombre de usuario no puede estar vacío"
+// @Failure 500 {object} responses.ErrorResponse "Error al buscar coincidencias"
+// @Router /users/recommendation/{username} [get]
 func Recommendation(c *gin.Context) {
 	username := c.Param("username")
 
