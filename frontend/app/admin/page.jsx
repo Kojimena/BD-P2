@@ -3,6 +3,8 @@ import React, {useState, useEffect} from 'react'
 import { useRouter } from "next/navigation"
 import { FaCircleCheck } from "react-icons/fa6"
 import { GiCardDiscard } from "react-icons/gi"
+import { IoLogOut } from "react-icons/io5"
+import { TiThMenu } from "react-icons/ti"
 
 
 const AdminPage = () => {
@@ -12,26 +14,31 @@ const AdminPage = () => {
     const [tag, setTag] = useState('')
     const [deleteInput, setDeleteInput] = useState('')
     const [tagUsers, setTagUsers] = useState('')
-    
-    const listUsers = [
-            {
-                "name": "Juan",
-                "lastName": "Perez",
-                "email": "juanPerez@gmail.com",
-            },
-            {
-                "name": "koji",
-                "lastName": "Gomez",
-                "email": "Koji@gmail.com",
-            }
-        ]
+    const [usuarios, setUsuarios] = useState([])
+    const [filterTag, setFilterTag] = useState('')
+    const [openMenu, setOpenMenu] = useState(false)
 
-        const [toggles, setToggles] = useState({
-            toggle1 : false,
-            toggle2 : false,
-            toggle3 : false,
-            toggle4 : false
-        })
+    const fetchAllUsers = async () => {
+        const response = await fetch('https://super-trixi-kojimena.koyeb.app/admin/users')
+        if (response.ok) {
+            const data = await response.json()
+            console.log(data)
+            setUsuarios(data.users)
+        } else {
+            console.error('Error al obtener los usuarios')
+        }
+    }
+
+    useEffect(() => {
+        fetchAllUsers()
+    }, [])
+
+    const [toggles, setToggles] = useState({
+        toggle1 : false,
+        toggle2 : false,
+        toggle3 : false,
+        toggle4 : false
+    })
     
         const handleToggle = (name) => {
             setToggles(prevState => ({
@@ -43,6 +50,11 @@ const AdminPage = () => {
 
     const handleTag = (e) => {
         setTag(e.target.value)
+    }
+
+    const handleFilterTag = (e) => {
+        setFilterTag(e.target.value)
+        
     }
 
     const handleTagUsers = (e) => {
@@ -119,17 +131,58 @@ const AdminPage = () => {
         setDeleteUsers(!deleteUsers);
     }
 
+    const handleFilter = async (e) => {
+
+        if (e.target.value === 'All') {
+            fetchAllUsers()
+            return
+        }
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/admin/users?filter=${e.target.value}`)
+        if (response.ok) {
+            const data = await response.json()
+            setUsuarios(data.users)
+            console.log(data)
+        } else {
+            console.error('Error al filtrar los usuarios')
+        }
+    }
+
+    const logOut = () => {
+        localStorage.removeItem('user')
+        router.push('/login')
+    }
+
+
+
+
     return (
         <div className="w-full isolate">
-
+            <div className="fixed top-0 right-0 p-4">
+                <button className="bg-kaqui text-white hover:bg-white hover:text-kaqui py-2 px-4 rounded-full" onClick={() => logOut()}>
+                    <IoLogOut />
+                </button>
+            </div>
             <div className='flex justify-center items-center flex-col pt-10'>
+                <div className='flex justify-end items-center gap-4 w-full p-8'>
+                    <div className="dropdown dropdown-hover border border-kaqui rounded-md">
+                        <select className="select w-full max-w-xs" onChange={(e) => handleFilter(e)}>
+                            <option disabled selected>Filtrar por tag</option>
+                            <option >Verified</option>
+                            <option >Normal</option>
+                            <option>Offender</option>
+                            <option>All</option>
+                        </select>
+                    </div>
+                </div>
                 <h2 className="font-montserrat text-bold text-4xl text-kaqui font-bold">Usuarios</h2>
-                <div className="flex flex-wrap py-10 gap-10">
-                    {listUsers.map((user, index) => (
-                        <div key={index} className="p-5 glassmorph">
-                            <h3 className="font-montserrat text-bold text-white">{user.name} {user.lastName}</h3>
-                            <p className="font-montserrat text-white">Email: {user.email}</p>
-                            <button className="mt-2 font-montserrat rounded-md bg-white px-3 py-2 text-sm font-semibold text-kaqui shadow-sm hover:bg-kaqui hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-none" onClick={() => router.push(`/profile/${user.name}`)}>
+                <div className="flex flex-wrap py-10 gap-2 px-20">
+                    {usuarios && usuarios.map((user, index) => (
+                        <div key={index} className="p-5 glassmorph w-60">
+                            <h2 className="font-montserrat font-bold text-brown">{user.usuario}</h2>
+                            <p className="font-montserrat text-white">Nombre: {user.nombre}</p>
+                            <p className="font-montserrat text-white">Apellido: {user.apellido}</p>
+                            <p className="font-montserrat text-white">Genero: {user.genero}</p>
+                            <button className="mt-2 font-montserrat rounded-md bg-white px-3 py-2 text-sm font-semibold text-kaqui shadow-sm hover:bg-kaqui hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-none w-full" onClick={() => router.push(`/profile/${user.usuario}`)}>
                                 Ver perfil
                             </button>
                         </div>
@@ -137,8 +190,16 @@ const AdminPage = () => {
                 </div>
             </div>
             <div className='fixed bottom-0 right-0 p-4 flex flex-col gap-2'>
-                <button className='mt-4 bg-kaqui text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setAddTags(!addTags)}>Añadir tags</button>
-                <button className='mt-4 bg-kaqui text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setDeleteUsers(!deleteUsers)}>Eliminar usuarios</button>
+                <button className='bg-kaqui text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setOpenMenu(!openMenu)}> {openMenu ? "X" : <TiThMenu />}</button>
+                {
+                    openMenu && (
+                        <div className='flex flex-col'>
+                            <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setAddTags(!addTags)}>Añadir tags</button>
+                            <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => setDeleteUsers(!deleteUsers)}>Eliminar usuarios</button>
+                            <button className='mt-4 bg-brown text-white hover:bg-white hover:text-kaqui py-4 px-6 rounded-full' onClick={() => router.push('/admin/stats')}>Ver stats</button>
+                        </div>
+                    )
+                }
             </div>
             {
                 addTags && (

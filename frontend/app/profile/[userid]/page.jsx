@@ -3,27 +3,29 @@ import { data } from 'autoprefixer'
 import React, { useState, useEffect } from 'react'
 import { IoMdHeart } from "react-icons/io"
 import { FaHeartBroken } from "react-icons/fa"
-
+import { TbMusicPlus } from "react-icons/tb"
+import { TbMusicOff } from "react-icons/tb"
 
 const Profile = ({params}) => {
-  const [userData, setUserData] = useState(null)
-  const [addPost, setAddPost] = useState(false)
-  const [contenido, setContenido] = useState('')
-  const [showAddPost, setShowAddPost] = useState(false)
-  const [showDeletePost, setShowDeletePost] = useState(false)
-  const [refreshKey, setRefreshKey] = useState(0)
-  const [remindSomeone, setRemindSomeone] = useState("")
+    const [userData, setUserData] = useState(null)
+    const [addPost, setAddPost] = useState(false)
+    const [contenido, setContenido] = useState('')
+    const [showAddPost, setShowAddPost] = useState(false)
+    const [showDeletePost, setShowDeletePost] = useState(false)
+    const [refreshKey, setRefreshKey] = useState(0)
+    const [remindSomeone, setRemindSomeone] = useState("")
+    const [musicPlayer, setMusicPlayer] = useState("")
+    const [showMusicPlayer, setShowMusicPlayer] = useState(false)
 
 
-
-  const fetchData = async () => {
-    const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/details/${params.userid}`)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+    const fetchData = async () => {
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/users/details/${params.userid}`)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setUserData(data)
     }
-    const data = await response.json()
-    setUserData(data)
-  }
 
     useEffect(() => {
         if (params.userid) {
@@ -59,6 +61,7 @@ const Profile = ({params}) => {
         if (localStorage.getItem('user') === params.userid) {
             setShowAddPost(true)
             setShowDeletePost(true)
+            setShowMusicPlayer(true)
         }
     }
 
@@ -124,12 +127,50 @@ const Profile = ({params}) => {
         console.log(responseData)
     }
 
+    const handleChangeMusicPlayer = (e) => {
+        setMusicPlayer(e.target.value)
+    }
+
+    const handleAddMusicPlayer = async () => {
+        const data = {
+                "music_player": musicPlayer,
+                "usuario": params.userid
+            }
+        console.log(data)
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/songs/music-player`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const responseData = await response.json()
+        console.log(responseData)
+    }
+
+    const handleRemoveMusicPlayer = async () => {
+        const username = params.userid
+        const response = await fetch(`https://super-trixi-kojimena.koyeb.app/songs/music-player/${username}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const responseData = await response.json()
+        console.log(responseData)
+    }
 
     if (!userData) {
         return <div>Loading...</div>
-      }
-      
-      return (
+    }
+    
+    return (
         <div className='isolate w-full flex justify-center items-center flex-col p-10'>
             <div className="avatar shadow-xl">
                 {console.log(userData)}
@@ -152,8 +193,8 @@ const Profile = ({params}) => {
                     <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" />
                 </div>
             </div>
-          <h1 className='text-2xl font-bold mb-4 text-white'>{userData.data.properties.Nombre} {userData.data.properties.Apellido}</h1>
-          <div className='flex gap-10 w-full'>
+            <h1 className='text-2xl font-bold mb-4 text-white'>{userData.data.properties.Nombre} {userData.data.properties.Apellido}</h1>
+            <div className='flex gap-10 w-full'>
             <div className='grid grid-cols-3 gap-4 w-full'>
                 {userData.data.properties.Carnet && (
                     <div className='bg-gray-100 p-4 rounded-lg'>
@@ -295,6 +336,45 @@ const Profile = ({params}) => {
                         </div>
                 </div>
                 )}
+                { userData.data && (
+                <div className='justify-between w-full flex gap-4 items-center'>
+                        <div className='flex gap-4'>
+                            Selecciona tu reproductor de música
+                            <div className="dropdown dropdown-end">
+                                <div tabIndex={0} role="button" className="btn btn-circle btn-ghost btn-xs text-info">
+                                    <TbMusicPlus className='text-kaqui text-xl' />
+                                </div>
+                                <div tabIndex={0} className="card compact dropdown-content z-[1] shadow glassmorph rounded-box w-60">
+                                    <div tabIndex={0} className="card-body">
+                                        <h2 className="card-title text-white w-full">Cuál reproductor de música usas?</h2> 
+                                        <select className="select w-full max-w-xs" onChange={handleChangeMusicPlayer}>
+                                            <option disabled selected>Selecciona</option>
+                                            <option>Spotify</option>
+                                            <option>Apple Music</option>
+                                            <option>Google Play Music</option>
+                                            <option>Amazon Music</option>
+                                            <option>Youtube Music</option>
+                                            <option>Other</option>
+                                        </select>
+                                        <button 
+                                            className="bg-kaqui text-white py-2 px-4 rounded-lg mt-4" 
+                                            onClick={() => {
+                                                if (userData && userData.data && musicPlayer) {
+                                                    handleAddMusicPlayer()
+                                                }
+                                            }}
+                                        >
+                                            Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div tabIndex={0} role="button" className="btn btn-circle btn-ghost btn-xs text-info">
+                            <TbMusicOff className='text-kaqui text-xl' onClick={() => handleRemoveMusicPlayer()} />
+                        </div>
+                </div>
+                )}
             </div>
             <div className='flex justify-start items-center gap-4 mt-4 flex-col w-full'>
                 <h1 className='font-bold text-kaqui'>Posts</h1>
@@ -336,9 +416,7 @@ const Profile = ({params}) => {
                 )
             }
         </div>
-      )
-
-  
+    )
 }
 
 export default Profile
