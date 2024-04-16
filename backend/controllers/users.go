@@ -624,6 +624,8 @@ func DeleteSingleRelation(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(dr)
+
 	session := configs.DB.NewSession(c, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 
 	defer func(session neo4j.SessionWithContext, ctx context.Context) {
