@@ -239,7 +239,7 @@ func Recommendation(c *gin.Context) {
 	// LE_GUSTA
 	r, err = session.Run(
 		c,
-		"MATCH (p:Persona {Usuario: $username})-[:LE_GUSTA]->(c:Lugar)<-[:LE_GUSTA]-(p2:Persona) RETURN p2.Usuario",
+		"MATCH (p:Persona {Usuario: $username})-[:VISITA]->(c:Lugar)<-[:VISITA]-(p2:Persona) RETURN p2.Usuario",
 		map[string]interface{}{"username": username},
 	)
 

@@ -289,7 +289,7 @@ DELETE http://localhost:8080/songs/music-player/juanperez
 Accept: application/json
 
 ### Recomendación
-GET http://localhost:8080/users/recommendation/juanperez
+GET http://localhost:8080/users/recommendation/MarkAlbrand
 Accept: application/json
 
 
