@@ -6,64 +6,8 @@ from neo4j import GraphDatabase
 import dotenv
 import os
 
-# Insertar Nodos
-"""
-type Persona struct {
-    Nombre          string   `json:"nombre" binding:"required"`
-    Apellido        string   `json:"apellido" binding:"required"`
-    FechaNacimiento string   `json:"fecha_nacimiento" binding:"required"` // Formato: YYYY-MM-DD
-    Genero          string   `json:"genero" binding:"required"`
-    Usuario         string   `json:"usuario" binding:"required"`
-    Password        string   `json:"password" binding:"required"`
-}
-
-type Estudiante struct {
-    Persona
-    Carnet  string `json:"carnet" binding:"required"`
-    Correo  string `json:"correo" binding:"required"`
-    Parqueo *bool  `json:"parqueo" binding:"required"`
-    Foraneo *bool  `json:"foraneo" binding:"required"`
-    Colegio string `json:"colegio" binding:"required"`
-}
-
-type Profesor struct {
-    Persona
-    Code           string `json:"code" binding:"required"`
-    CorreoProfesor string `json:"correo_profesor" binding:"required"`
-    Departamento   string `json:"departamento" binding:"required"`
-    Maestria       string `json:"maestria" binding:"required"`
-    Jornada        string `json:"jornada" binding:"required"`
-}
-
-type Cancion struct {
-    Nombre           string  `json:"nombre" binding:"required"`
-    Disco            string  `json:"disco" binding:"required"`
-    FechaLanzamiento string  `json:"fecha_lanzamiento" binding:"required"` // Formato: YYYY-MM-DD
-    Duracion         float64 `json:"duracion" binding:"required"`
-    Genero           string  `json:"genero" binding:"required"`
-}
-
-type Equipo struct {
-    Nombre               string `json:"nombre" binding:"required"`
-    Deporte              string `json:"deporte" binding:"required"`
-    Pais                 string `json:"pais" binding:"required"`
-    Division             string `json:"division" binding:"required"`
-    FechaEstablecimiento string `json:"fecha_establecimiento" binding:"required"`
-}
-
-type Lugar struct {
-    Nombre       string `json:"nombre" binding:"required"`
-    Departamento string `json:"departamento" binding:"required"`
-    Tipo         string `json:"tipo" binding:"required"`
-    Direccion    string `json:"direccion" binding:"required"`
-    Foto         string `json:"foto" binding:"required"`
-}
-"""
-
 
 def insertar_estudiantes(tx, done=False) -> list[str]:
-    # abrir estudiantes.csv
-    # 'nombre,apellido,fecha_nacimiento,genero,usuario,password,carnet,correo,parqueo,foraneo,colegio'
     estudiantes = pd.read_csv('estudiantes.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
 
     estudiantes_insertados = []
@@ -109,8 +53,6 @@ def insertar_estudiantes(tx, done=False) -> list[str]:
 
 
 def insertar_profesores(tx, done=False) -> list[str]:
-    # abrir profesores.csv
-    # 'nombre,apellido,fecha_nacimiento,genero,usuario,password,code,correo_profesor,departamento,maestria,jornada'
     profesores = pd.read_csv('profesores.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
 
     print(profesores.head())
@@ -158,8 +100,6 @@ def insertar_profesores(tx, done=False) -> list[str]:
 
 
 def insertar_canciones(tx, done=False) -> list[str]:
-    # abrir canciones.csv
-    # 'nombre,disco,fecha_lanzamiento,duracion,genero'
     canciones = pd.read_csv('canciones.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
 
     canciones_insertadas = []
@@ -193,8 +133,6 @@ def insertar_canciones(tx, done=False) -> list[str]:
 
 
 def insertar_equipos(tx, done=False) -> list[str]:
-    # abrir equipos.csv
-    # 'nombre,deporte,pais,division,fecha_establecimiento'
     equipos = pd.read_csv('equipos.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
 
     equipos_insertados = []
@@ -228,8 +166,6 @@ def insertar_equipos(tx, done=False) -> list[str]:
 
 
 def insertar_lugares(tx, done=False) -> list[str]:
-    # abrir lugares.csv
-    # 'nombre,departamento,tipo,direccion,foto'
     lugares = pd.read_csv('lugares.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
 
     lugares_insertados = []
