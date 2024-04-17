@@ -226,7 +226,7 @@ Content-Type: application/json
 }
 
 ### Obtener detalles de cuenta
-GET http://localhost:8080/users/details/juanperez
+GET http://localhost:8080/users/details/sandovaljohn
 Accept: application/json
 
 ### Iniciar sesión
@@ -289,7 +289,7 @@ DELETE http://localhost:8080/songs/music-player/juanperez
 Accept: application/json
 
 ### Recomendación
-GET http://localhost:8080/users/recommendation/juanperez
+GET http://localhost:8080/users/recommendation/MarkAlbrand
 Accept: application/json
 
 
@@ -323,7 +323,7 @@ Content-Type: application/json
 }
 
 ### Admin Get all users
-GET http://localhost:8080/admin/users?filter=Premium
+GET http://localhost:8080/admin/users
 Accept: application/json
 
 ### Admin Delete multiple users
