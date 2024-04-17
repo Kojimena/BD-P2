@@ -70,7 +70,7 @@ const FormSign = ({usuario}) => {
         <div className="dropdown dropdown-bottom py-2 w-full">
             <div tabIndex={0} role="button" className="btn m-1 bg-kaqui hover:bg-brown text-white w-full" onClick={() => setIsOpen(!isOpen)}>{signo}</div>
                 {isOpen && (
-                    <ul tabIndex={0} className="dropdown-content bg-kaqui z-[1] menu p-2 shadow-md text-white rounded-box w-52">
+                    <ul tabIndex={0} className="dropdown-content bg-kaqui z-[1] menu p-2 shadow-md text-white rounded-box w-52 overflow-y-scroll h-40">
                     {signos.map((sign, index) => (
                         <li key={index}><a onClick={() => {setSigno(sign); setIsOpen(false);}}>{sign}</a></li>
                     ))}

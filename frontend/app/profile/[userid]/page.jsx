@@ -517,9 +517,9 @@ const Profile = ({params}) => {
                         
                     </div>
                 )}
-                
-                { deleteRelation && (<button className='bg-kaqui text-white hover:bg-white hover:text-kaqui rounded-full max-w-10 block p-2 ml-auto' onClick={() => setOpenMenu(!openMenu)}> {openMenu ? <ImCross/> : <TiThMenu className='text-2xl text-center' />}</button>)
-                }
+                {showDeleteActions && (
+                    <button className='bg-kaqui text-white hover:bg-white hover:text-kaqui rounded-full max-w-10 block p-2 ml-auto' onClick={() => setOpenMenu(!openMenu)}> {openMenu ? <ImCross/> : <TiThMenu className='text-2xl text-center' />}</button>
+                )}
 
             </div>
         </div>
