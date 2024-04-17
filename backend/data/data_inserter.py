@@ -8,7 +8,7 @@ import os
 
 
 def insertar_estudiantes(tx, done=False) -> list[str]:
-    estudiantes = pd.read_csv('estudiantes.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
+    estudiantes = pd.read_csv('estudiantes.csv', sep=',', encoding='utf-8', on_bad_lines='skip', index_col=False)
 
     estudiantes_insertados = []
 
@@ -53,7 +53,7 @@ def insertar_estudiantes(tx, done=False) -> list[str]:
 
 
 def insertar_profesores(tx, done=False) -> list[str]:
-    profesores = pd.read_csv('profesores.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
+    profesores = pd.read_csv('profesores.csv', sep=',', encoding='utf-8', on_bad_lines='skip', index_col=False)
 
     print(profesores.head())
 
@@ -100,7 +100,7 @@ def insertar_profesores(tx, done=False) -> list[str]:
 
 
 def insertar_canciones(tx, done=False) -> list[str]:
-    canciones = pd.read_csv('canciones.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
+    canciones = pd.read_csv('canciones.csv', sep=',', encoding='utf-8', on_bad_lines='skip', index_col=False)
 
     canciones_insertadas = []
 
@@ -133,7 +133,7 @@ def insertar_canciones(tx, done=False) -> list[str]:
 
 
 def insertar_equipos(tx, done=False) -> list[str]:
-    equipos = pd.read_csv('equipos.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
+    equipos = pd.read_csv('equipos.csv', sep=',', encoding='utf-8', on_bad_lines='skip', index_col=False)
 
     equipos_insertados = []
 
@@ -166,7 +166,7 @@ def insertar_equipos(tx, done=False) -> list[str]:
 
 
 def insertar_lugares(tx, done=False) -> list[str]:
-    lugares = pd.read_csv('lugares.csv', sep=',', encoding='utf-8', on_bad_lines='skip')
+    lugares = pd.read_csv('lugares.csv', sep=',', encoding='utf-8', on_bad_lines='skip', index_col=False)
 
     lugares_insertados = []
 

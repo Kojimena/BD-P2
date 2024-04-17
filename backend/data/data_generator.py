@@ -217,6 +217,7 @@ def generar_canciones(canciones: int) -> list[dict]:
 
 
 if __name__ == "__main__":
+	# 2000 + 500 + 1000 + 100 + 1500 = 5100
 	estudiantes, profesores = generar_personas(2000, 500)
 	lugares = generar_lugares(1000)
 	equipos = generar_equipos()  # 100 equipos
