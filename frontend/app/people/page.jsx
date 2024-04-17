@@ -36,7 +36,7 @@ const PeoplePage = () => {
         <div className='flex justify-center items-center flex-col pt-10'>
         <h2 className="font-montserrat text-bold text-4xl text-kaqui font-bold">Mira tus matchs!</h2>
         <span className="font-montserrat text-bold text-2xl text-white font-normal">Haz click en el usuario para ver su perfil</span>
-        <div className="flex flex-wrap py-10 gap-10">
+        <div className="flex flex-wrap py-10 gap-10 justify-center">
             {console.log(people)}
             {
                 Object.keys(people).map((key) => {
