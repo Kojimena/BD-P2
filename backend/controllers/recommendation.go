@@ -126,6 +126,12 @@ func Recommendation(c *gin.Context) {
 		return
 	}
 
+	for r.Next(c) {
+		user := r.Record().Values[0].(string)
+		fmt.Printf("NO_LE_GUSTA Canción: %s\n", user)
+		matches[user]++
+	}
+
 	// LE_INTERESA
 	r, err = session.Run(
 		c,
