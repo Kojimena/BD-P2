@@ -259,57 +259,54 @@ def insertar_lugares(tx, done=False) -> list[str]:
     return lugares_insertados
 
 
-def insertar_relaciones_canciones(tx, canciones: list[str], usuarios: list[str], amount=1):
+def insertar_relaciones_canciones(tx, canciones: list[str], usuario: str):
     relaciones = ["LE_GUSTA", "NO_LE_GUSTA", "ES_FAVORITA"]
-    canciones = random.sample(canciones, amount)
-    usuarios = random.sample(usuarios, amount)
 
-    for i in range(amount):
-        rel = random.choice(relaciones)
+    for i in range(len(relaciones)):
+        rel = relaciones[i]
+        can = random.choice(canciones)
         tx.run(
             f"""
             MATCH (c:Cancion), (u:Persona)
             WHERE c.Nombre = $cancion AND u.Usuario = $usuario
             CREATE (u)-[:{rel}]->(c)
             """,
-            cancion=canciones[i],
-            usuario=usuarios[i]
+            cancion=can,
+            usuario=usuario
         )
 
 
-def insertar_relaciones_equipos(tx, equipos: list[str], usuarios: list[str], amount=1):
+def insertar_relaciones_equipos(tx, equipos: list[str], usuario: str):
     relaciones = ["APOYA", "RECHAZA"]
-    equipos = random.sample(equipos, amount)
-    usuarios = random.sample(usuarios, amount)
 
-    for i in range(amount):
-        rel = random.choice(relaciones)
+    for i in range(len(relaciones)):
+        rel = relaciones[i]
+        eq = random.choice(equipos)
         tx.run(
             f"""
             MATCH (e:Equipo), (u:Persona)
             WHERE e.Nombre = $equipo AND u.Usuario = $usuario
             CREATE (u)-[:{rel}]->(e)
             """,
-            equipo=equipos[i],
-            usuario=usuarios[i]
+            equipo=eq,
+            usuario=usuario
         )
 
 
-def insertar_relaciones_lugares(tx, lugares: list[str], usuarios: list[str], amount=1):
+def insertar_relaciones_lugares(tx, lugares: list[str], usuario: str):
     relaciones = ["VISITA", "NO_LE_GUSTA"]
-    lugares = random.sample(lugares, amount)
-    usuarios = random.sample(usuarios, amount)
 
-    for i in range(amount):
-        rel = random.choice(relaciones)
+    for i in range(len(relaciones)):
+        rel = relaciones[i]
+        lugar = random.choice(lugares)
         tx.run(
             f"""
             MATCH (l:Lugar), (u:Persona)
             WHERE l.Nombre = $lugar AND u.Usuario = $usuario
             CREATE (u)-[:{rel}]->(l)
             """,
-            lugar=lugares[i],
-            usuario=usuarios[i]
+            lugar=lugar,
+            usuario=usuario
         )
 
 
@@ -330,9 +327,14 @@ if __name__ == '__main__':
         equipos = insertar_equipos(session, done=DONE)
         lugares = insertar_lugares(session, done=DONE)
 
-        n_rels = len(estudiantes + profesores) // 2
-        insertar_relaciones_canciones(session, canciones, estudiantes + profesores, amount=min(n_rels, len(canciones)))
-        insertar_relaciones_equipos(session, equipos, estudiantes + profesores, amount=min(n_rels, len(equipos)))
-        insertar_relaciones_lugares(session, lugares, estudiantes + profesores, amount=min(n_rels, len(lugares)))
+        for est in estudiantes:
+            insertar_relaciones_canciones(session, canciones, est)
+            insertar_relaciones_equipos(session, equipos, est)
+            insertar_relaciones_lugares(session, lugares, est)
+
+        for prof in profesores:
+            insertar_relaciones_canciones(session, canciones, prof)
+            insertar_relaciones_equipos(session, equipos, prof)
+            insertar_relaciones_lugares(session, lugares, prof)
 
     driver.close()
